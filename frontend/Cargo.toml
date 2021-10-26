@@ -1,5 +1,5 @@
 [package]
-name = "guimauve.io-frontend"
+name = "guimauve-io-frontend"
 version = "0.0.1"
 authors = ["guimauve <contact@guimauve.io>"]
 edition = "2018"
