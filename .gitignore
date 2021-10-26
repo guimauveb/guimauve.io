@@ -1,0 +1,7 @@
+deploy.sh
+.DS_Store
+.git-credentials
+frontend/index.html
+frontend/Trunk.toml
+.env
+TODO.md

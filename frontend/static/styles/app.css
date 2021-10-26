@@ -1,0 +1,441 @@
+*,
+  *::after,
+  *::before {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  html {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    font-family: 'PT Mono', monospace;
+    color: rgba(221, 221, 221, 1);
+  }
+
+  body {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    --global-background: #0d0d0d;
+    --light: hsl(220, 50%, 90%);
+    --primary: hsl(255, 30%, 55%);
+    --focus: #27A486;
+    --border-color: hsla(0, 0%, 100%, .2);
+    color: var(--light);
+    background: var(--global-background);
+    scrollbar-width: none;
+  }
+
+  body::-webkit-scrollbar {
+    display: none;
+  }
+
+  div::-webkit-scrollbar {
+    display: none;
+  }
+
+  div {
+    scrollbar-width: none;
+  }
+
+  ul {
+    margin: 10px 0;
+  }
+
+  a {
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  a:link {
+    color: rgba(241, 241, 241, .8);
+  }
+
+  a:active {
+    color: rgba(241, 241, 241, .8);
+  }
+
+  a:visited {
+    color: rgba(241, 241, 241, .8);
+  }
+
+  a:hover {
+    color: rgba(241, 241, 241, 1);
+  }
+
+  /* Loader */
+  .lds-dual-ring {
+    display: inline-block;
+  }
+  .lds-dual-ring:after {
+    content: " ";
+    display: block;
+    width: 32px;
+    height: 32px;
+    margin: 8px;
+    border-radius: 50%;
+    border: 2px solid rgba(221, 221, 221, 1);
+    border-color: rgb(221, 221, 221) transparent rgb(221, 221, 221) transparent;
+    animation: lds-dual-ring 1.2s linear infinite;
+  }
+  @keyframes lds-dual-ring {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+
+  /* Modal */
+  .modal-container {
+    overflow-x: auto;
+    position: fixed;
+    display: flex;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    flex: 1;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    /* --m-background is set as inline style */
+    background: var(--m-background);
+  }
+
+  /* using :target */
+  .modal-container:target {
+    display: flex;
+  }
+
+  .modal {
+    font-size: 0.8rem;
+    top: 8em;
+    display: flex;
+    flex-direction: column;
+    width: 80em;
+    height: max-content;
+    padding: 2em;
+    border-radius: 4px;
+    background: linear-gradient(to right, #06080a, #0d1117);
+    color: var(--light);
+    position: relative;
+    overflow: hidden;
+    animation-name: animatetop;
+    animation-duration: 0.4s
+  }
+
+  /* Animation */
+  @keyframes animatetop {
+    from {top: -8em; opacity: 0}
+    to {top: 8em; opacity: 1}
+  }
+
+  /* Projects */
+  .project-gallery-img-container-middle {
+    background-color: rgba(0, 0, 0, .5);
+    transition: .5s ease;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 50px;
+    font-size: 45px;
+  }
+
+  .project-gallery-img-container-middle:hover {
+    background-color: rgba(0, 0, 0, .1);
+  }
+
+  /* Tags */
+  .tag-link {
+    display: inline-block;
+    padding: 3px 4px;
+    margin: 3px 3px;
+    border-radius: 4px;
+    min-width: 20px;
+    text-align: center;
+    opacity: .85;
+    transition: .2s;
+  }
+
+  .tag-link:hover {
+    opacity: 1;
+  }
+
+  .vim {
+    background-color: rgba(67, 149, 65, 1) !important;
+    color: rgba(235, 235, 235, 1) !important;
+  }
+
+  .python {
+    background-color: rgba(55, 114, 164, 1) !important;
+    color: rgba(255, 206, 61, 1) !important;
+  }
+
+  .cpp {
+    background-color: rgba(23, 69, 125, 1) !important;
+    color: rgba(255, 255, 255, 1) !important;
+  }
+
+  .js {
+    background-color: rgba(240, 219, 79, 1) !important;
+    color: rgba(50, 51, 48, 1) !important;
+  }
+
+  .aws {
+    background-color: rgba(255, 153, 0, 1) !important;
+    color: rgba(39, 47, 61, 1) !important;
+  }
+
+  .mysql {
+    background-color: rgba(38, 95, 138, 1) !important;
+    color: rgba(219, 145, 51, 1) !important;
+  }
+
+  .flask {
+    color: rgba(0, 0, 0, 1) !important;
+    background-color: rgba(221, 221, 221, 1) !important;
+    border-color: rgba(0, 0, 0, 1) !important;
+    border: .3px solid;
+  }
+
+  .curl {
+    background-color: rgba(221, 221, 221, 1) !important;
+    color: rgba(9, 55, 84, 1) !important;
+    border-color: rgba(9, 55, 84, 1) !important;
+    border: .3px solid;
+  }
+
+  .curses {
+    color: rgba(255, 255, 255, 1) !important;
+    background-color: rgba(38, 38, 38, 1) !important;
+  }
+
+  .shell {
+    color: rgba(255, 255, 255, 1) !important;
+    background-color: rgba(38, 38, 38, 1) !important;
+  }
+
+  .html {
+    background-color: rgba(228, 77, 38, 1) !important;
+    color: rgba(255, 255, 255, 1) !important;
+  }
+
+  .css {
+    background-color: rgba(38, 77, 228, 1) !important;
+    color: rgba(255, 255, 255, 1) !important;
+  }
+
+  .c {
+    background-color: rgba(23, 69, 125, 1) !important;
+    color: rgba(255, 255, 255, 1) !important;
+  }
+
+  .macos {
+    background-color: rgba(233, 233, 233, 1) !important;
+    color: rgba(85, 85, 85, 1) !important;
+  }
+
+  .linux {
+    color: rgba(238, 194, 72, 1) !important;
+    background-color: rgba(38, 38, 38, 1) !important;
+  }
+
+  .tensorflow {
+    color: rgba(243, 163, 58, 1) !important;
+    border-color: rgba(243, 163, 58, 1) !important;
+    background-color: rgba(221, 221, 221, 1) !important;
+    border: .3px solid;
+  }
+
+  .multithreading {
+    color: rgba(0, 0, 0, 1) !important;
+    border-color: rgba(0, 0, 0, 1) !important;
+    border: .3px solid;
+    background-color: rgba(221, 221, 221, 1) !important;
+  }
+
+  .kernel {
+    color: rgba(0, 0, 0, 1) !important;
+    border-color: rgba(0, 0, 0, 1) !important;
+    background-color: rgba(221, 221, 221, 1) !important;
+    border: .3px solid;
+  }
+
+  .curlpp {
+    color: rgba(9, 55, 84, 1) !important;
+    background-color: rgba(221, 221, 221, 1) !important;
+    border-color: rgba(9, 55, 84, 1) !important;
+    border: .3px solid;
+  }
+
+  .nginx {
+    background-color: rgba(66, 147, 69, 1) !important;
+    color: rgba(255, 255, 255, 1) !important;
+  }
+
+  .bootstrap {
+    background-color: rgba(81, 62, 121, 1) !important;
+    color: rgba(255, 255, 255, 1) !important;
+  }
+
+  .opencv {
+    background: rgb(150,4,4);
+    background: linear-gradient(90deg, rgba(150,4,4,1) 10%, rgba(31,187,31,1) 50%, rgba(29,29,163,1) 90%);
+    color: rgba(255, 255, 255, 1) !important;
+  }
+
+  .cmake {
+    background-color: rgba(25, 40, 48, 1) !important;
+    color: rgba(221, 221, 221, 1) !important;
+  }
+
+  .haskell {
+    background-color: rgba(92, 81, 130, 1) !important;
+    color: rgba(255, 255, 255, 1) !important;
+  }
+
+  .jquery {
+    background-color: rgba(43, 105, 168, 1) !important;
+    color: rgba(255, 255, 255, 1) !important;
+  }
+
+  .unix {
+    background-color: rgba(233, 233, 233, 1) !important;
+    color: rgba(66, 147, 69, 1) !important;
+  }
+
+  .security {
+    background-color: rgba(0, 0, 0, 1) !important;
+    color: rgba(66, 190, 69, 1) !important;
+  }
+
+  .postgres {
+    background-color: rgba(63, 103, 141, 1) !important;
+    color: rgba(255, 255, 255, 1) !important;
+  }
+
+  .nas {
+    background-color: rgba(243, 246, 249, 1) !important;
+    color: rgba(75, 81, 81, 1) !important;
+  }
+
+  .automotive {
+    background-color: rgba(33, 76, 66, 1) !important;
+    color: rgba(226, 213, 196, 1) !important;
+  }
+
+  .assembly {
+    background-color: rgba(13, 2, 8, 1) !important;
+    color: rgba(0, 143, 17, 1) !important;
+  }
+
+  .rust {
+    background-color: rgba(40, 40, 40, 1) !important;
+    color: rgba(246, 100, 0, 1) !important;
+  }
+
+  .psql {
+    background-color: rgb(255, 255, 255) !important;
+    color: rgb(48, 98, 138) !important;
+  }
+
+  .actix {
+    background-color: rgb(22, 62, 140) !important;
+    color: rgb(255, 255, 255) !important;
+  }
+
+  .yew {
+    background-color: rgb(179, 225, 206) !important;
+    color: rgb(68, 68, 68) !important;
+  }
+
+  .wasm {
+    background-color: rgb(101, 78, 240) !important;
+    color: rgb(255, 255, 255) !important;
+  }
+
+  .trunk {
+    background-color: rgb(254, 212, 63) !important;
+    color: rgb(84, 54, 49) !important;
+  }
+
+  .diesel {
+    background-color: rgb(255, 39, 39) !important;
+    color: rgb(255, 255, 255) !important;
+  }
+
+  /* <Text /> */
+  .heading {
+    font-size: 2em !important;
+    font-weight: bold !important;
+  }
+
+  .caption {
+    font-size: 0.7em !important;
+  }
+
+  .comment {
+    font-style: italic !important;
+    text-align: center !important;
+  }
+
+  .article-chapter {
+    flex: 1 !important;
+    font-size: 1.4em !important;
+    font-weight: bold !important;
+    color: rgba(255, 250, 230, 1) !important;
+    margin: 8px 0 !important;
+    border-bottom: 1px solid rgba(255, 250, 230, 1) !important;
+    padding-bottom: 4px !important;
+  }
+
+  /* Button */
+  .button {
+    display: inline-block;
+    padding: 0.35em 1.2em;
+    border: 0.1em solid #FFFFFF;
+    margin-left: 4px;
+    border-radius: 0.12em;
+    box-sizing: border-box;
+    text-decoration: none;
+    font-family: inherit;
+    font-size: inherit;
+    font-weight: 300;
+    color: inherit;
+    text-align: center;
+    transition: all 0.2s;
+    background: inherit;
+    cursor: pointer;
+  }
+
+  .button:hover {
+    color: #000000;
+    background: rgb(217, 225, 242);
+  }
+
+  .button:disabled {
+    cursor: not-allowed;
+    opacity: 0.7;
+  }
+
+
+  @media all and (max-width:30em) {
+    .button {
+      display: block;
+    }
+  }
+
+  /* Code */
+  pre {
+    padding: 8px;
+    border-radius: 4px;
+    white-space: pre;
+    overflow: auto;
+    width: 100%;
+    max-height: 512px;
+  }
