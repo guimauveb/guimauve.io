@@ -12,9 +12,7 @@ pub async fn get_all_projects() -> Result<HashMap<i32, IProject>, Status> {
     let json = Fetch::get(url).await;
 
     match json {
-        Ok(json) => Ok(json
-            .into_serde::<HashMap<i32, IProject>>()
-            .expect("Error while deserializing projects.")),
+        Ok(json) => Ok(json.into_serde::<HashMap<i32, IProject>>().unwrap()),
         Err(_err) => Err(Status::Error),
     }
 }
@@ -25,9 +23,7 @@ pub async fn get_resume_projects() -> Result<HashMap<i32, IProject>, Status> {
     let json = Fetch::get(url).await;
 
     match json {
-        Ok(json) => Ok(json
-            .into_serde::<HashMap<i32, IProject>>()
-            .expect("Error while deserializing projects.")),
+        Ok(json) => Ok(json.into_serde::<HashMap<i32, IProject>>().unwrap()),
         Err(_err) => Err(Status::Error),
     }
 }

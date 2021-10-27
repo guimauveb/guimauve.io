@@ -12,7 +12,6 @@ pub async fn get_tag_list() -> Result<Vec<ITag>, Status> {
 
     match json {
         Ok(json) => Ok(json.into_serde::<Vec<ITag>>().unwrap()),
-
         Err(_err) => Err(Status::Error),
     }
 }

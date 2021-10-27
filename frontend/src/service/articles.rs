@@ -16,7 +16,6 @@ pub async fn get_article_list() -> Result<HashMap<i32, IArticle>, Status> {
 
     match json {
         Ok(json) => Ok(json.into_serde::<HashMap<i32, IArticle>>().unwrap()),
-
         Err(_err) => Err(Status::Error),
     }
 }
@@ -27,7 +26,6 @@ pub async fn add_article(payload: &IArticle) -> Result<IArticle, Status> {
 
     match json {
         Ok(json) => Ok(json.into_serde::<IArticle>().unwrap()),
-
         Err(_err) => Err(Status::Error),
     }
 }
@@ -38,7 +36,6 @@ pub async fn get_article(id: &i32) -> Result<IArticle, Status> {
 
     match json {
         Ok(json) => Ok(json.into_serde::<IArticle>().unwrap()),
-
         Err(_err) => Err(Status::Error),
     }
 }
@@ -49,7 +46,6 @@ pub async fn update_article_header(payload: &IArticleHeader) -> Result<IArticle,
 
     match json {
         Ok(json) => Ok(json.into_serde::<IArticle>().unwrap()),
-
         Err(_err) => Err(Status::Error),
     }
 }
@@ -60,7 +56,6 @@ pub async fn publish_article(id: &i32, payload: &IPublishArticle) -> Result<IArt
 
     match json {
         Ok(json) => Ok(json.into_serde::<IArticle>().unwrap()),
-
         Err(_err) => Err(Status::Error),
     }
 }
@@ -84,7 +79,6 @@ pub async fn add_content(payload: &IContent) -> Result<IArticle, Status> {
 
     match json {
         Ok(json) => Ok(json.into_serde::<IArticle>().unwrap()),
-
         Err(_err) => Err(Status::Error),
     }
 }
@@ -95,7 +89,6 @@ pub async fn update_content(payload: &IContent) -> Result<IArticle, Status> {
 
     match json {
         Ok(json) => Ok(json.into_serde::<IArticle>().unwrap()),
-
         Err(_err) => Err(Status::Error),
     }
 }
@@ -116,7 +109,6 @@ pub async fn add_chapter(payload: &IChapter) -> Result<IArticle, Status> {
 
     match json {
         Ok(json) => Ok(json.into_serde::<IArticle>().unwrap()),
-
         Err(_err) => Err(Status::Error),
     }
 }
@@ -127,7 +119,6 @@ pub async fn update_chapter(payload: &IChapter) -> Result<IArticle, Status> {
 
     match json {
         Ok(json) => Ok(json.into_serde::<IArticle>().unwrap()),
-
         Err(_err) => Err(Status::Error),
     }
 }
