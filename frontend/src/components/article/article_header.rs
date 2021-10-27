@@ -52,7 +52,7 @@ pub fn article_header(ArticleHeaderProps { article_header, .. }: &ArticleHeaderP
             <BoxComponent mb="8px">
                     <Text as_element="h1" variant={TextVariant::Heading} value={&article_header.title} />
             </BoxComponent>
-            <BoxComponent display="flex" mt="8px" mb="8px">
+            <BoxComponent mt="8px" mb="8px">
                 {for article_header.tags.iter().map(move |tag| html! { <TagLabel tag={&tag.label} /> })}
             </BoxComponent>
             <BoxComponent mt="12px" mb="12px">
@@ -312,7 +312,7 @@ pub fn article_header(
                         }
                 }
             }
-            <BoxComponent display="flex" mt="4px" mb="4px">
+            <BoxComponent mt="4px" mb="4px">
                 {for article_header.tags.iter().map(move |tag| {
                     html! { <TagLabel tag={&tag.label} /> }
                 })}

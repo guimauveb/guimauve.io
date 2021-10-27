@@ -397,10 +397,10 @@
   /* Button */
   .button {
     display: inline-block;
-    padding: 0.35em 1.2em;
+    padding: 4px 16px;
     border: 0.1em solid #FFFFFF;
     margin-left: 4px;
-    border-radius: 0.12em;
+    border-radius: 4px;
     box-sizing: border-box;
     text-decoration: none;
     font-family: inherit;
