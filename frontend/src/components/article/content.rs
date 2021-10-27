@@ -443,8 +443,8 @@ pub fn content(
                            <BoxComponent align_items="center" position="relative" display="flex" mt="8px" mb="8px">
                                 <BoxComponent display="flex" justify_content="center" align_items="center">
                                    <BoxComponent onclick={on_edit_content} position="absolute" right="-64px" cursor="pointer">
-                                    <i class="fa fa-edit"/>
-                                </BoxComponent>
+                                        <i class="fa fa-edit"/>
+                                    </BoxComponent>
                                 </BoxComponent>
                                 <Text variant={TextVariant::Comment} value={&content.content} />
                             </BoxComponent>
