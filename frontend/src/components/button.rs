@@ -1,5 +1,4 @@
 use {
-    crate::components::box_component::BoxComponent,
     yew::{html, Callback, MouseEvent, Properties},
     yew_functional::function_component,
 };
@@ -45,18 +44,18 @@ pub fn button(
 
     html! {
         <button style={variant} onclick=onclick class="button" disabled=*disabled>
-            <BoxComponent display="flex" flex="1" justify_content="center" align_items="center">
+            <div style="display: flex; flex: 1; justify-content: center; align-items: center;">
                 {if !icon_name.is_empty() {
                     html! {
-                        <BoxComponent mr="4px">
+                        <div style="margin-right: 4px;">
                             <i class={icon_name} aria-hidden="true"></i>
-                        </BoxComponent>
+                        </div>
                     }
                 } else {
                     html! {}
                 }}
                 {label}
-            </BoxComponent>
+            </div>
         </button>
     }
 }

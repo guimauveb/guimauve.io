@@ -1,7 +1,6 @@
 use {
     crate::{
         components::{
-            box_component::BoxComponent,
             code::Code,
             image::Image,
             text::{Text, TextVariant},
@@ -65,37 +64,37 @@ pub fn content(ContentProps { content, .. }: &ContentProps) -> Html {
     html! {
        {match &content.content_type {
            ContentType::Text => html! {
-                <BoxComponent align_items="center" position="relative" display="flex" mb="24px">
+                <div style="align-items: center; position: relative; display: flex; margin-bottom: 24px;">
                    <Text value={&content.content} />
-                </BoxComponent>
+                </div>
            },
            ContentType::Comment => html! {
-                <BoxComponent align_items="center" justify_content="center" position="relative" display="flex" mb="24px">
+                <div style="align-items:center; justify-content: center; position: relative; display: flex; margin-bottom: 24px;">
                    <Text variant={TextVariant::Comment} value={&content.content} />
-                </BoxComponent>
+                </div>
            },
            ContentType::Link => html! {
-                <BoxComponent align_items="center" position="relative" display="flex" mb="24px">
+                <div style="align-items:center; justify-content: center; position: relative; display: flex; margin-bottom: 24px;">
                     <a target="_blank" href={match &content.url {
                         Some(url) => url,
                         None => ""
                     }}>
                         <Text value={&content.content} />
                     </a>
-                </BoxComponent>
+                </div>
            },
            ContentType::Code => html! {
-                <BoxComponent max_width="100vw" align_items="center" position="relative" display="flex" mb="24px">
+                <div style="max-width: 100vw; align-items:center; justify-content: center; position: relative; display: flex; margin-bottom: 24px;">
                        <Code highlighted_code={match &content.highlighted_code {
                             Some(code) => code,
                             None => &content.content,
                        }}/>
-                </BoxComponent>
+                </div>
                },
            ContentType::Image => html! {
-                <BoxComponent align_items="center" justify_content="center" display="flex" mb="24px">
+                <div style="align-items:center; justify-content: center; display: flex; margin-bottom: 24px;">
                     <Image src={&content.content} width="75%" />
-                </BoxComponent>
+                </div>
                 }
            }
        }
@@ -399,36 +398,36 @@ pub fn content(
             {match form.content_type {
                 ContentType::Text => match *edited {
                     true => html! {
-                        <BoxComponent>
+                        <div>
                             <Select<ContentType> selected={&form.content_type} options={&CONTENT_TYPES} onchange={on_change_content_type} />
                             <TextEditor rows={8} data={&form.content} onchange={on_change_content_content} />
-                            <BoxComponent display="flex" mt="4px" mb="4px" justify_content="flex-end" font_size=".8em">
+                            <div style="display: flex; margin-top: 4px; margin-bottom: 4px; justify-content: flex-end; font-size:.8em;">
                                 {match action {
                                     Action::Edit => html! {<Button variant={ButtonVariant::Danger} onclick={&on_delete_content} label="Delete"/>},
                                     _ => html! {}
                                 }}
                                 <Button onclick={on_cancel_edit} label="Cancel" />
                                 <Button onclick={on_save_content} label="Save" />
-                            </BoxComponent>
-                        </BoxComponent>
+                            </div>
+                        </div>
                     },
                     false => html! {
-                        <BoxComponent align_items="center" position="relative" display="flex" mt="8px" mb="8px">
-                            <BoxComponent display="flex" justify_content="center" align_items="center">
-                                <BoxComponent onclick={on_edit_content} position="absolute" right="-64px" cursor="pointer">
+                        <div style="align-items:center; position: relative; display: flex; margin-top: 8px; margin-bottom: 8px;">
+                            <div style="display: flex; justify-content: center; align-items: center;">
+                                <div onclick={on_edit_content} style="position: absolute; right: -64px; cursor: pointer;">
                                     <i class="fa fa-edit"/>
-                                </BoxComponent>
-                            </BoxComponent>
+                                </div>
+                            </div>
                             <Text value={&content.content} />
-                        </BoxComponent>
+                        </div>
                         },
                 },
                 ContentType::Comment => match *edited {
                     true => html! {
-                        <BoxComponent>
+                        <div>
                             <Select<ContentType> selected={&form.content_type} options={&CONTENT_TYPES} onchange={on_change_content_type} />
                             <TextEditor rows={8} data={&form.content} onchange={on_change_content_content} />
-                            <BoxComponent display="flex" mt="4px" mb="4px" justify_content="flex-end" font_size=".8em">
+                            <div style="display: flex; margin-top: 4px; margin-bottom: 4px; justify-content: flex-end; font-size:.8em;">
                                 {match action {
                                     Action::Edit => html! {<Button variant={ButtonVariant::Danger} onclick={&on_delete_content} label="Delete"/>},
                                     _ => html! {}
@@ -436,23 +435,23 @@ pub fn content(
                                 }
                                 <Button onclick={on_cancel_edit} label="Cancel" />
                                 <Button onclick={on_save_content} label="Save" />
-                            </BoxComponent>
-                        </BoxComponent>
+                            </div>
+                        </div>
                     },
                     false => html! {
-                           <BoxComponent align_items="center" position="relative" display="flex" mt="8px" mb="8px">
-                                <BoxComponent display="flex" justify_content="center" align_items="center">
-                                   <BoxComponent onclick={on_edit_content} position="absolute" right="-64px" cursor="pointer">
+                           <div style="align-items: center; position: relative; display: flex; margin-top: 8px; margin-bottom: 8px;">
+                                <div style="display: flex; justify-content: center; align-items: center;">
+                                   <div onclick={on_edit_content} style="position: absolute; right: -64px; cursor: pointer;">
                                         <i class="fa fa-edit"/>
-                                    </BoxComponent>
-                                </BoxComponent>
+                                    </div>
+                                </div>
                                 <Text variant={TextVariant::Comment} value={&content.content} />
-                            </BoxComponent>
+                            </div>
                     },
                 },
                 ContentType::Link => match *edited {
                     true => html! {
-                        <BoxComponent>
+                        <div>
                             <Select<ContentType> selected={&form.content_type} options={&CONTENT_TYPES} onchange={on_change_content_type} />
                             <TextEditor rows={8} data={&form.content} onchange={on_change_content_content} />
                             <TextEditor rows={1} data={match &form.url {
@@ -461,104 +460,104 @@ pub fn content(
                                 }}
                                 onchange={on_change_content_url}
                             />
-                            <BoxComponent display="flex" mt="4px" mb="4px" justify_content="flex-end" font_size=".8em">
+                            <div style="display: flex; margin-top: 4px; margin-bottom: 4px; justify-content: flex-end; font-size:.8em;">
                                {match action {
                                     Action::Edit => html! {<Button variant={ButtonVariant::Danger} onclick={&on_delete_content} label="Delete"/>},
                                     _ => html! {}
                                 }}
                                 <Button onclick={on_cancel_edit} label="Cancel" />
                                 <Button onclick={on_save_content} label="Save" />
-                            </BoxComponent>
-                        </BoxComponent>
+                            </div>
+                        </div>
                     },
                     false => html! {
-                        <BoxComponent align_items="center" position="relative" display="flex" mt="8px" mb="8px">
-                            <BoxComponent display="flex" justify_content="center" align_items="center">
-                                <BoxComponent onclick={on_edit_content} position="absolute" right="-64px" cursor="pointer">
+                        <div style="align-items: center; position: relative; display: flex; margin-top: 8px; margin-bottom: 8px;">
+                            <div style="display: flex; justify-content: center; align-items: center;">
+                                <div onclick={on_edit_content} style="position: absolute; right: -64px; cursor: pointer;">
                                     <i class="fa fa-edit"/>
-                                </BoxComponent>
-                            </BoxComponent>
+                                </div>
+                            </div>
                             <a target="_blank" href={match &form.url {
                                 Some(url) => url,
                                 None => ""
                             }}>
                                 <Text value={&content.content} />
                             </a>
-                        </BoxComponent>
+                        </div>
                     },
                 },
                 ContentType::Code => match *edited {
                     true => html! {
-                        <BoxComponent>
-                            <BoxComponent display="flex">
+                        <div>
+                            <div style="display: flex;">
                                 <Select<ContentType> selected={&form.content_type} options={&CONTENT_TYPES} onchange={on_change_content_type} />
-                                <BoxComponent ml="8px">
+                                <div style="margin-left: 8px;">
                                     <Select<Language> selected={match &form.language {
                                                                 Some(language) => language,
                                                                 None => &Language::Bash,
                                     }} options={&LANGUAGES} onchange={on_change_content_language} />
-                                </BoxComponent>
-                            </BoxComponent>
+                                </div>
+                            </div>
                             <TextEditor rows={8} data={&form.content} onchange={on_change_content_content} />
-                            <BoxComponent display="flex" mt="4px" mb="4px" justify_content="flex-end" font_size=".8em">
+                            <div style="display: flex; margin-top: 4px; margin-bottom: 4px; justify-content: flex-end; font-size:.8em;">
                                {match action {
                                     Action::Edit => html! {<Button variant={ButtonVariant::Danger} onclick={&on_delete_content} label="Delete"/>},
                                     _ => html! {}
                                 }}
                                 <Button onclick={on_cancel_edit} label="Cancel" />
                                 <Button onclick={on_save_content} label="Save" />
-                            </BoxComponent>
-                        </BoxComponent>
+                            </div>
+                        </div>
                     },
                     false => html! {
-                       <BoxComponent align_items="center" position="relative" display="flex" mt="8px" mb="8px" max_width="100vw">
-                            <BoxComponent display="flex" justify_content="center" align_items="center">
-                                <BoxComponent onclick={on_edit_content} position="absolute" right="-64px" cursor="pointer">
+                        <div style="align-items: center; position: relative; display: flex; margin-top: 8px; margin-bottom: 8px;">
+                           <div style="display: flex; justify-content: center; align-items: center;">
+                                <div onclick={on_edit_content} style="position: absolute; right: -64px; cursor: pointer;">
                                     <i class="fa fa-edit"/>
-                                </BoxComponent>
-                            </BoxComponent>
+                                </div>
+                            </div>
                             <Code highlighted_code={match &content.highlighted_code.clone() {
                                                                 Some(code) => code,
                                                                 None => &content.content,
                                                             }}
                             />
-                        </BoxComponent>
+                        </div>
                     },
                 },
                 ContentType::Image => match *edited {
                     true => html! {
-                        <BoxComponent>
+                        <div>
                             <Select<ContentType> selected={&form.content_type} options={&CONTENT_TYPES} onchange={on_change_content_type} />
                             <TextEditor rows={1} data={&form.content} onchange={on_change_content_content} />
-                            <BoxComponent display="flex" mt="4px" mb="4px" justify_content="flex-end" font_size=".8em">
+                            <div style="display: flex; margin-top: 4px; margin-bottom: 4px; justify-content: flex-end; font-size:.8em;">
                                 {match action {
                                     Action::Edit => html! {<Button variant={ButtonVariant::Danger} onclick={&on_delete_content} label="Delete"/>},
                                     _ => html! {}
                                 }}
                                 <Button onclick={on_cancel_edit} label="Cancel" />
                                 <Button onclick={on_save_content} label="Save" />
-                            </BoxComponent>
-                        </BoxComponent>
+                            </div>
+                        </div>
                     },
                     false => {
                         html! {
-                            <BoxComponent justify_content="center" align_items="center" position="relative" display="flex" mt="8px" mb="8px">
-                                <BoxComponent display="flex" justify_content="center" align_items="center">
-                                    <BoxComponent onclick={on_edit_content} position="absolute" right="-64px" cursor="pointer">
+                            <div style="align-items: center; position: relative; display: flex; margin-top: 8px; margin-bottom: 8px;">
+                                <div style="display: flex; justify-content: center; align-items: center;">
+                                    <div onclick={on_edit_content} style="position: absolute; right: -64px; cursor: pointer;">
                                         <i class="fa fa-edit"/>
-                                    </BoxComponent>
-                                </BoxComponent>
+                                    </div>
+                                </div>
                                 <Image src={&content.content} width="75%" />
-                            </BoxComponent>
+                            </div>
                         }
                     }
                 }
             }}
             {if *is_loading {
                 html! {
-                    <BoxComponent align_items="center" justify_content="center" position="relative" display="flex">
+                    <div style="align-items: center; justify-content: center; position: relative; display: flex;">
                         <Loader />
-                    </BoxComponent>
+                    </div>
                 }
             } else {
                 html! {}

@@ -1,8 +1,6 @@
 use {
     crate::{
-        components::{
-            box_component::BoxComponent, loader::Loader, results::Results, text_input::TextInput,
-        },
+        components::{loader::Loader, results::Results, text_input::TextInput},
         entities::{
             interfaces::{IArticle, IProject, SearchResults, Status},
             project_category::ProjectCategory,
@@ -120,9 +118,9 @@ pub fn search(
     };
 
     html! {
-        <BoxComponent mt="12px" display="flex" flex_direction="column">
+        <div style="margin-top: 12px; display: flex; flex-direction: column;">
             <TextInput value={&*query} onchange={on_query_change} />
-            <BoxComponent mt="12px" display="flex" flex_direction="column"  max_height="32rem" overflow_y="auto">
+            <div style="margin-top:12px; display: flex; flex-direction: column; max-height: 32rem; overflow-y: auto;">
                 {if query.is_empty() {
                     html! {}
                 } else {
@@ -139,14 +137,14 @@ pub fn search(
                 }}
                 {if *is_loading {
                 html! {
-                    <BoxComponent align_items="center" justify_content="center" display="flex" mt="4px" mb="4px">
+                    <div style="align-items:center; justify-content: center; display: flex; margin-top: 4px; margin-bottom: 4px;">
                         <Loader />
-                    </BoxComponent>
+                    </div>
                 }
                 } else {
                     html! {}
                 }}
-            </BoxComponent>
-        </BoxComponent>
+            </div>
+        </div>
     }
 }

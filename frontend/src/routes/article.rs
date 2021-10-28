@@ -1,9 +1,6 @@
 use {
     crate::{
-        components::{
-            article::article::Article as ArticleComponent, box_component::BoxComponent,
-            loader::Loader,
-        },
+        components::{article::article::Article as ArticleComponent, loader::Loader},
         entities::interfaces::{IArticle, Status},
         service::{articles::get_article, future::handle_future},
         store::store::BlogStore,
@@ -59,7 +56,7 @@ pub fn article(
     }
 
     html! {
-        <BoxComponent display="flex" flex="1" flex_direction="column">
+        <div style="display: flex; flex: 1; flex-direction: column;">
             {match article_result {
                     Some(article) => html! {
                         <ArticleComponent
@@ -73,13 +70,13 @@ pub fn article(
             }
             {if *is_loading {
                 html! {
-                        <BoxComponent align_items="center" justify_content="center" display="flex" mt="24px" mb="24px">
+                        <div style="align-items: center; justify-content: center; display: flex; margin-top: 24px; margin-bottom: 24px;">
                             <Loader />
-                        </BoxComponent>
+                        </div>
                     }
             } else {
                 html! {}
             }}
-        </BoxComponent>
+        </div>
     }
 }

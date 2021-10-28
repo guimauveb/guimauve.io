@@ -1,8 +1,5 @@
 use {
-    crate::{
-        components::{box_component::BoxComponent, navbar::Navbar},
-        entities::interfaces::SearchResults,
-    },
+    crate::{components::navbar::Navbar, entities::interfaces::SearchResults},
     yew::{html, Callback, Properties},
     yew_functional::function_component,
 };
@@ -21,8 +18,8 @@ pub fn header(
     }: &HeaderProps,
 ) -> Html {
     html! {
-        <BoxComponent display="flex" mb="36px">
+        <div style="display: flex; margin-bottom: 36px;">
             <Navbar dispatch_search_results={dispatch_search_results} dispatch_error={dispatch_error} />
-        </BoxComponent>
+        </div>
     }
 }

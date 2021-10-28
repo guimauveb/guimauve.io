@@ -1,5 +1,5 @@
 use {
-    crate::components::{box_component::BoxComponent, text::Text},
+    crate::components::text::Text,
     yew::{html, Properties},
     yew_functional::function_component,
 };
@@ -13,8 +13,8 @@ pub struct PageNotFoundProps {
 #[function_component(PageNotFound)]
 pub fn page_not_found(PageNotFoundProps { page_name }: &PageNotFoundProps) -> Html {
     html! {
-        <BoxComponent display="flex" flex="1" justify_content="center">
+        <div style="display: flex; flex: 1; justify-content: center;">
             <Text value={page_name} />
-        </BoxComponent>
+        </div>
     }
 }

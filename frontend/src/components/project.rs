@@ -1,7 +1,6 @@
 use {
     crate::{
         components::{
-            box_component::BoxComponent,
             button::*,
             hr::Hr,
             image::Image,
@@ -43,35 +42,35 @@ pub fn project(
     };
 
     html! {
-        <BoxComponent display="flex" flex="1" font_size="0.8em" flex_direction="column">
-            <BoxComponent display="flex" flex="1">
-                <BoxComponent mr="12px">
+        <div style="display: flex; flex: 1; font-size: 0.8em; flex-direction: column;">
+            <div style="display: flex; flex: 1">
+                <div style="margin-right: 12px">
                     <Image width="8em" src={&project.image} />
-                </BoxComponent>
-                <BoxComponent display="flex" flex="1" flex_direction="column">
-                    <BoxComponent mb="4px">
+                </div>
+                <div style="display: flex; flex: 1; flex-direction: column;">
+                    <div style="margin-bottom: 4px;">
                         <Text value={&project.title} as_element="h3" font_weight="bold" font_size="1.rem" />
-                    </BoxComponent>
-                    <BoxComponent display="flex" flex="1" mt="4px">
-                        <BoxComponent display="flex" flex="1 1 20%" mr="8px">
+                    </div>
+                    <div style="display: flex; flex: 1; margin-top: 4px;">
+                        <div style="display: flex; flex: 1 1 20%; margin-right: 8px;">
                             <Text white_space="pre-line" value={&project.description} />
-                        </BoxComponent>
-                        <BoxComponent display="flex" flex="1 1 20%" flex_direction="column" mr="8px">
-                            <BoxComponent mb="8px">
+                        </div>
+                        <div style="display: flex; flex: 1 1 20%; flex-direction: column; margin-right: 8px;">
+                            <div style="margin-bottom: 8px;">
                                 <Text value="Features" />
-                            </BoxComponent>
+                            </div>
                             <Text white_space="pre-line" value={&project.features} />
-                        </BoxComponent>
-                        <BoxComponent display="flex" flex="1" flex_direction="column" word_break="break-all">
-                            <BoxComponent mb="8px">
+                        </div>
+                        <div style="display: flex; flex: 1; flex-direction: column; word-break: break-all;">
+                            <div style="margin-bottom: 8px;">
                                 <Text value="Technologies" />
-                            </BoxComponent>
-                            <BoxComponent onclick={on_tag_clicked}>
+                            </div>
+                            <div onclick={on_tag_clicked}>
                                 {for project.tags.iter().map(|tag| html! {<TagLabel tag={&tag.label}/>})}
-                            </BoxComponent>
-                        </BoxComponent>
-                    </BoxComponent>
-                    <BoxComponent display="flex" flex="1" mt="12px">
+                            </div>
+                        </div>
+                    </div>
+                    <div style="display: flex; flex: 1; margin-top: 12px;">
                         {match &project.gallery {
                             Some(gallery) => {
                                 if gallery.is_empty() {
@@ -79,19 +78,16 @@ pub fn project(
                                 } else {
                                     html! {
                                         <>
-                                            <BoxComponent display="flex" flex="1" align_items="center">
-                                                <BoxComponent mr="8px">
+                                            <div style="display: flex; flex: 1; align-items: center;">
+                                                <div style="margin-right: 8px;">
                                                     <Text value="Gallery" />
-                                                </BoxComponent>
-                                                <BoxComponent display="flex" flex="0">
+                                                </div>
+                                                <div style="display: flex; flex: 0;">
                                                         {
                                                             for gallery.iter().enumerate().map(|(index, image)| {
                                                                html! {
-                                                                   <BoxComponent
-                                                                        position="relative"
-                                                                        width="100%"
-                                                                        br="6px"
-                                                                        cursor="pointer"
+                                                                   <div
+                                                                       style="position: relative; width: 100%; br: 6px; cursor: pointer;"
                                                                         onclick={
                                                                            let (set_selected_image, open_gallery_modal) = (set_selected_image.clone(), open_gallery_modal.clone());
                                                                            Callback::from(move |_| {
@@ -100,24 +96,24 @@ pub fn project(
                                                                            })
                                                                        }
                                                                     >
-                                                                        <BoxComponent ml="8px" position="relative" br="2px" font_size="0" width="50px">
+                                                                        <div style="margin-left: 8px; position: relative; br: 2px; font-size: 0; width: 50px;">
                                                                             <Image src={image} />
                                                                             <div class="project-gallery-img-container-middle"></div>
-                                                                        </BoxComponent>
-                                                                   </BoxComponent>
+                                                                        </div>
+                                                                   </div>
                                                                }
                                                             })
                                                         }
-                                                </BoxComponent>
-                                            </BoxComponent>
+                                                </div>
+                                            </div>
                                             {
                                                 if *is_gallery_modal_open {
                                                     html! {
                                                         <Modal
                                                             title={html! {
-                                                                <BoxComponent mb="8px">
+                                                                <div style="margin-bottom: 8px;">
                                                                     <Text variant={TextVariant::Heading} value={&project.title} />
-                                                                </BoxComponent>
+                                                                </div>
                                                             }}
                                                             body={html! {
                                                                 <Slideshow selected_image_index={*selected_image_index}
@@ -139,10 +135,10 @@ pub fn project(
                                 },
                                 None => html! {},
                         }}
-                    </BoxComponent>
-                </BoxComponent>
-            </BoxComponent>
-            <BoxComponent display="flex" flex="1" justify_content="flex-end" mt="12px">
+                    </div>
+                </div>
+            </div>
+            <div style="display: flex; flex: 1; justify-content: flex-end; margin-top: 12px;">
                 {match &project.git {
                     Some(git) => html!{
                         <a href={git} target="_blank">
@@ -177,10 +173,10 @@ pub fn project(
                     },
                     None => html! {},
                 }}
-            </BoxComponent>
-            <BoxComponent mt="16px" mb="16px" flex="1">
+            </div>
+            <div style="margin-top: 16px; margin-bottom: 16px; flex: 1">
                 <Hr />
-            </BoxComponent>
-        </BoxComponent>
+            </div>
+        </div>
     }
 }

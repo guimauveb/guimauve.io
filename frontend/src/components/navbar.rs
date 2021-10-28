@@ -1,9 +1,6 @@
 use {
     crate::{
-        components::{
-            box_component::BoxComponent, modal::Modal, navlinks::NavLinks, search::Search,
-            text::Text,
-        },
+        components::{modal::Modal, navlinks::NavLinks, search::Search, text::Text},
         entities::interfaces::SearchResults,
     },
     yew::{html, Callback, MouseEvent, Properties},
@@ -35,21 +32,21 @@ pub fn navbar(
     let on_click_result: Callback<MouseEvent> = close_search_modal.clone();
 
     html! {
-            <BoxComponent display="flex" flex="1" justify_content="center" align_items="center" mt="16px">
-                <BoxComponent display="flex" max_width="1024px" flex="1">
+            <div style="display: flex; flex: 1; justify-content: center; align-items: center; margin-top: 16px;">
+                <div style="display: flex; max-width: 1024px; flex: 1;">
                     <NavLinks />
-                    <BoxComponent display="flex" flex="0" justify_content="flex-end">
+                    <div style="display: flex; flex: 0; justify-content: flex-end;">
                         <a onclick=open_search_modal><i class="fa fa-search" ></i></a>
-                    </BoxComponent>
-                </BoxComponent>
+                    </div>
+                </div>
             {
                 if *is_search_modal_open {
                     html! {
                         <Modal
                             title={html! {
-                                    <BoxComponent display="flex" align_items="center">
+                                    <div style="display: flex; align-items: center;">
                                         <Text value="Search" />
-                                    </BoxComponent>
+                                    </div>
                                 }
                             }
                             body={
@@ -68,6 +65,6 @@ pub fn navbar(
                     html! {}
                 }
             }
-       </BoxComponent>
+       </div>
     }
 }

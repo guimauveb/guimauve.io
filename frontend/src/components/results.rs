@@ -1,9 +1,6 @@
 use {
     crate::{
-        components::{
-            article::article_card::ArticleCard, box_component::BoxComponent, hr::Hr,
-            project::Project, text::Text,
-        },
+        components::{article::article_card::ArticleCard, hr::Hr, project::Project, text::Text},
         entities::{
             interfaces::{IArticle, IProject},
             project_category::ProjectCategory,
@@ -37,8 +34,8 @@ pub fn results(
     }: &ResultsProps,
 ) -> Html {
     html! {
-        <BoxComponent>
-            <BoxComponent mb="16px">
+        <div>
+            <div style="margin-bottom: 16px;">
                 {if *is_loading {
                     html! {
                         <Text value="- articles found." />
@@ -62,21 +59,21 @@ pub fn results(
                         </>
                     }
                 }}
-            </BoxComponent>
+            </div>
             {for articles.iter().map(move |(_, article)| {
                 html! {
-                    <BoxComponent mb="12px">
-                        <BoxComponent align_items="center" onclick={on_click_result}>
+                    <div style="margin-bottom: 12px;">
+                        <div style="align-items: center;" onclick={on_click_result}>
                             <ArticleCard article={article} />
-                        </BoxComponent>
-                        <BoxComponent mt="12px">
+                        </div>
+                        <div style="margin-top: 12px;">
                             <Hr />
-                        </BoxComponent>
-                    </BoxComponent>
+                        </div>
+                    </div>
                     }
                 })
             }
-            <BoxComponent mt="16px">
+            <div style="margin-top: 16px;">
                 {if *is_loading {
                     html! {
                         <Text value="- projects found." />
@@ -100,21 +97,21 @@ pub fn results(
                         </>
                     }
                 }}
-            </BoxComponent>
+            </div>
             {for projects_by_category.iter().map(move |(category, projects): (&ProjectCategory, &Vec<IProject>)| {
                 if projects.is_empty() {
                     html! {}
                 } else {
                     html! {
                         <>
-                            <BoxComponent mt="12px" mb="16px">
+                            <div style="margin-top: 16px; margin-bottom: 16px;">
                                 <Text as_element="h3" value={category.to_string()} />
-                            </BoxComponent>
+                            </div>
                             {for projects.iter().map(move |project| html! {<Project project={project} on_tag_clicked={on_click_result} />})}
                         </>
                     }
                 }}
             )}
-        </BoxComponent>
+        </div>
     }
 }

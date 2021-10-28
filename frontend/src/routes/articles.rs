@@ -1,9 +1,6 @@
 use {
     crate::{
-        components::{
-            article::articles::Articles as ArticlesList, box_component::BoxComponent,
-            loader::Loader,
-        },
+        components::{article::articles::Articles as ArticlesList, loader::Loader},
         entities::interfaces::{IArticle, Status},
         service::{articles::get_article_list, future::handle_future},
         store::store::BlogStore,
@@ -53,17 +50,17 @@ pub fn articles(
     );
 
     html! {
-        <BoxComponent display="flex" flex_direction="column" flex="1">
+        <div style="display: flex; flex-direction: column; flex: 1;">
             <ArticlesList articles={articles} />
             {if *is_loading {
                 html! {
-                    <BoxComponent align_items="center" justify_content="center" display="flex" mt="24px" mb="24px">
+                    <div style="align-items: center; justify-content: center; display: flex; margin-top: 24px; margin-bottom: 24px;">
                         <Loader />
-                    </BoxComponent>
+                    </div>
                 }
             } else {
                 html! {}
             }}
-        </BoxComponent>
+        </div>
     }
 }

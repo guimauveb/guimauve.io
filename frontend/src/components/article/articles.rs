@@ -2,7 +2,6 @@ use {
     super::article_card::ArticleCard,
     crate::{
         components::{
-            box_component::BoxComponent,
             hr::Hr,
             text::{Text, TextVariant},
         },
@@ -25,29 +24,29 @@ pub struct ArticlesProps {
 #[function_component(Articles)]
 pub fn articles(ArticlesProps { articles }: &ArticlesProps) -> Html {
     html! {
-        <BoxComponent display="flex" justify_content="center" flex="0">
-            <BoxComponent flex="1" max_width="1024px">
-                <BoxComponent align_items="center" display="flex" mb="24px">
+        <div style="display: flex; justify-content: center; flex: 0;">
+            <div style="flex: 1; max-width: 1024px;">
+                <div style="align-items: center; display: flex; margin-bottom: 24px;">
                     <Text variant={TextVariant::Heading} value="/articles" />
-                </BoxComponent>
-                <BoxComponent>
+                </div>
+                <div>
                     {for articles.iter().map(move |(_, article)| {
                          html! {
-                            <BoxComponent mb="12px">
-                                <BoxComponent align_items="center">
+                            <div style="margin-bottom: 12px;">
+                                <div style="align-items: center;">
                                     <ArticleCard article={article} />
-                                </BoxComponent>
-                                <BoxComponent mt="12px">
+                                </div>
+                                <div style="margin-top: 12px;">
                                     <Hr />
-                                </BoxComponent>
-                            </BoxComponent>
+                                </div>
+                            </div>
                             }
                         }
                     )
                 }
-                </BoxComponent>
-            </BoxComponent>
-        </BoxComponent>
+                </div>
+            </div>
+        </div>
     }
 }
 
@@ -55,33 +54,33 @@ pub fn articles(ArticlesProps { articles }: &ArticlesProps) -> Html {
 #[function_component(Articles)]
 pub fn articles(ArticlesProps { articles }: &ArticlesProps) -> Html {
     html! {
-        <BoxComponent display="flex" justify_content="center" flex="0">
-            <BoxComponent flex="1" max_width="1024px">
-                <BoxComponent align_items="center" flex="1" display="flex" mb="24px">
+        <div style="display: flex; justify-content: center; flex: 0;">
+            <div style="flex: 1; max-width: 1024px;">
+                <div style="align-items: center; display: flex; margin-bottom: 24px;">
                     <Text variant={TextVariant::Heading} value="/articles" />
                     <RouterAnchor<AppRoute> route=AppRoute::NewArticle>
-                        <BoxComponent align_items="center" position="relative" display="flex">
-                            <BoxComponent width="42px" height="42px" display="flex" justify_content="center" ml="8px" align_items="center" cursor="pointer">
+                        <div style="align-items: center; position: relative; display: flex;">
+                            <div style="width: 42px; height: 42px; display: flex; justify-content: center; margin-left: 8px; align-items: center; cursor: pointer;">
                                 <i style="font-size: 1rem" class="fa fa-plus"></i>
-                            </BoxComponent>
-                        </BoxComponent>
+                            </div>
+                        </div>
                     </RouterAnchor<AppRoute>>
-                </BoxComponent>
+                </div>
                 {for articles.iter().map(move |(_, article)| {
                     html! {
-                        <BoxComponent mb="12px">
-                            <BoxComponent align_items="center">
+                        <div style="margin-bottom: 12px;">
+                            <div style="align-items: center;">
                                 <ArticleCard article={article} />
-                            </BoxComponent>
-                            <BoxComponent mt="12px">
+                            </div>
+                            <div style="margin-top: 12px;">
                                  <Hr />
-                            </BoxComponent>
-                        </BoxComponent>
+                            </div>
+                        </div>
                           }
                        }
                    )
                 }
-            </BoxComponent>
-        </BoxComponent>
+            </div>
+        </div>
     }
 }

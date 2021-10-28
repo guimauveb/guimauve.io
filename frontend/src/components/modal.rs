@@ -1,5 +1,5 @@
 use {
-    crate::components::{box_component::BoxComponent, button::Button},
+    crate::components::button::Button,
     yew::{html, Callback, Html, MouseEvent, Properties},
     yew_functional::function_component,
 };
@@ -26,16 +26,16 @@ pub fn modal(
     html! {
       <div class="modal-container" style="--m-background: hsla(0, 0%, 0%, .4);">
           <div class="modal">
-              <BoxComponent display="flex" flex="0" justify_content="space-between" mb="8px" >
+              <div style="display: flex; flex: 0; justify-content: space-between; margin-bottom: 8px;">
                   {title.clone()}
-                  <BoxComponent height="32px">
+                  <div style="height: 32px;">
                       <Button onclick={onclose} icon_name="fa fa-times" />
-                  </BoxComponent>
-                </BoxComponent>
+                  </div>
+                </div>
                 {body.clone()}
-                <BoxComponent display="flex" justify_content="flex-end" mt="24px">
+                <div style="display: flex; justify-content: flex-end; margin-top: 24px;">
                     <Button onclick={onclose} label="Close"/>
-                </BoxComponent>
+                </div>
             </div>
         </div>
     }

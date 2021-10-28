@@ -1,7 +1,6 @@
 use {
     crate::{
         components::{
-            box_component::BoxComponent,
             image::Image,
             tag_label::TagLabel,
             text::{Text, TextVariant},
@@ -27,28 +26,28 @@ pub struct ArticleCardProps {
 pub fn article_card(ArticleCardProps { article, on_click }: &ArticleCardProps) -> Html {
     let readable_date = format_date(&article.pub_date);
     html! {
-        <BoxComponent onclick={on_click}>
+        <div onclick={on_click}>
             <RouterAnchor<AppRoute> route=AppRoute::Article{id: article.id}>
-                <BoxComponent mb="8px">
+                <div style="margin-bottom: 8px;">
                     <Text as_element="h1" variant={TextVariant::Heading} value={&article.title} />
-                </BoxComponent>
-                <BoxComponent mt="8px" mb="8px">
+                </div>
+                <div style="margin-top: 8px; margin-bottom: 8px;">
                     {for article.tags.iter().map(move |tag| { html! { <TagLabel tag={&tag.label} /> } })}
-                </BoxComponent>
-                <BoxComponent mt="12px" mb="8px">
+                </div>
+                <div style="margin-top: 12px; margin-bottom: 8px;">
                     {match readable_date {
                         Ok(date) => html! {<Text value={&date}/>},
                         Err(_) => html! {<Text value="An error occured!"/>},
                     }}
-                </BoxComponent>
-                <BoxComponent mt="8px" mb="8px">
+                </div>
+                <div style="margin-top: 8px; margin-bottom: 8px;">
                     <Image src={&article.image} object_fit="cover" height="16em" />
-                </BoxComponent>
-                <BoxComponent mt="8px" mb="8px">
+                </div>
+                <div style="margin-top: 8px; margin-bottom: 8px;">
                     <Text value={&article.preview} />
-                </BoxComponent>
+                </div>
             </RouterAnchor<AppRoute>>
-        </BoxComponent>
+        </div>
     }
 }
 
@@ -57,20 +56,20 @@ pub fn article_card(ArticleCardProps { article, on_click }: &ArticleCardProps) -
 pub fn article_card(ArticleCardProps { article, on_click }: &ArticleCardProps) -> Html {
     let readable_date = format_date(&article.pub_date);
     html! {
-        <BoxComponent onclick={on_click}>
+        <div onclick={on_click}>
             <RouterAnchor<AppRoute> route=AppRoute::Article{id: article.id}>
-                <BoxComponent mb="8px">
+                <div style="margin-bottom: 8px;">
                     <Text as_element="h1" variant={TextVariant::Heading} value={&article.title} />
-                </BoxComponent>
-                <BoxComponent mt="8px" mb="8px">
+                </div>
+                <div style="margin-top: 8px; margin-bottom: 8px;">
                     {for article.tags.iter().map(move |tag| { html! { <TagLabel tag={&tag.label} /> } })}
-                </BoxComponent>
-                <BoxComponent mt="12px" mb="8px" display="flex" justify_content="space-between">
+                </div>
+                <div style="margin-top: 12px; margin-bottom: 8px; display: flex; justify-content: space-between;">
                     {match readable_date {
                         Ok(date) => html! {<Text value={&date}/>},
                         Err(_) => html! {<Text value="An error occured!"/>},
                     }}
-                    <BoxComponent font_size="1.2rem">
+                    <div font_size="1.2rem">
                         {if article.published {
                             html! {
                                 <i class="fa fa-eye"/>
@@ -80,15 +79,15 @@ pub fn article_card(ArticleCardProps { article, on_click }: &ArticleCardProps) -
                                 <i class="fa fa-eye-slash"/>
                             }
                         }}
-                    </BoxComponent>
-                </BoxComponent>
-                <BoxComponent mt="8px" mb="8px">
+                    </div>
+                </div>
+                <div style="margin-top: 8px; margin-bottom: 8px;">
                     <Image src={&article.image} object_fit="cover" height="16em" />
-                </BoxComponent>
-                <BoxComponent mt="8px" mb="8px">
+                </div>
+                <div style="margin-top: 8px; margin-bottom: 8px;">
                     <Text value={&article.preview} />
-                </BoxComponent>
+                </div>
             </RouterAnchor<AppRoute>>
-        </BoxComponent>
+        </div>
     }
 }

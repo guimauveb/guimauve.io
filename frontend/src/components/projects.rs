@@ -1,7 +1,6 @@
 use {
     crate::{
         components::{
-            box_component::BoxComponent,
             hr::Hr,
             loader::Loader,
             project::Project,
@@ -79,46 +78,46 @@ pub fn projects(
     );
 
     html! {
-        <BoxComponent display="flex" justify_content="center" flex="1">
-            <BoxComponent flex="1" max_width="1024px">
-                <BoxComponent>
+        <div style="display: flex; justify-content: center; flex: 1;">
+            <div style="flex: 1; max-width: 1024px;">
+                <div>
                     <Text variant={TextVariant::Heading} value="/projects" />
-                    <BoxComponent mb="24px" mt="24px">
+                    <div style="margin-bottom: 24px; margin-top: 24px;">
                         <Text value="I believe building projects is the best way to learn a new technology. Here are some of mine." />
-                    </BoxComponent>
-                    <BoxComponent mb="16px">
+                    </div>
+                    <div style="margin-bottom: 16px;">
                         <Hr />
-                    </BoxComponent>
+                    </div>
                     {for projects_by_category.iter().map(move |(category, projects): (&ProjectCategory, &Vec<IProject>)| {
                         html! {
                             <>
-                                <BoxComponent mt="4px" mb="16px">
+                                <div style="margin-top: 4px; margin-bottom: 16px;">
                                     <Text as_element="h2" value={category.to_string()} font_weight="bold" />
-                                </BoxComponent>
+                                </div>
                                 {for projects.iter().map(move |project| { html! { <Project project={project} /> } })}
                             </>
                         }
                     })}
                     {if *is_loading {
                     html! {
-                        <BoxComponent align_items="center" justify_content="center" display="flex" mt="24px" mb="24px">
+                        <div style="align-items: center; justify-content: center; display: flex; margin-top: 24px; margin-bottom: 24px;">
                             <Loader />
-                        </BoxComponent>
+                        </div>
                     }
                     } else {
                         html! {}
                     }}
-                    <BoxComponent>
-                        <BoxComponent display="flex" justify_content="center" mt="12px" mb="12px">
+                    <div>
+                        <div style="display: flex; justify-content: center; margin-top: 12px; margin-bottom: 12px;">
                             <a target="_blank" href="https://www.github.com/guimauveb/">
-                                <BoxComponent display="flex" font_size="1.4em" mt="24px" mb="48px" align_items="center">
+                                <div style="display: flex; font_size: 1.4em; margin-top: 24px; margin-bottom: 48px; align-items: center;">
                                     <Text value="See more projects on " /><i class="fa fa-github"/>
-                                </BoxComponent>
+                                </div>
                             </a>
-                        </BoxComponent>
-                    </BoxComponent>
-                </BoxComponent>
-            </BoxComponent>
-        </BoxComponent>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     }
 }

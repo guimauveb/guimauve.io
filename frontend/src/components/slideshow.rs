@@ -1,5 +1,5 @@
 use {
-    crate::components::{box_component::BoxComponent, button::Button, image::Image},
+    crate::components::{button::Button, image::Image},
     yew::{html, Callback, Properties},
     yew_functional::function_component,
 };
@@ -22,12 +22,12 @@ pub fn slideshow(
     }: &SlideshowProps,
 ) -> Html {
     html! {
-        <BoxComponent display="flex" justify_content="center" max_height="32rem">
+        <div style="display: flex; justify-content: center; max-height: 32rem;">
             <Image src={selected_image} width="75%" object_fit="contain"/>
             {if *slideshow_length > 1 {
                 html! {
                     <>
-                        <BoxComponent position="absolute" top="50%" left="2em">
+                        <div style="position: absolute; top: 50%; left: 2em;">
                             <Button
                                 icon_name="fa fa-chevron-left"
                                 onclick={
@@ -42,8 +42,8 @@ pub fn slideshow(
                                     })
                                 }
                             />
-                        </BoxComponent>
-                        <BoxComponent position="absolute" top="50%" right="2em">
+                        </div>
+                        <div style="position: absolute; top: 50%; right: 2em;">
                             <Button
                                 icon_name="fa fa-chevron-right"
                                 onclick={
@@ -58,12 +58,12 @@ pub fn slideshow(
                                      })
                                 }
                             />
-                        </BoxComponent>
+                        </div>
                     </>
                 }
             } else {
                 html! {}
             }}
-        </BoxComponent>
+        </div>
     }
 }

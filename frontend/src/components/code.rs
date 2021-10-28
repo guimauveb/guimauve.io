@@ -1,5 +1,4 @@
 use {
-    crate::components::box_component::BoxComponent,
     yew::{html, Callback, Html, MouseEvent, Properties},
     yew_functional::function_component,
 };
@@ -27,8 +26,8 @@ pub fn code(
     }: &CodeProps,
 ) -> Html {
     html! {
-        <BoxComponent flex="1" overflow_x="hidden" onclick=onclick>
+        <div style="flex: 1; overflow-x: hidden;" onclick=onclick>
             {highlight_code_in_html(highlighted_code)}
-        </BoxComponent>
+        </div>
     }
 }

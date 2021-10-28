@@ -1,7 +1,6 @@
 use {
     crate::{
         components::{
-            box_component::BoxComponent,
             navlink::NavLink,
             text::{Text, TextVariant},
         },
@@ -87,27 +86,27 @@ pub fn navlinks(_: &NavLinksProps) -> Html {
 
     html! {
         <>
-            <BoxComponent display="flex" flex="0">
+            <div style="display: flex; flex: 0;">
                 <RouterAnchor<AppRoute> route={AppRoute::Home}>
                     <NavLink label="guimauve" />
                 </RouterAnchor<AppRoute>>
                 {if is_error {
                     html! {
-                        <BoxComponent display="flex" flex="1" ml="12px" align_items="center" justify_content="center" >
+                        <div style="display: flex; flex: 1; margin-left: 12px; align-items: center; justify-content: center;" >
                             <i style="color: rgb(178, 34, 34);" class="fa fa-exclamation-triangle"></i>
-                            <BoxComponent ml="8px" align_items="baseline">
+                            <div style="margin-left: 8px; align-items: baseline;">
                                 <Text variant={TextVariant::Caption} value="Error" />
-                            </BoxComponent>
-                        </BoxComponent>
+                            </div>
+                        </div>
                     }
                 } else {
                     html! {}
                 }}
-            </BoxComponent>
-            <BoxComponent display="flex" flex="1" justify_content="center">
+            </div>
+            <div style="display: flex; flex: 1; justify-content: center;">
                 {for nav_links.iter().map(|nav_link| {
                     html! {
-                        <BoxComponent ml="2px" mr="2px">
+                        <div style="margin-left: 2px; margin-right: 2px;">
                             {match &nav_link.route {
                                 Some(route) => html! {
                                     <RouterAnchor<AppRoute> route={route}>
@@ -145,11 +144,11 @@ pub fn navlinks(_: &NavLinksProps) -> Html {
                                     }
                                 }
                             }
-                        </BoxComponent>
+                        </div>
                         }
                     })
                 }
-            </BoxComponent>
+            </div>
         </>
     }
 }

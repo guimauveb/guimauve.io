@@ -11,7 +11,7 @@ use {
 
 #[cfg(feature = "editable")]
 use {
-    crate::components::{box_component::BoxComponent, text::Text},
+    crate::components::text::Text,
     std::collections::HashMap,
     yew_functional::{use_effect_with_deps, use_state},
 };
@@ -164,30 +164,20 @@ pub fn chapters(
                             },
                             Some(false) => {
                                 html! {
-                                    <BoxComponent
-                                        flex="1"
-                                        display="flex"
-                                        justify_content="flex-end"
-                                        align_items="center"
-                                    >
-                                        <BoxComponent
+                                    <div
+                                        style="flex: 1; display: flex; justify-content: flex-end; align-items:center;">
+                                        <div
                                             onclick={
                                                 let (chapter_index, on_display_new_chapter) = (chapter.index, on_display_new_chapter.clone());
                                                 Callback::from(move|_| on_display_new_chapter.emit((chapter_index, true)))
                                             }
-                                            display="flex"
-                                            align_items="center"
-                                            cursor="pointer"
-                                            position="relative"
-                                            right="-64px"
-                                            height="42px"
-                                        >
+                                            style="display: flex; align-items:center; cursor: pointer;position: relative; right: -64px; height: 42px;">
                                             <i class="fa fa-plus"></i>
-                                            <BoxComponent ml="8px">
+                                            <div style="margin-left: 8px;">
                                                 <Text value="Chapter" />
-                                            </BoxComponent>
-                                        </BoxComponent>
-                                    </BoxComponent>
+                                            </div>
+                                        </div>
+                                    </div>
                                 }
                             }
                             None => html! {}
@@ -233,30 +223,20 @@ pub fn chapters(
                 },
                 Some(false) => {
                     html! {
-                        <BoxComponent
-                            flex="1"
-                            display="flex"
-                            justify_content="flex-end"
-                            align_items="center"
-                            >
-                                <BoxComponent
+                        <div
+                            style="flex: 1; display: flex; justify-content: flex-end; align-items: center;">
+                                <div
                                     onclick={
                                         let on_display_new_chapter = on_display_new_chapter.clone();
                                         Callback::from(move|_| on_display_new_chapter.emit((chapters_length, true)))
                                     }
-                                    display="flex"
-                                    align_items="center"
-                                    cursor="pointer"
-                                    position="relative"
-                                    right="-64px"
-                                    height="42px"
-                                >
+                                    style="display: flex; align-items:center; cursor: pointer; position: relative; right: -64px; height: 42px;">
                                     <i class="fa fa-plus"></i>
-                                    <BoxComponent ml="8px">
+                                    <div style="margin-left: 8px;">
                                         <Text value="Chapter" />
-                                    </BoxComponent>
-                                </BoxComponent>
-                            </BoxComponent>
+                                    </div>
+                                </div>
+                            </div>
                     }
                 },
                 None => html! {}

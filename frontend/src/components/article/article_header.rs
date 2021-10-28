@@ -1,7 +1,6 @@
 use {
     crate::{
         components::{
-            box_component::BoxComponent,
             image::Image,
             tag_label::TagLabel,
             text::{Text, TextVariant},
@@ -49,24 +48,24 @@ pub struct ArticleHeaderProps {
 pub fn article_header(ArticleHeaderProps { article_header, .. }: &ArticleHeaderProps) -> Html {
     html! {
         <>
-            <BoxComponent mb="8px">
+            <div style="margin-bottom: 8px;">
                     <Text as_element="h1" variant={TextVariant::Heading} value={&article_header.title} />
-            </BoxComponent>
-            <BoxComponent mt="8px" mb="8px">
+            </div>
+            <div style="margin-top: 8px; margin-bottom: 8px;">
                 {for article_header.tags.iter().map(move |tag| html! { <TagLabel tag={&tag.label} /> })}
-            </BoxComponent>
-            <BoxComponent mt="12px" mb="12px">
+            </div>
+            <div style="margin-top: 12px; margin-bottom: 12px;">
                 {match format_date(&article_header.pub_date) {
                     Ok(date) => html! {<Text value={&date}/>},
                     Err(_) => html! {<Text value="An error occured!"/>},
                 }}
-            </BoxComponent>
-            <BoxComponent mt="8px" mb="8px">
+            </div>
+            <div style="margin-top: 8px; margin-bottom: 8px;">
                 <Image src={&article_header.image} object_fit="cover" />
-            </BoxComponent>
-            <BoxComponent mt="8px" mb="8px">
+            </div>
+            <div style="margin-top: 8px; margin-bottom: 8px;">
                 <Text as_element="h3" value={&article_header.preview} variant={TextVariant::Comment} />
-            </BoxComponent>
+            </div>
         </>
     }
 }
@@ -284,115 +283,91 @@ pub fn article_header(
                 true => html! {
                     <>
                         <TextEditor rows={2} data={&form.title} onchange={on_change_title} />
-                        <BoxComponent display="flex" mt="4px" mb="4px" justify_content="flex-end" font_size=".8em">
+                        <div style="display: flex; margin-top: 4px; margin-bottom: 4px; justify-content: flex-end; font-size: .8em;">
                             <>
                                 <Button onclick={&on_cancel_edit_title} label="Cancel"/>
                                 <Button onclick={&on_save_article_header} label="Save"/>
                             </>
-                        </BoxComponent>
+                        </div>
                     </>
                     },
                     false => html! {
-                        <BoxComponent align_items="center" position="relative" display="flex" mt="8px" mb="8px">
-                            <BoxComponent
+                        <div style="align-items: center; position: relative; display: flex; margin-top: 8px; margin-bottom: 8px;">
+                            <div
                                 onclick={&on_edit_title}
-                                width="42px"
-                                height="42px"
-                                display="flex"
-                                justify_content="center"
-                                align_items="center"
-                                position="absolute"
-                                right="-78px"
-                                cursor="pointer"
-                            >
+                                style="width:42px; height:42px; display: flex; justify-content: center; align-items:center; position: absolute; right: -78px; cursor: pointer;">
                                 <i class="fa fa-edit"></i>
-                            </BoxComponent>
+                            </div>
                             <Text as_element="h1" variant={TextVariant::Heading} value={&article_header.title} />
-                        </BoxComponent>
+                        </div>
                         }
                 }
             }
-            <BoxComponent mt="4px" mb="4px">
+            <div style="margin-top: 4px; margin-bottom: 4px;">
                 {for article_header.tags.iter().map(move |tag| {
                     html! { <TagLabel tag={&tag.label} /> }
                 })}
-            </BoxComponent>
-            <BoxComponent display="flex" mt="8px" mb="12px">
+            </div>
+            <div style="display: flex; margin-top: 8px; margin-bottom: 12px;">
                 <Text value={readable_date}/>
-            </BoxComponent>
-            <BoxComponent>
+            </div>
+            <div>
                 {match *is_image_edited {
                     true => html! {
                         <>
                             <TextEditor rows={1} data={&form.image} onchange={on_change_image} />
-                            <BoxComponent display="flex" mt="4px" mb="4px" justify_content="flex-end" font_size=".8em">
+                            <div style="display: flex; margin-top: 4px; margin-bottom: 4px; justify-content: flex-end; font-size: .8em;">
                             <>
                                 <Button onclick={&on_cancel_edit_image} label="Cancel"/>
                                 <Button onclick={&on_save_article_header} label="Save"/>
                             </>
-                            </BoxComponent>
+                            </div>
                         </>
                     },
                     false => {
                         html! {
-                            <BoxComponent align_items="center" position="relative" display="flex" mt="8px" mb="8px">
-                               <BoxComponent
+                            <div style="align-items: center; position: relative; display: flex; margin-top: 8px; margin-bottom: 8px;">
+                               <div
                                     onclick={on_edit_image}
-                                    width="42px"
-                                    height="42px"
-                                    display="flex"
-                                    justify_content="center"
-                                    align_items="center"
-                                    position="absolute"
-                                    right="-78px"
-                                    cursor="pointer"
-                                >
+                                    style="width:42px; height:42px; display: flex; justify-content: center; align-items:center; position: absolute; right: -78px; cursor: pointer;">
                                     <i class="fa fa-edit"></i>
-                                </BoxComponent>
+                                </div>
                                 <Image src={&article_header.image} width="100%" />
-                            </BoxComponent>
+                            </div>
                         }
                     }
                 }}
-            </BoxComponent>
-            <BoxComponent>
+            </div>
+            <div>
                 {match *is_preview_edited {
                     true => html! {
                         <>
                             <TextEditor rows={2} data={&form.preview} onchange={&on_change_preview} />
-                            <BoxComponent display="flex" mt="4px" mb="4px" justify_content="flex-end" font_size=".8em">
+                            <div style="display: flex; margin-top: 4px; margin-bottom: 4px; justify-content: flex-end; font-size: .8em;">
                             <>
                                 <Button onclick={&on_cancel_edit_preview} label="Cancel"/>
                                 <Button onclick={&on_save_article_header} label="Save"/>
                             </>
-                            </BoxComponent>
+                            </div>
                         </>
                     },
                     false => html! {
-                        <BoxComponent align_items="center" position="relative" display="flex" mt="8px" mb="8px">
-                            <BoxComponent
+                        <div style="align-items: center; position: relative; display: flex; margin-top: 8px; margin-bottom: 8px;">
+                            <div
                                 onclick={on_edit_preview}
-                                width="42px"
-                                height="42px"
-                                display="flex"
-                                justify_content="center"
-                                align_items="center"
-                                position="absolute"
-                                right="-78px"
-                                cursor="pointer"
-                            >
+                                style="width:42px; height:42px; display: flex; justify-content: center; align-items:center; position: absolute; right: -78px; cursor: pointer;">
                                 <i class="fa fa-edit"></i>
-                            </BoxComponent>
+                            </div>
                         <Text as_element="h3" value={&article_header.preview} variant={TextVariant::Comment} />
-                        </BoxComponent>
+                        </div>
                         }
                 }}
-            </BoxComponent>
+            </div>
             {if *is_loading {
                 html! {
-                    <BoxComponent align_items="center" justify_content="center" display="flex" mt="48px">
+                    <div style="align-items: center; justify-content: center; display: flex; margin-top: 48px;">
                         <Loader />
-                    </BoxComponent>
+                    </div>
                 }
             } else {
                 html! {}

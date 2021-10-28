@@ -1,10 +1,7 @@
 use {
     super::contents::Contents,
     crate::{
-        components::{
-            box_component::BoxComponent,
-            text::{Text, TextVariant},
-        },
+        components::text::{Text, TextVariant},
         entities::{
             action::Action,
             interfaces::{IArticle, IChapter},
@@ -56,9 +53,9 @@ pub struct ChapterProps {
 pub fn chapter(ChapterProps { chapter, .. }: &ChapterProps) -> Html {
     html! {
         <>
-            <BoxComponent align_items="center" position="relative" display="flex" mt="8px" mb="8px">
+            <div style="align-items: center; position: relative; display: flex; margin-top: 8px; margin-bottom: 8px;">
                 <Text variant={TextVariant::ArticleChapter} as_element="h2" value={&chapter.title} />
-            </BoxComponent>
+            </div>
             <Contents contents={Rc::new(chapter.contents.clone())} />
         </>
     }
@@ -302,12 +299,12 @@ pub fn chapter(
     };
 
     html! {
-        <BoxComponent>
+        <div>
             {match *edited {
                 true => html! {
-                    <BoxComponent>
+                    <div>
                         <TextEditor rows={2} data={&*chapter_title} onchange={on_change_chapter_title} />
-                        <BoxComponent display="flex" mt="4px" mb="4px" justify_content="flex-end" font_size=".8em">
+                        <div style="display: flex; margin-top: 4px; margin-bottom: 4px; justify-content: flex-end; font-size: .8em;">
                         {match action {
                             Action::Edit => html! {
                                 <Button variant={ButtonVariant::Danger} onclick={&on_delete_chapter} label="Delete"/>
@@ -316,33 +313,25 @@ pub fn chapter(
                         }}
                             <Button onclick={on_cancel_edit} label="Cancel"/>
                             <Button onclick={on_save_chapter} label="Save"/>
-                        </BoxComponent>
-                    </BoxComponent>
+                        </div>
+                    </div>
                 },
                 false => html! {
-                    <BoxComponent align_items="center" position="relative" display="flex" mt="8px" mb="8px">
-                        <BoxComponent
+                    <div style="align-items: center; position: relative; display: flex; margin-top: 8px; margin-bottom: 8px;">
+                        <div
                             onclick={on_edit_chapter}
-                            width="42px"
-                            height="42px"
-                            display="flex"
-                            justify_content="center"
-                            align_items="center"
-                            position="absolute"
-                            right="-78px"
-                            cursor="pointer"
-                        >
+                            style="width:42px; height:42px; display: flex; justify-content: center; align-items: center; position: absolute; right:-78px; cursor: pointer;">
                             <i class="fa fa-edit"></i>
-                        </BoxComponent>
+                        </div>
                         <Text variant={TextVariant::ArticleChapter} as_element="h2" value={&chapter.title} />
-                    </BoxComponent>
+                    </div>
                     }
             }}
             {if *is_loading {
                 html! {
-                    <BoxComponent align_items="center" justify_content="center" position="relative" display="flex">
+                    <div style="align-items: center; justify-content: center; position: relative; display: flex;">
                         <Loader />
-                    </BoxComponent>
+                    </div>
                 }
             } else {
                 html! {}
@@ -356,6 +345,6 @@ pub fn chapter(
                 dispatch_article={dispatch_article}
                 dispatch_error={dispatch_error}
             />
-        </BoxComponent>
+        </div>
     }
 }

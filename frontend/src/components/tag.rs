@@ -1,7 +1,6 @@
 use {
     crate::{
         components::{
-            box_component::BoxComponent,
             loader::Loader,
             results::Results,
             text::{Text, TextVariant},
@@ -118,12 +117,12 @@ pub fn tag(
     };
 
     html! {
-        <BoxComponent display="flex" justify_content="center" flex="1">
-            <BoxComponent flex="1" max_width="1024px">
-                <BoxComponent>
-                    <BoxComponent align_items="center" display="flex" mb="24px">
+        <div style="display: flex; justify-content: center; flex: 1;">
+            <div style="flex: 1; max-width: 1024px;">
+                <div>
+                    <div style="align-items: center; display: flex; margin-bottom: 24px;">
                         <Text variant={TextVariant::Heading} value={"/tags/".to_owned() + tag}/>
-                    </BoxComponent>
+                    </div>
                     <Results
                         articles={articles}
                         articles_count={articles_count}
@@ -131,17 +130,17 @@ pub fn tag(
                         projects_count={projects_count}
                         is_loading={*is_loading}
                     />
-                </BoxComponent>
+                </div>
                 {if *is_loading {
                     html! {
-                        <BoxComponent align_items="center" justify_content="center" display="flex" mt="24px" mb="24px">
+                        <div style="align-items: center; justify-content: center; display: flex; margin-top: 24px; margin-bottom: 24px;">
                             <Loader />
-                        </BoxComponent>
+                        </div>
                     }
                 } else {
                     html! {}
                 }}
-            </BoxComponent>
-        </BoxComponent>
+            </div>
+        </div>
     }
 }

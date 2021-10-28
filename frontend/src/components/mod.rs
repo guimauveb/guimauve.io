@@ -1,5 +1,4 @@
 pub mod article;
-pub mod box_component;
 pub mod button;
 pub mod checkbox;
 pub mod code;

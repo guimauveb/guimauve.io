@@ -1,9 +1,8 @@
 use {
     super::{article_header::ArticleHeader, chapters::Chapters},
-    crate::{
-        components::box_component::BoxComponent,
-        entities::action::Action,
-        entities::interfaces::{IArticle, IArticleHeader},
+    crate::entities::{
+        action::Action,
+        interfaces::{IArticle, IArticleHeader},
     },
     std::rc::Rc,
     yew::{html, Callback, Properties},
@@ -43,10 +42,10 @@ pub struct ArticleProps {
 #[function_component(Article)]
 pub fn article(ArticleProps { article, .. }: &ArticleProps) -> Html {
     html! {
-        <BoxComponent display="flex" flex="1">
-            <BoxComponent flex="1" />
-            <BoxComponent display="flex" max_width="1024px" flex="1 0 100%">
-                <BoxComponent flex="1" flex_direction="column">
+        <div style="display: flex; flex: 1;">
+            <div style="flex: 1" />
+            <div style="max-width: 1024px; flex: 1 0 100%;">
+                <div style="flex: 1; flex-direction: column;">
                     <ArticleHeader
                         article_header={
                             Rc::new( // TODO - Use IArticleHeader inside IArticle
@@ -62,17 +61,17 @@ pub fn article(ArticleProps { article, .. }: &ArticleProps) -> Html {
                             )
                         }
                     />
-                    <BoxComponent>
+                    <div>
                         <Chapters
                             chapters={Rc::new(article.chapters.clone())}
                             article_id={article.id} />
-                    </BoxComponent>
-                </BoxComponent>
-            </BoxComponent>
-            <BoxComponent flex="1">
+                    </div>
+                </div>
+            </div>
+            <div style="flex: 1;">
                 // TODO - Chapters 'pop up' component!
-            </BoxComponent>
-        </BoxComponent>
+            </div>
+        </div>
     }
 }
 
@@ -193,47 +192,39 @@ pub fn article(
     };
 
     html! {
-        <BoxComponent display="flex" flex="1">
-            <BoxComponent flex="1" />
-            <BoxComponent display="flex" max_width="1024px" flex="1 0 100%">
-                <BoxComponent flex="1" flex_direction="column">
-                    <BoxComponent align_items="center" position="relative" display="flex" mt="8px" mb="24px">
+        <div style="display: flex; flex: 1;">
+            <div style="flex: 1;" />
+            <div style="max-width: 1024px; flex: 1 0 100%;">
+                <div style="flex: 1; flex-direction: column;">
+                    <div style="align-items: center; position: relative; display: flex; margin-top: 8px; margin-bottom: 24px;">
                         {match article_action {
                             Action::Edit => html! {
-                                <BoxComponent
+                                <div
                                     onclick={on_delete_article}
-                                    width="42px"
-                                    height="42px"
-                                    display="flex"
-                                    justify_content="center"
-                                    align_items="center"
-                                    position="absolute"
-                                    right="-48px"
-                                    cursor="pointer"
-                                    >
+                                    style="width: 42px; height: 42px; display: flex; justify-content: center; align-items:center; position: absolute; right: -48px; cursor: pointer;">
                                         <i class="fa fa-trash"></i>
-                                    <BoxComponent ml="8px">
+                                    <div style="margin-left: 8px;">
                                         <Text value="Delete" />
-                                    </BoxComponent>
-                                </BoxComponent>
+                                    </div>
+                                </div>
                             },
                             Action::Add => html! {
-                                <BoxComponent display="flex" justify_content="center" align_items="center" font_size=".8em" position="absolute" right="-64px">
+                                <div style="display: flex; justify-content: center; align-items: center; font-size: .8em; position: absolute; right: -64px;">
                                     <Button onclick={on_cancel} label="Cancel"/>
                                     <Button onclick={on_submit_article} label="Save"/>
-                                </BoxComponent>
+                                </div>
                             }
                         }}
-                        <BoxComponent display="flex" align_items="center">
-                            <BoxComponent mr="12px">
+                        <div style="display: flex; align-items: center;">
+                            <div style="margin-right: 12px;">
                                 <Text value="Publish" />
-                            </BoxComponent>
+                            </div>
                             <Switch
                                 on={*published}
                                 onchange={on_publish_article}
                             />
-                        </BoxComponent>
-                    </BoxComponent>
+                        </div>
+                    </div>
                     <ArticleHeader
                         article_action={article_action}
                         article_header={
@@ -252,7 +243,7 @@ pub fn article(
                         dispatch_article={dispatch_article}
                         dispatch_error={dispatch_error}
                     />
-                    <BoxComponent>
+                    <div>
                         <Chapters
                             chapters={Rc::new(article.chapters.clone())}
                             article_action={article_action}
@@ -260,21 +251,21 @@ pub fn article(
                             dispatch_article={dispatch_article}
                             dispatch_error={dispatch_error}
                         />
-                    </BoxComponent>
+                    </div>
                     {if *is_loading {
                         html! {
-                           <BoxComponent align_items="center" justify_content="center" display="flex" mt="24px" mb="24px">
+                           <div style="align-items: center; justify-content: center; display: flex; margin-top: 24px; margin-bottom: 24px;">
                                <Loader />
-                           </BoxComponent>
+                           </div>
                                 }
                     } else {
                         html! {}
                     }}
-                </BoxComponent>
-            </BoxComponent>
-            <BoxComponent flex="1">
+                </div>
+            </div>
+            <div style="flex: 1;">
                 // TODO - Chapters 'pop up' component!
-            </BoxComponent>
-        </BoxComponent>
+            </div>
+        </div>
     }
 }

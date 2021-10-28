@@ -1,7 +1,7 @@
 #[cfg(feature = "editable")]
 use {
     crate::{
-        components::{box_component::BoxComponent, tag_label::TagLabel, text::Text},
+        components::{tag_label::TagLabel, text::Text},
         entities::interfaces::IProject,
     },
     yew::{html, Properties},
@@ -18,33 +18,33 @@ pub struct ResumeProjectProps {
 #[function_component(ResumeProject)]
 pub fn resume_project(ResumeProjectProps { project }: &ResumeProjectProps) -> Html {
     html! {
-        <BoxComponent display="flex" flex="1" font_size="0.8em" flex_direction="column" mb="12px">
-            <BoxComponent display="flex" flex="1">
-                <BoxComponent display="flex" flex="1" flex_direction="column">
-                    <BoxComponent mb="4px">
+        <div style="display: flex; flex: 1; font-size= 0.8em; flex-direction: column; margin-bottom: 12px;">
+            <div style="display: flex; flex: 1;">
+                <div style="display: flex; flex: 1; flex-direction: column;">
+                    <div style="margin-bottom: 4px;">
                         <Text font_weight="bold" value={&project.title} as_element="h3" font_size="1.rem"/>
-                    </BoxComponent>
-                    <BoxComponent display="flex" flex="1" mt="4px">
-                        <BoxComponent display="flex" flex="1 1 20%" mr="8px">
+                    </div>
+                    <div style="display: flex; flex: 1; margin-top: 4px;">
+                        <div style="display: flex; flex: 1 1 20%; margin-right: 8px;">
                             <Text white_space="pre-line" value={&project.description} />
-                        </BoxComponent>
-                        <BoxComponent display="flex" flex="1 1 20%" flex_direction="column" mr="8px">
-                            <BoxComponent mb="8px">
+                        </div>
+                        <div style="display: flex; flex: 1 1 20%; flex-direction: column; margin-right: 8px;">
+                            <div style="margin-bottom: 8px;">
                                 <Text value="Features" />
-                            </BoxComponent>
+                            </div>
                             <Text white_space="pre-line" value={&project.features} />
-                        </BoxComponent>
-                        <BoxComponent display="flex" flex="1" flex_direction="column">
-                            <BoxComponent mb="8px">
+                        </div>
+                        <div style="display: flex; flex: 1; flex-direction: column;">
+                            <div style="margin-bottom: 8px;">
                                 <Text value="Technologies" />
-                            </BoxComponent>
-                            <BoxComponent>
+                            </div>
+                            <div>
                                 {for project.tags.iter().map(|tag| html! {<TagLabel tag={&tag.label}/>})}
-                            </BoxComponent>
-                        </BoxComponent>
-                    </BoxComponent>
-                </BoxComponent>
-            </BoxComponent>
-        </BoxComponent>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     }
 }

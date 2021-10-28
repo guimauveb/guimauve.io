@@ -11,7 +11,7 @@ use {
 
 #[cfg(feature = "editable")]
 use {
-    crate::components::{box_component::BoxComponent, text::Text},
+    crate::components::text::Text,
     std::collections::HashMap,
     yew_functional::{use_effect_with_deps, use_state},
 };
@@ -167,30 +167,20 @@ pub fn contents(
                             },
                             Some(false) => {
                                 html! {
-                                    <BoxComponent
-                                        flex="1"
-                                        display="flex"
-                                        justify_content="flex-end"
-                                        align_items="center"
-                                    >
-                                        <BoxComponent
+                                    <div
+                                        style="flex: 1; display: flex; justify-content: flex-end; align-items:center;">
+                                        <div
                                             onclick={
                                                 let (content_index, on_display_new_content) = (content.index, on_display_new_content.clone());
                                                 Callback::from(move|_| on_display_new_content.emit((content_index, true)))
                                             }
-                                            display="flex"
-                                            align_items="center"
-                                            cursor="pointer"
-                                            position="relative"
-                                            right="-64px"
-                                            height="42px"
-                                        >
+                                            style="display: flex; align-items:center;cursor: pointer;position: relative; right: -64px; height: 42px">
                                             <i class="fa fa-plus"></i>
-                                            <BoxComponent ml="8px">
+                                            <div style="margin-left: 8px;">
                                                 <Text value="Content" />
-                                            </BoxComponent>
-                                        </BoxComponent>
-                                    </BoxComponent>
+                                            </div>
+                                        </div>
+                                    </div>
                                }
                            },
                             None => html! {}
@@ -236,30 +226,20 @@ pub fn contents(
                     },
                     Some(false) => {
                         html! {
-                            <BoxComponent
-                                flex="1"
-                                display="flex"
-                                justify_content="flex-end"
-                                align_items="center"
-                            >
-                                <BoxComponent
+                            <div
+                                style="flex: 1; display: flex; justify-content: flex-end; align-items:center;">
+                                <div
                                     onclick={
                                         let on_display_new_content = on_display_new_content.clone();
                                         Callback::from(move|_| on_display_new_content.emit((contents_length, true)))
                                     }
-                                    display="flex"
-                                    align_items="center"
-                                    cursor="pointer"
-                                    position="relative"
-                                    right="-64px"
-                                    height="42px"
-                                >
+                                    style="display: flex; align-items:center; cursor: pointer; position: relative; right: -64px; height: 42px;">
                                     <i class="fa fa-plus"></i>
-                                    <BoxComponent ml="8px">
+                                    <div style="margin-left: 8px;">
                                         <Text value="Content" />
-                                    </BoxComponent>
-                                </BoxComponent>
-                            </BoxComponent>
+                                    </div>
+                                </div>
+                            </div>
                         }
                     },
                     None => html! {}

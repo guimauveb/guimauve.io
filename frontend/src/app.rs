@@ -1,9 +1,6 @@
 use {
     crate::{
-        components::{
-            box_component::BoxComponent, footer::Footer, header::Header,
-            page_not_found::PageNotFound,
-        },
+        components::{footer::Footer, header::Header, page_not_found::PageNotFound},
         entities::interfaces::{IArticle, IProject, ITag, SearchResults},
         routes::{
             about::About, article::Article, articles::Articles, home::Home, projects::Projects,
@@ -83,9 +80,9 @@ pub fn app() -> Html {
 
     html! {
         <BlogStoreContextProvider context=store>
-            <BoxComponent display="flex" flex="1" flex_direction="column">
+            <div style="display: flex; flex: 1; flex-direction: column;">
                 <Header dispatch_search_results={dispatch_search_results} dispatch_error={&dispatch_error} />
-                <BoxComponent display="flex" flex="1">
+                <div style="display: flex; flex: 1;">
                     <Router<AppRoute, ()>
                         render = Router::render(move |route: AppRoute| {
                             match route {
@@ -149,9 +146,9 @@ pub fn app() -> Html {
                             AppRoute::PageNotFound(Permissive(Some(route.route)))
                         })
                     />
-                </BoxComponent>
+                </div>
                 <Footer />
-            </BoxComponent>
+            </div>
         </BlogStoreContextProvider>
     }
 }
