@@ -14,6 +14,8 @@ pub struct ImageProps {
     pub onclick: Callback<MouseEvent>,
     #[prop_or("inherit")]
     pub object_fit: &'static str,
+    #[prop_or_default]
+    pub style: &'static str,
 }
 
 #[function_component(Image)]
@@ -24,9 +26,10 @@ pub fn image(
         height,
         onclick,
         object_fit,
+        style,
     }: &ImageProps,
 ) -> Html {
     html! {
-        <img onclick={onclick} src={&src} style={format!("width: {}; height: {}; object-fit: {};", &width, &height, &object_fit)} />
+        <img onclick={onclick} src={&src} style={format!("width: {}; height: {}; object-fit: {}; {}", &width, &height, &object_fit, &style)} />
     }
 }

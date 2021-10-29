@@ -36,7 +36,7 @@ pub fn project(
         let set_gallery_modal = set_gallery_modal.clone();
         Callback::from(move |_| set_gallery_modal(true))
     };
-    let close_gallery_modal: Callback<MouseEvent> = {
+    let close_gallery_modal: Callback<()> = {
         let set_gallery_modal = set_gallery_modal;
         Callback::from(move |_| set_gallery_modal(false))
     };
@@ -110,6 +110,7 @@ pub fn project(
                                                 if *is_gallery_modal_open {
                                                     html! {
                                                         <Modal
+                                                            id={"project-".to_string() + &project.id.to_string() + "-gallery"}
                                                             title={html! {
                                                                 <div style="margin-bottom: 8px;">
                                                                     <Text variant={TextVariant::Heading} value={&project.title} />

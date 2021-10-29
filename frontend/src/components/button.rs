@@ -23,6 +23,8 @@ pub struct ButtonProps {
     pub onclick: Callback<MouseEvent>,
     #[prop_or_default]
     pub disabled: bool,
+    #[prop_or_default]
+    pub style: &'static str,
 }
 
 #[function_component(Button)]
@@ -33,10 +35,11 @@ pub fn button(
         label,
         onclick,
         disabled,
+        style,
     }: &ButtonProps,
 ) -> Html {
     let variant = match &variant {
-        ButtonVariant::Normal => "",
+        ButtonVariant::Normal => style,
         ButtonVariant::Plain => "background: rgb(221, 221, 221); color: #0d0d0d",
         ButtonVariant::Warning => "background: yellow",
         ButtonVariant::Danger => "background: #b30000",

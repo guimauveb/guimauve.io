@@ -22,14 +22,17 @@ pub fn navbar(
 ) -> Html {
     let (is_search_modal_open, sert_search_modal_open) = use_state(|| false);
 
-    let close_search_modal: Callback<MouseEvent> = {
+    let close_search_modal: Callback<()> = {
         let sert_search_modal_open = sert_search_modal_open.clone();
         Callback::from(move |_| sert_search_modal_open(false))
     };
     let open_search_modal: Callback<MouseEvent> =
         Callback::from(move |_| sert_search_modal_open(true));
 
-    let on_click_result: Callback<MouseEvent> = close_search_modal.clone();
+    let on_click_result: Callback<MouseEvent> = {
+        let close_search_modal = close_search_modal.clone();
+        Callback::from(move |_| close_search_modal.emit(()))
+    };
 
     html! {
             <div style="display: flex; flex: 1; justify-content: center; align-items: center; margin-top: 16px;">
@@ -43,7 +46,9 @@ pub fn navbar(
                 if *is_search_modal_open {
                     html! {
                         <Modal
-                            title={html! {
+                            id="search-modal"
+                            title={
+                                html! {
                                     <div style="display: flex; align-items: center;">
                                         <Text value="Search" />
                                     </div>

@@ -69,7 +69,7 @@ pub fn article_card(ArticleCardProps { article, on_click }: &ArticleCardProps) -
                         Ok(date) => html! {<Text value={&date}/>},
                         Err(_) => html! {<Text value="An error occured!"/>},
                     }}
-                    <div font_size="1.2rem">
+                    <div sytle="font-size: 1.2rem;">
                         {if article.published {
                             html! {
                                 <i class="fa fa-eye"/>

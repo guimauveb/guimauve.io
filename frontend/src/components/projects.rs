@@ -110,7 +110,7 @@ pub fn projects(
                     <div>
                         <div style="display: flex; justify-content: center; margin-top: 12px; margin-bottom: 12px;">
                             <a target="_blank" href="https://www.github.com/guimauveb/">
-                                <div style="display: flex; font_size: 1.4em; margin-top: 24px; margin-bottom: 48px; align-items: center;">
+                                <div style="display: flex; font-size: 1.4em; margin-top: 24px; margin-bottom: 48px; align-items: center;">
                                     <Text value="See more projects on " /><i class="fa fa-github"/>
                                 </div>
                             </a>

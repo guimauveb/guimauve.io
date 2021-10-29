@@ -23,8 +23,13 @@ version = "0.3.4"
 features = [
   "Document",
   "Element",
+  "Event",
+  "EventTarget",
   "HtmlCollection",
   "HtmlElement",
+  "HtmlHtmlElement",
+  "HtmlDivElement",
+  "HtmlImageElement",
   'Window',
   'ScrollToOptions',
   'HtmlDocument',
