@@ -12,7 +12,7 @@ table! {
         title -> Text,
         pub_date -> Timestamp,
         published -> Bool,
-        preview -> Text,
+        headline -> Text,
         image -> Text,
     }
 }

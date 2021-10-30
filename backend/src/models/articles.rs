@@ -59,7 +59,7 @@ pub struct Article {
     pub title: String,
     pub pub_date: chrono::NaiveDateTime,
     pub published: bool,
-    pub preview: String,
+    pub headline: String,
     pub image: String,
 }
 
@@ -67,7 +67,7 @@ pub struct Article {
 #[table_name = "articles"]
 pub struct NewArticleHeader<'a> {
     pub title: &'a str,
-    pub preview: &'a str,
+    pub headline: &'a str,
     pub published: bool,
     pub image: &'a str,
 }

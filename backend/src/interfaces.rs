@@ -70,7 +70,7 @@ pub struct IArticleHeader {
     pub title: String,
     pub pub_date: chrono::NaiveDateTime,
     pub published: bool,
-    pub preview: String,
+    pub headline: String,
     pub image: String,
     pub tags: Vec<ITag>,
 }
@@ -81,7 +81,7 @@ pub struct IArticle {
     pub title: String,
     pub pub_date: chrono::NaiveDateTime,
     pub published: bool,
-    pub preview: String,
+    pub headline: String,
     pub image: String,
     pub tags: Vec<ITag>,
     pub chapters: Vec<IChapter>,
@@ -132,7 +132,7 @@ pub struct InputChapter {
 pub struct InputArticle {
     pub title: String,
     pub published: bool,
-    pub preview: String,
+    pub headline: String,
     pub image: String,
     pub tags: Vec<InputTag>,
     pub chapters: Vec<InputChapter>,

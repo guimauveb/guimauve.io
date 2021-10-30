@@ -44,7 +44,7 @@ pub fn article_card(ArticleCardProps { article, on_click }: &ArticleCardProps) -
                     <Image src={&article.image} object_fit="cover" height="16em" />
                 </div>
                 <div style="margin-top: 8px; margin-bottom: 8px;">
-                    <Text value={&article.preview} />
+                    <Text value={&article.headline} />
                 </div>
             </RouterAnchor<AppRoute>>
         </div>
@@ -85,7 +85,7 @@ pub fn article_card(ArticleCardProps { article, on_click }: &ArticleCardProps) -
                     <Image src={&article.image} object_fit="cover" height="16em" />
                 </div>
                 <div style="margin-top: 8px; margin-bottom: 8px;">
-                    <Text value={&article.preview} />
+                    <Text value={&article.headline} />
                 </div>
             </RouterAnchor<AppRoute>>
         </div>

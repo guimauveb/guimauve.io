@@ -64,7 +64,7 @@ pub fn article_header(ArticleHeaderProps { article_header, .. }: &ArticleHeaderP
                 <Image src={&article_header.image} object_fit="cover" />
             </div>
             <div style="margin-top: 8px; margin-bottom: 8px;">
-                <Text as_element="h3" value={&article_header.preview} variant={TextVariant::Comment} />
+                <Text as_element="h3" value={&article_header.headline} variant={TextVariant::Comment} />
             </div>
         </>
     }
@@ -84,7 +84,7 @@ pub fn article_header(
     let edited = edited.clone();
 
     let (is_title_edited, set_title_edited) = use_state(move || edited.clone());
-    let (is_preview_edited, set_preview_edited) = use_state(move || edited.clone());
+    let (is_headline_edited, set_headline_edited) = use_state(move || edited.clone());
     let (is_image_edited, set_image_edited) = use_state(move || edited.clone());
 
     let (is_loading, set_loading) = use_state(|| false);
@@ -122,15 +122,15 @@ pub fn article_header(
     };
 
     let set_edited = {
-        let (set_title_edited, set_image_edited, set_preview_edited) = (
+        let (set_title_edited, set_image_edited, set_headline_edited) = (
             set_title_edited.clone(),
             set_image_edited.clone(),
-            set_preview_edited.clone(),
+            set_headline_edited.clone(),
         );
         move |edited| {
             set_title_edited(edited);
             set_image_edited(edited);
-            set_preview_edited(edited);
+            set_headline_edited(edited);
         }
     };
 
@@ -146,30 +146,30 @@ pub fn article_header(
     //};
 
     // Preview
-    let on_edit_preview: Callback<MouseEvent> = {
-        let (set_preview_edited, update_form, article_header) = (
-            set_preview_edited.clone(),
+    let on_edit_headline: Callback<MouseEvent> = {
+        let (set_headline_edited, update_form, article_header) = (
+            set_headline_edited.clone(),
             update_form.clone(),
             article_header.clone(),
         );
         Callback::from(move |_| {
             update_form((*article_header).clone()); // ?
-            set_preview_edited(true)
+            set_headline_edited(true)
         })
     };
-    let on_change_preview: Callback<ChangeData> = {
+    let on_change_headline: Callback<ChangeData> = {
         let (update_form, form) = (update_form.clone(), form.clone());
         Callback::from(move |event: ChangeData| match event {
-            ChangeData::Value(preview) => update_form(IArticleHeader {
-                preview,
+            ChangeData::Value(headline) => update_form(IArticleHeader {
+                headline,
                 ..(*form).clone()
             }),
             _ => (),
         })
     };
-    let on_cancel_edit_preview: Callback<MouseEvent> = {
-        let set_preview_edited = set_preview_edited.clone();
-        Callback::from(move |_| set_preview_edited(false))
+    let on_cancel_edit_headline: Callback<MouseEvent> = {
+        let set_headline_edited = set_headline_edited.clone();
+        Callback::from(move |_| set_headline_edited(false))
     };
 
     // Image
@@ -237,7 +237,7 @@ pub fn article_header(
                         title: form.title.clone(),
                         pub_date: form.pub_date.clone(),
                         published: form.published,
-                        preview: form.preview.clone(),
+                        headline: form.headline.clone(),
                         image: form.image.clone(),
                         tags: form.tags.clone(), // TODO
                         ..article
@@ -339,13 +339,13 @@ pub fn article_header(
                 }}
             </div>
             <div>
-                {match *is_preview_edited {
+                {match *is_headline_edited {
                     true => html! {
                         <>
-                            <TextEditor rows={2} data={&form.preview} onchange={&on_change_preview} />
+                            <TextEditor rows={2} data={&form.headline} onchange={&on_change_headline} />
                             <div style="display: flex; margin-top: 4px; margin-bottom: 4px; justify-content: flex-end; font-size: .8em;">
                             <>
-                                <Button onclick={&on_cancel_edit_preview} label="Cancel"/>
+                                <Button onclick={&on_cancel_edit_headline} label="Cancel"/>
                                 <Button onclick={&on_save_article_header} label="Save"/>
                             </>
                             </div>
@@ -354,11 +354,11 @@ pub fn article_header(
                     false => html! {
                         <div style="align-items: center; position: relative; display: flex; margin-top: 8px; margin-bottom: 8px;">
                             <div
-                                onclick={on_edit_preview}
+                                onclick={on_edit_headline}
                                 style="width:42px; height:42px; display: flex; justify-content: center; align-items:center; position: absolute; right: -78px; cursor: pointer;">
                                 <i class="fa fa-edit"></i>
                             </div>
-                        <Text as_element="h3" value={&article_header.preview} variant={TextVariant::Comment} />
+                        <Text as_element="h3" value={&article_header.headline} variant={TextVariant::Comment} />
                         </div>
                         }
                 }}

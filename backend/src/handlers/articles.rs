@@ -463,7 +463,7 @@ fn db_get_all_articles_results(
                     title: article.title,
                     pub_date: article.pub_date,
                     published: article.published,
-                    preview: article.preview,
+                    headline: article.headline,
                     image: API_URL.to_owned() + &article.image,
                 },
             )
@@ -507,7 +507,7 @@ pub fn db_get_article_result_by_id(
         pub_date: article.pub_date,
         published: article.published,
         tags,
-        preview: article.preview,
+        headline: article.headline,
         image: API_URL.to_owned() + &article.image,
         chapters: match chapters {
             Ok(chapters) => chapters,
@@ -541,7 +541,7 @@ fn db_update_article_header(
         title: header.title,
         pub_date: header.pub_date,
         published: header.published,
-        preview: header.preview,
+        headline: header.headline,
         image: header.image,
     };
 
@@ -610,7 +610,7 @@ pub async fn add_article(
         let new_article = NewArticle {
             article_header: NewArticleHeader {
                 title: &json_article.title,
-                preview: &json_article.preview,
+                headline: &json_article.headline,
                 published: json_article.published,
                 image: &json_article.image,
             },
