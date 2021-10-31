@@ -1,7 +1,14 @@
-deploy.sh
+.env
 .DS_Store
+Cargo.lock
+pkg/
+dist/
+target/
+**/*.rs.bk
+bin/
+wasm-pack.log
+deploy.sh
 .git-credentials
 frontend/index.html
 frontend/Trunk.toml
-.env
 TODO.md

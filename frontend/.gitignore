@@ -1,9 +1,0 @@
-Cargo.lock
-pkg/
-dist/
-/target
-**/*.rs.bk
-bin/
-wasm-pack.log
-.DS_Store
-/frontend/index.html

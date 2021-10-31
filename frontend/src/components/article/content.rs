@@ -69,12 +69,12 @@ pub fn content(ContentProps { content, .. }: &ContentProps) -> Html {
                 </div>
            },
            ContentType::Comment => html! {
-                <div style="align-items:center; justify-content: center; position: relative; display: flex; margin-bottom: 24px;">
+                <div style="align-items:center; position: relative; display: flex; margin-bottom: 24px;">
                    <Text variant={TextVariant::Comment} value={&content.content} />
                 </div>
            },
            ContentType::Link => html! {
-                <div style="align-items:center; justify-content: center; position: relative; display: flex; margin-bottom: 24px;">
+                <div style="align-items:center; position: relative; display: flex; margin-bottom: 24px;">
                     <a target="_blank" href={match &content.url {
                         Some(url) => url,
                         None => ""
@@ -84,7 +84,7 @@ pub fn content(ContentProps { content, .. }: &ContentProps) -> Html {
                 </div>
            },
            ContentType::Code => html! {
-                <div style="max-width: 100vw; align-items:center; justify-content: center; position: relative; display: flex; margin-bottom: 24px;">
+                <div style="max-width: 100vw; align-items:center; position: relative; display: flex; margin-bottom: 24px;">
                        <Code highlighted_code={match &content.highlighted_code {
                             Some(code) => code,
                             None => &content.content,

@@ -54,7 +54,7 @@ fn update_results(
     }
 
     /* The searches / tags results states only contain the ids of the matching objects, so that we don't store them twice.
-     * Meaning that when we need to access the results, we use their ids to fetch them from their own state. */
+     * Meaning that when we need to access the articles and projects results, we use their ids to fetch them from their own state. */
     let (articles_ids, projects_ids): (Vec<i32>, Vec<i32>) = (
         results.articles.iter().map(|(id, _)| *id).collect(),
         results.projects.iter().map(|(id, _)| *id).collect(),
