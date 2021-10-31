@@ -62,42 +62,36 @@ pub struct ContentProps {
 #[function_component(Content)]
 pub fn content(ContentProps { content, .. }: &ContentProps) -> Html {
     html! {
-       {match &content.content_type {
-           ContentType::Text => html! {
-                <div style="align-items: center; position: relative; display: flex; margin-bottom: 24px;">
-                   <Text value={&content.content} />
-                </div>
-           },
-           ContentType::Comment => html! {
-                <div style="align-items:center; position: relative; display: flex; margin-bottom: 24px;">
-                   <Text variant={TextVariant::Comment} value={&content.content} />
-                </div>
-           },
-           ContentType::Link => html! {
-                <div style="align-items:center; position: relative; display: flex; margin-bottom: 24px;">
+        <div style="align-items: center; position: relative; display: flex; margin-bottom: 24px;">
+            {match &content.content_type {
+                ContentType::Text => html! {
+                    <Text value={&content.content} />
+                },
+                ContentType::Comment => html! {
+                    <Text variant={TextVariant::Comment} value={&content.content} />
+                },
+                ContentType::Link => html! {
                     <a target="_blank" href={match &content.url {
                         Some(url) => url,
                         None => ""
                     }}>
                         <Text value={&content.content} />
                     </a>
-                </div>
-           },
-           ContentType::Code => html! {
-                <div style="max-width: 100vw; align-items:center; position: relative; display: flex; margin-bottom: 24px;">
-                       <Code highlighted_code={match &content.highlighted_code {
-                            Some(code) => code,
-                            None => &content.content,
-                       }}/>
-                </div>
-               },
-           ContentType::Image => html! {
-                <div style="align-items:center; justify-content: center; display: flex; margin-bottom: 24px;">
-                    <Image src={&content.content} width="75%" />
-                </div>
+                },
+                ContentType::Code => html! {
+                    <Code highlighted_code={match &content.highlighted_code {
+                        Some(code) => code,
+                        None => &content.content,
+                    }}/>
+                },
+                ContentType::Image => html! {
+                    <div style="display: flex; justify-content: center;">
+                        <Image src={&content.content} width="75%" />
+                    </div>
+                    }
                 }
-           }
-       }
+            }
+        </div>
     }
 }
 
