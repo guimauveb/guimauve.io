@@ -21,18 +21,9 @@ dotenv_codegen = "0.15.0"
 [dependencies.web-sys]
 version = "0.3.4"
 features = [
-  "Document",
-  "Element",
-  "Event",
-  "EventTarget",
-  "HtmlCollection",
   "HtmlElement",
-  "HtmlHtmlElement",
-  "HtmlDivElement",
-  "HtmlImageElement",
   'Window',
   'ScrollToOptions',
-  'HtmlDocument',
   'Headers',
   'Request',
   'RequestInit',
@@ -56,6 +47,3 @@ codegen-units = 1
 opt-level = 'z'
 # Link time optimization using using whole-program analysis
 lto = true
-
-
-

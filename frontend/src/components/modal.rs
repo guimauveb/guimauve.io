@@ -34,7 +34,7 @@ pub fn modal(
     let on_click_outside: Callback<MouseEvent> = {
         let (onclose, id) = (onclose.clone(), id.clone());
         Callback::from(move |event: MouseEvent| {
-            if id != "" {
+            if !id.is_empty() {
                 let target = event.target().unwrap();
                 let js_value = target.as_ref() as &JsValue;
                 let element = js_value.clone().dyn_into::<HtmlElement>().unwrap().id();
