@@ -77,6 +77,7 @@ pub struct IArticleHeader {
     pub published: bool,
     pub headline: String,
     pub image: String,
+    pub image_credits: Option<String>,
     pub tags: Vec<ITag>,
 }
 
@@ -88,6 +89,7 @@ pub struct IArticle {
     pub published: bool,
     pub headline: String,
     pub image: String,
+    pub image_credits: Option<String>,
     pub tags: Vec<ITag>,
     pub chapters: Vec<IChapter>,
 }
@@ -98,6 +100,7 @@ impl Default for IArticle {
             id: 0,
             title: "New article...".to_owned(),
             image: API_URL.to_owned() + "/media/images/articles/ferris.webp",
+            image_credits: None,
             headline: "Preview...".to_owned(),
             pub_date: get_current_readable_date().expect("Could not get current readable date."),
             published: false,

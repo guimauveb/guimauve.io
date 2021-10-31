@@ -61,8 +61,10 @@ pub struct Article {
     pub published: bool,
     pub headline: String,
     pub image: String,
+    pub image_credits: Option<String>,
 }
 
+// Insertables
 #[derive(Insertable, Debug, Serialize, Deserialize)]
 #[table_name = "articles"]
 pub struct NewArticleHeader<'a> {
@@ -70,6 +72,7 @@ pub struct NewArticleHeader<'a> {
     pub headline: &'a str,
     pub published: bool,
     pub image: &'a str,
+    pub image_credits: Option<&'a str>,
 }
 
 #[derive(Insertable, Debug, Serialize, Deserialize)]

@@ -72,6 +72,7 @@ pub struct IArticleHeader {
     pub published: bool,
     pub headline: String,
     pub image: String,
+    pub image_credits: Option<String>,
     pub tags: Vec<ITag>,
 }
 
@@ -83,6 +84,7 @@ pub struct IArticle {
     pub published: bool,
     pub headline: String,
     pub image: String,
+    pub image_credits: Option<String>,
     pub tags: Vec<ITag>,
     pub chapters: Vec<IChapter>,
 }
@@ -134,6 +136,7 @@ pub struct InputArticle {
     pub published: bool,
     pub headline: String,
     pub image: String,
+    pub image_credits: Option<String>,
     pub tags: Vec<InputTag>,
     pub chapters: Vec<InputChapter>,
 }

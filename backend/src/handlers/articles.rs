@@ -132,9 +132,9 @@ fn db_add_content(
 
         let content_id = diesel::insert_into(contents::table)
             .values(&content)
-            .get_result::<Content>(&conn)
-            .expect("Could not insert content.")
-            .id;
+            .returning(contents::id)
+            .get_result(&conn)
+            .expect("Could not insert content.");
 
         Ok(content_id)
     })?;
@@ -153,9 +153,9 @@ pub async fn add_content(
             NewContent {
                 article_id: json_content.article_id,
                 chapter_id: json_content.chapter_id,
-                content_type: json_content.content_type.clone(),
+                content_type: json_content.content_type.clone(), // TODO - Use a ref here
                 content: &json_content.content,
-                language: json_content.language.clone(),
+                language: json_content.language.clone(), // TODO - Use a ref here
                 highlighted_code: match &json_content.content_type {
                     ContentType::Code => {
                         let language = match &json_content.language {
@@ -169,10 +169,7 @@ pub async fn add_content(
                     }
                     _ => None,
                 },
-                url: match &json_content.url {
-                    Some(url) => Some(url),
-                    None => None,
-                },
+                url: Some(json_content.url.as_deref().unwrap_or("")),
                 index: json_content.index,
             },
         )?;
@@ -325,9 +322,9 @@ fn db_add_chapter(
 
         let chapter_id = diesel::insert_into(chapters::table)
             .values(&chapter)
-            .get_result::<Chapter>(&conn)
-            .expect("Could not insert chapter.")
-            .id;
+            .returning(chapters::id)
+            .get_result(&conn)
+            .expect("Could not insert chapter.");
 
         Ok(chapter_id)
     })?;
@@ -465,6 +462,7 @@ fn db_get_all_articles_results(
                     published: article.published,
                     headline: article.headline,
                     image: API_URL.to_owned() + &article.image,
+                    image_credits: article.image_credits,
                 },
             )
         })
@@ -509,6 +507,7 @@ pub fn db_get_article_result_by_id(
         tags,
         headline: article.headline,
         image: API_URL.to_owned() + &article.image,
+        image_credits: article.image_credits,
         chapters: match chapters {
             Ok(chapters) => chapters,
             Err(_) => vec![],
@@ -543,6 +542,7 @@ fn db_update_article_header(
         published: header.published,
         headline: header.headline,
         image: header.image,
+        image_credits: header.image_credits,
     };
 
     diesel::update(articles::table.find(pk))
@@ -572,12 +572,12 @@ fn db_add_article(
     article: NewArticle,
 ) -> Result<IArticle, diesel::result::Error> {
     let conn = pool.get().unwrap();
-    let inserted_article: Article = diesel::insert_into(articles::table)
+
+    let inserted_article_id: i32 = diesel::insert_into(articles::table)
         .values(&article.article_header)
+        .returning(articles::id)
         .get_result(&conn)
         .expect("Could not insert article.");
-
-    let inserted_article_id = inserted_article.id;
 
     for chap in article.chapters {
         let inserted_chapter_id = db_add_chapter(
@@ -613,6 +613,7 @@ pub async fn add_article(
                 headline: &json_article.headline,
                 published: json_article.published,
                 image: &json_article.image,
+                image_credits: Some(json_article.image_credits.as_deref().unwrap_or("")),
             },
             tags: json_article
                 .tags
@@ -650,10 +651,7 @@ pub async fn add_article(
                                 }
                                 _ => None,
                             },
-                            url: match &cont.url {
-                                Some(url) => Some(url),
-                                None => None,
-                            },
+                            url: Some(cont.url.as_deref().unwrap_or("")),
                             language: match &cont.language {
                                 Some(language) => Some(language.clone()),
                                 None => None,

@@ -56,6 +56,7 @@ pub fn article(ArticleProps { article, .. }: &ArticleProps) -> Html {
                                     published: article.published,
                                     headline: article.headline.clone(),
                                     image: article.image.clone(),
+                                    image_credits: article.image_credits.clone(),
                                     tags: article.tags.clone(),
                                 }
                             )
@@ -236,6 +237,7 @@ pub fn article(
                                     published: article.published,
                                     headline: article.headline.clone(),
                                     image: article.image.clone(),
+                                    image_credits: article.image_credits.clone(),
                                     tags: article.tags.clone(),
                                 }
                             )

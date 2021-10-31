@@ -60,8 +60,18 @@ pub fn article_header(ArticleHeaderProps { article_header, .. }: &ArticleHeaderP
                     Err(_) => html! {<Text value="An error occured!"/>},
                 }}
             </div>
-            <div style="margin-top: 8px; margin-bottom: 8px;">
-                <Image src={&article_header.image} object_fit="cover" />
+            <div style="margin-top: 8px; margin-bottom: 12px;">
+               <div style="display: flex; flex: 1;">
+                <Image src={&article_header.image} width="100%" />
+                    {match &article_header.image_credits {
+                        Some(credits) => html! {
+                            <p style="transform: rotate(180deg); writing-mode: tb-rl; font-style: italic; font-size: .8rem; margin-left: 4px;">
+                                {credits}
+                            </p>
+                        },
+                        None => html! {}
+                    }}
+                </div>
             </div>
             <div style="margin-top: 8px; margin-bottom: 8px;">
                 <Text as_element="h3" value={&article_header.headline} variant={TextVariant::Comment} />
@@ -326,13 +336,23 @@ pub fn article_header(
                     },
                     false => {
                         html! {
-                            <div style="align-items: center; position: relative; display: flex; margin-top: 8px; margin-bottom: 8px;">
+                            <div style="align-items: center; position: relative; display: flex; margin-top: 8px; margin-bottom: 12px;">
                                <div
                                     onclick={on_edit_image}
                                     style="width:42px; height:42px; display: flex; justify-content: center; align-items:center; position: absolute; right: -78px; cursor: pointer;">
                                     <i class="fa fa-edit"></i>
                                 </div>
-                                <Image src={&article_header.image} width="100%" />
+                                <div style="display: flex; flex: 1;">
+                                    <Image src={&article_header.image} width="100%" />
+                                    {match &article_header.image_credits {
+                                        Some(credits) => html! {
+                                            <p style="transform: rotate(180deg); writing-mode: tb-rl; font-style: italic; font-size: .8rem; margin-left: 4px;">
+                                                {credits}
+                                            </p>
+                                        },
+                                        None => html! {}
+                                    }}
+                                </div>
                             </div>
                         }
                     }

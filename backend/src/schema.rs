@@ -14,7 +14,9 @@ table! {
         published -> Bool,
         headline -> Text,
         image -> Text,
+        image_credits -> Nullable<Text>,
     }
+
 }
 
 table! {
