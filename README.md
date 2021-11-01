@@ -10,7 +10,7 @@ I went with Postgres, Diesel, Actix and Yew.
 
 - Uses some cutting edge technologies, and it's really cool
 - Fast, type and memory error-free thanks to Rust's strong typing system and borrow checker
-- Uses a Redux-like store to access data from any component and speed-up rendering
+- Uses a Redux-like store to access data from any component and speed up rendering
 - Super easy to upgrade UI with a React-like function component based system
 - Articles can easily be created and edited using a basic Chapter > Content structure
 - And a lot more cool things...
