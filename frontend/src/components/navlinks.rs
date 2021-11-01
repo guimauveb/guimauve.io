@@ -21,43 +21,42 @@ pub struct TNavLink {
     pub route: Option<AppRoute>,
 }
 
+const NAV_LINKS: &[TNavLink] = &[
+    TNavLink {
+        label: "/articles",
+        label_on_hover: "$ cd ~/articles",
+        route: Some(AppRoute::Articles),
+    },
+    TNavLink {
+        label: "/tags",
+        label_on_hover: "$ cd ~/tags",
+        route: Some(AppRoute::Tags),
+    },
+    TNavLink {
+        label: "/projects",
+        label_on_hover: "$ cd ~/projects",
+        route: Some(AppRoute::Projects),
+    },
+    TNavLink {
+        label: "/about",
+        label_on_hover: "$ cd ~/about",
+        route: Some(AppRoute::About),
+    },
+    TNavLink {
+        label: "/resume",
+        label_on_hover: "$ wget ~/resume.pdf",
+        route: None,
+    },
+];
+
 #[function_component(NavLinks)]
 pub fn navlinks() -> Html {
     let context = use_context::<Rc<BlogStore>>().expect("No context found!");
     let is_error = context.is_error;
 
-    let nav_links: Rc<Vec<TNavLink>> = Rc::new(vec![
-        TNavLink {
-            label: "/articles",
-            label_on_hover: "$ cd ~/articles",
-            route: Some(AppRoute::Articles),
-        },
-        TNavLink {
-            label: "/tags",
-            label_on_hover: "$ cd ~/tags",
-            route: Some(AppRoute::Tags),
-        },
-        TNavLink {
-            label: "/projects",
-            label_on_hover: "$ cd ~/projects",
-            route: Some(AppRoute::Projects),
-        },
-        TNavLink {
-            label: "/about",
-            label_on_hover: "$ cd ~/about",
-            route: Some(AppRoute::About),
-        },
-        TNavLink {
-            label: "/resume",
-            label_on_hover: "$ wget ~/resume.pdf",
-            route: None,
-        },
-    ]);
-
     let (hovered_nav_links, set_hovered_nav_links) = {
-        let nav_links = nav_links.clone();
         use_state(move || {
-            nav_links
+            NAV_LINKS
                 .iter()
                 .map(|nav_link| (nav_link.label, false))
                 .collect::<HashMap<&str, bool>>()
@@ -101,7 +100,7 @@ pub fn navlinks() -> Html {
                 }}
             </div>
             <div style="display: flex; flex: 1; justify-content: center;">
-                {for nav_links.iter().map(|nav_link| {
+                {for NAV_LINKS.iter().map(|nav_link| {
                     html! {
                         <div style="margin-left: 2px; margin-right: 2px;">
                             {match &nav_link.route {
