@@ -79,10 +79,12 @@ pub fn content(ContentProps { content, .. }: &ContentProps) -> Html {
                     </a>
                 },
                 ContentType::Code => html! {
-                    <Code highlighted_code={match &content.highlighted_code {
-                        Some(code) => code,
-                        None => &content.content,
-                    }}/>
+                    <div style="max-width: 100vw; display: flex; flex: 1;">
+                        <Code highlighted_code={match &content.highlighted_code {
+                            Some(code) => code,
+                            None => &content.content,
+                        }}/>
+                    </div>
                 },
                 ContentType::Image => html! {
                     <div style="display: flex; justify-content: center;">
@@ -521,10 +523,11 @@ pub fn content(
                                     <i class="fa fa-edit"/>
                                 </div>
                             </div>
-                            <Code highlighted_code={match &content.highlighted_code.clone() {
-                                                                Some(code) => code,
-                                                                None => &content.content,
-                                                            }}
+                            <Code
+                                highlighted_code={match &content.highlighted_code.clone() {
+                                    Some(code) => code,
+                                    None => &content.content,
+                                }}
                             />
                         </div>
                     },
