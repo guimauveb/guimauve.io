@@ -5,12 +5,12 @@ use {
 };
 
 #[derive(Properties, Clone, PartialEq)]
-pub struct NavLinkProps<'a> {
-    pub label: &'a str,
+pub struct NavLinkProps {
+    pub label: &'static str,
     #[prop_or_default]
-    pub on_hover: Callback<(&'a str, bool)>,
+    pub on_hover: Callback<(&'static str, bool)>,
     #[prop_or_default]
-    pub label_on_hover: &'a str,
+    pub label_on_hover: &'static str,
     #[prop_or_default]
     pub hovered: bool,
     #[prop_or_default]
@@ -25,19 +25,20 @@ pub fn navlink(
         hovered,
         label_on_hover,
         is_other_link_hovered,
-    }: &NavLinkProps<'static>,
+    }: &NavLinkProps,
 ) -> Html {
+    let handle_on_hover = {
+        let (label, on_hover) = (label.clone(), on_hover.clone());
+        move |hovered: bool| on_hover.emit((label, hovered))
+    };
     html! {
         <Text
              white_space="nowrap"
              color={if *is_other_link_hovered {"rgb(110, 110, 110)"} else { "inherit" }}
-             onmouseover={
-                        let (label, on_hover) = (*label, on_hover.clone());
-                        Callback::from(move |_| on_hover.emit((label, true)))
-              }
+             onmouseover={Callback::from(move |_| handle_on_hover(true))}
              onmouseout={
-                       let (label, on_hover) = (*label, on_hover.clone());
-                       Callback::from(move |_| on_hover.emit((label, false)))
+                 let handle_on_hover = handle_on_hover.clone();
+                 Callback::from(move |_| handle_on_hover(false))
              }
              value={if *hovered { *label_on_hover } else { *label }}
         />

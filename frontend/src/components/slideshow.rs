@@ -6,7 +6,7 @@ use {
 
 #[derive(Properties, Clone, PartialEq)]
 pub struct SlideshowProps {
-    pub selected_image: String,
+    pub selected_image_url: String,
     pub slideshow_length: usize,
     pub selected_image_index: usize,
     pub select_image: Callback<usize>,
@@ -16,23 +16,15 @@ pub struct SlideshowProps {
 pub fn slideshow(
     SlideshowProps {
         slideshow_length,
-        selected_image,
+        selected_image_url,
         selected_image_index,
         select_image,
     }: &SlideshowProps,
 ) -> Html {
-    let justify_content = if *slideshow_length > 1 {
-        "space-between"
-    } else {
-        "center"
-    };
+    let (slideshow_length, selected_image_index) = (*slideshow_length, *selected_image_index);
 
     let on_previous_image_clicked = {
-        let (slideshow_length, selected_image_index, select_image) = (
-            *slideshow_length,
-            *selected_image_index,
-            select_image.clone(),
-        );
+        let select_image = select_image.clone();
         Callback::from(move |_| {
             if selected_image_index == 0 {
                 select_image.emit(slideshow_length - 1)
@@ -41,13 +33,8 @@ pub fn slideshow(
             }
         })
     };
-
     let on_next_image_clicked = {
-        let (slideshow_length, selected_image_index, select_image) = (
-            *slideshow_length,
-            *selected_image_index,
-            select_image.clone(),
-        );
+        let select_image = select_image.clone();
         Callback::from(move |_| {
             if selected_image_index == slideshow_length - 1 {
                 select_image.emit(0)
@@ -57,19 +44,21 @@ pub fn slideshow(
         })
     };
 
+    let justify_content = if slideshow_length > 1 {
+        "space-between"
+    } else {
+        "center"
+    };
+
     html! {
         <div style={format!("display: flex; justify-content: {}; align-items: center; max-height: 28rem;", justify_content)}>
-            {if *slideshow_length > 1 {
+            {if slideshow_length > 1 {
                 html! { <Button icon_name="fa fa-chevron-left" onclick={on_previous_image_clicked} /> }
-            } else {
-                html! {}
-            }}
-            <img src={selected_image} style="width: 75%; object-fit: contain; align-self: stretch;"/>
-            {if *slideshow_length > 1 {
+            } else { html! {} }}
+            <img src={selected_image_url} style="width: 75%; object-fit: contain; align-self: stretch;"/>
+            {if slideshow_length > 1 {
                 html! { <Button icon_name="fa fa-chevron-right" onclick={on_next_image_clicked} /> }
-            } else {
-                html! {}
-            }}
+            } else { html! {} }}
         </div>
     }
 }

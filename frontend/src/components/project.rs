@@ -117,7 +117,7 @@ pub fn project(
                                                             }}
                                                             body={html! {
                                                                 <Slideshow selected_image_index={*selected_image_index}
-                                                                           selected_image={gallery.get(*selected_image_index).expect("Invalid index!")}
+                                                                           selected_image_url={gallery.get(*selected_image_index).expect("Invalid index!")}
                                                                            slideshow_length={gallery.len()}
                                                                            /* NOTE - Identified as a redudant closure by cargo clippy. But cloning the function
                                                                             * and passing it to the callback doesn't work */

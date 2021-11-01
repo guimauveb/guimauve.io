@@ -499,7 +499,7 @@ pub fn content(
                                             Some(language) => language,
                                             None => &Language::Bash,
                                         }}
-                                        options={&LANGUAGES}
+                                        options={LANGUAGES}
                                         onchange={on_change_content_language}
                                     />
                                 </div>
