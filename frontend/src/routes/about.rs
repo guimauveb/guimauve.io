@@ -19,7 +19,7 @@ pub fn about() -> Html {
                     <Text variant={TextVariant::Heading} value="/about" />
                 </div>
                 <div flex="1">
-                    <Text value="I am a passionate software developer who enjoys spending time in the various fields of programming. I am self-educated, and always keeping up to date and strengthening my skills play a big role in my everyday life. I have found programming to be a lifestyle rather than a career choice.\n\nThe languages I have used the most include Rust, Typescript, Javascript, Python, C++, Bash script. I also tinker with Haskell from time to time. I have a strong interest in web development as well as OS development, embedded development, game development and compilers, even though most of my experience comes from web development."/>
+                    <Text value="I am a passionate software developer who enjoys spending time in the various fields of programming. I am self-educated, and always keeping up to date and strengthening my skills play a big role in my everyday life.\n\nThe languages I have used the most include Rust, Typescript, Javascript, Python, C++, Bash script. I also tinker with Haskell from time to time. I have a strong interest in web development as well as OS development, embedded development, game development and compilers, even though most of my experience comes from web development."/>
                     <div style="margin-top: 24px; display: flex; justify-content: center;">
                         <Text value="You can email me at "/>
                         <a class="email-container" href="mailto:contact@guimauve.io">{"contact@guimauve.io"}</a>
