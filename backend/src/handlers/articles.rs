@@ -67,21 +67,21 @@ fn db_get_contents_results_by_chapter(
         })
         .collect())
 }
-// TODO - Match content types.
 #[cfg(feature = "editable")]
 fn db_update_content(
     pool: web::Data<Pool>,
     pk: i32,
-    body: Content,
+    updated_content: Content,
 ) -> Result<IArticle, diesel::result::Error> {
     let conn = pool.get().unwrap();
 
-    let mut content = body;
+    let mut content = updated_content;
     if content.content_type == ContentType::Code {
-        let language = match &content.language {
-            Some(language) => language.to_string(),
-            None => Language::Bash.to_string(),
-        };
+        let language = content
+            .language
+            .as_ref()
+            .expect("Code content should specify a language!")
+            .to_string();
         content.highlighted_code = Some(highlight_code(&content.content, &language));
     }
 
@@ -153,19 +153,17 @@ pub async fn add_content(
             NewContent {
                 article_id: json_content.article_id,
                 chapter_id: json_content.chapter_id,
-                content_type: json_content.content_type.clone(), // TODO - Use a ref here
+                content_type: json_content.content_type.clone(),
                 content: &json_content.content,
-                language: json_content.language.clone(), // TODO - Use a ref here
+                language: json_content.language.clone(),
                 highlighted_code: match &json_content.content_type {
                     ContentType::Code => {
-                        let language = match &json_content.language {
-                            Some(language) => &*language,
-                            None => &Language::Bash,
-                        };
-                        Some(highlight_code(
-                            &json_content.content,
-                            &*language.to_string(),
-                        ))
+                        let language = json_content
+                            .language
+                            .as_ref()
+                            .expect("Code content should specify a language!")
+                            .to_string();
+                        Some(highlight_code(&json_content.content, &language))
                     }
                     _ => None,
                 },
@@ -272,15 +270,15 @@ fn db_get_chapters_results_by_article(
 fn db_update_chapter(
     pool: web::Data<Pool>,
     chapter_pk: i32,
-    chapter: Chapter,
+    updated_chapter: Chapter,
 ) -> Result<IArticle, diesel::result::Error> {
     let conn = pool.get().unwrap();
 
     diesel::update(chapters::table.find(chapter_pk))
-        .set(&chapter)
+        .set(&updated_chapter)
         .execute(&conn)?;
 
-    db_get_article_result_by_id(pool, chapter.article_id)
+    db_get_article_result_by_id(pool, updated_chapter.article_id)
 }
 #[cfg(feature = "editable")]
 pub async fn update_chapter(
@@ -531,18 +529,18 @@ pub async fn get_article_by_id(
 fn db_update_article_header(
     pool: web::Data<Pool>,
     pk: i32,
-    header: IArticleHeader,
+    updated_header: IArticleHeader,
 ) -> Result<IArticle, diesel::result::Error> {
     let conn = pool.get().unwrap();
 
     let article_header = Article {
-        id: header.article_id,
-        title: header.title,
-        pub_date: header.pub_date,
-        published: header.published,
-        headline: header.headline,
-        image: header.image,
-        image_credits: header.image_credits,
+        id: updated_header.article_id,
+        title: updated_header.title,
+        pub_date: updated_header.pub_date,
+        published: updated_header.published,
+        headline: updated_header.headline,
+        image: updated_header.image,
+        image_credits: updated_header.image_credits,
     };
 
     diesel::update(articles::table.find(pk))
@@ -652,10 +650,7 @@ pub async fn add_article(
                                 _ => None,
                             },
                             url: Some(cont.url.as_deref().unwrap_or("")),
-                            language: match &cont.language {
-                                Some(language) => Some(language.clone()),
-                                None => None,
-                            },
+                            language: cont.language.clone(),
                         })
                         .collect(),
                 })
@@ -728,10 +723,10 @@ pub async fn delete_article(
 fn db_update_article_tags(
     pool: web::Data<Pool>,
     article_pk: i32,
-    tags: Vec<Tag>,
+    updated_tags: Vec<Tag>,
 ) -> Result<IArticle, diesel::result::Error> {
     let conn = pool.get().unwrap();
-    let new_article_tags: Vec<NewArticleTag> = tags
+    let new_article_tags: Vec<NewArticleTag> = updated_tags
         .into_iter()
         .map(|tag: Tag| NewArticleTag {
             article_id: article_pk,

@@ -190,7 +190,7 @@ pub fn article_header(
             article_header.clone(),
         );
         Callback::from(move |_| {
-            update_form((*article_header).clone()); // ?
+            update_form((*article_header).clone());
             set_image_edited(true)
         })
     };

@@ -301,11 +301,18 @@ pub fn content(
         };
         Callback::from(move |_| {
             let (form, content_action, dispatch_article, dispatch_error, set_loading, on_edit) = (
-                // Trim the API URL from the image path
                 IContent {
                     content: match form.content_type {
+                        // Remove the API URL from the image path
                         ContentType::Image => (&form.content[API_URL.len()..]).to_owned(),
                         _ => form.content.clone(),
+                    },
+                    language: match form.content_type {
+                        ContentType::Code => match &form.language {
+                            None => Some(Language::Bash),
+                            _ => form.language.clone(),
+                        },
+                        _ => None,
                     },
                     ..(*form).clone()
                 },
@@ -486,10 +493,14 @@ pub fn content(
                             <div style="display: flex;">
                                 <Select<ContentType> selected={&form.content_type} options={&CONTENT_TYPES} onchange={on_change_content_type} />
                                 <div style="margin-left: 8px;">
-                                    <Select<Language> selected={match &form.language {
-                                                                Some(language) => language,
-                                                                None => &Language::Bash,
-                                    }} options={&LANGUAGES} onchange={on_change_content_language} />
+                                    <Select<Language>
+                                        selected={match &form.language {
+                                            Some(language) => language,
+                                            None => &Language::Bash,
+                                        }}
+                                        options={&LANGUAGES}
+                                        onchange={on_change_content_language}
+                                    />
                                 </div>
                             </div>
                             <TextEditor rows={8} data={&form.content} onchange={on_change_content_content} />
