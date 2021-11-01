@@ -9,50 +9,47 @@ use {
         API_URL,
     },
     std::{collections::HashMap, rc::Rc},
-    yew::{html, Callback, Properties},
+    yew::{html, Callback},
     yew_functional::{function_component, use_context, use_state},
     yew_router::components::RouterAnchor,
 };
 
 #[derive(Clone, PartialEq)]
-pub struct TNavLink<'a> {
-    pub label: &'a str,
-    pub on_hover_label: &'a str,
+pub struct TNavLink {
+    pub label: &'static str,
+    pub label_on_hover: &'static str,
     pub route: Option<AppRoute>,
 }
 
-#[derive(Properties, Clone, PartialEq)]
-pub struct NavLinksProps {}
-
 #[function_component(NavLinks)]
-pub fn navlinks(_: &NavLinksProps) -> Html {
+pub fn navlinks() -> Html {
     let context = use_context::<Rc<BlogStore>>().expect("No context found!");
     let is_error = context.is_error;
 
     let nav_links: Rc<Vec<TNavLink>> = Rc::new(vec![
         TNavLink {
             label: "/articles",
-            on_hover_label: "$ cd ~/articles",
+            label_on_hover: "$ cd ~/articles",
             route: Some(AppRoute::Articles),
         },
         TNavLink {
             label: "/tags",
-            on_hover_label: "$ cd ~/tags",
+            label_on_hover: "$ cd ~/tags",
             route: Some(AppRoute::Tags),
         },
         TNavLink {
             label: "/projects",
-            on_hover_label: "$ cd ~/projects",
+            label_on_hover: "$ cd ~/projects",
             route: Some(AppRoute::Projects),
         },
         TNavLink {
             label: "/about",
-            on_hover_label: "$ cd ~/about",
+            label_on_hover: "$ cd ~/about",
             route: Some(AppRoute::About),
         },
         TNavLink {
             label: "/resume",
-            on_hover_label: "$ wget ~/resume.pdf",
+            label_on_hover: "$ wget ~/resume.pdf",
             route: None,
         },
     ]);
@@ -113,7 +110,7 @@ pub fn navlinks(_: &NavLinksProps) -> Html {
                                         <NavLink
                                             label={&nav_link.label}
                                             on_hover={&on_label_hovered}
-                                            on_hover_label={&nav_link.on_hover_label}
+                                            label_on_hover={&nav_link.label_on_hover}
                                             is_other_link_hovered={hovered_nav_links.iter().fold(false, |mut acc, (label, hovered)| {
                                                 if *hovered && label != &nav_link.label {
                                                     acc = true;
@@ -130,7 +127,7 @@ pub fn navlinks(_: &NavLinksProps) -> Html {
                                         <NavLink
                                             label={&nav_link.label}
                                             on_hover={&on_label_hovered}
-                                            on_hover_label={&nav_link.on_hover_label}
+                                            label_on_hover={&nav_link.label_on_hover}
                                             is_other_link_hovered={hovered_nav_links.iter().fold(false, |mut acc, (label, hovered)| {
                                                 if *hovered && label != &nav_link.label {
                                                     acc = true;

@@ -27,50 +27,46 @@ pub fn slideshow(
         "center"
     };
 
+    let on_previous_image_clicked = {
+        let (slideshow_length, selected_image_index, select_image) = (
+            *slideshow_length,
+            *selected_image_index,
+            select_image.clone(),
+        );
+        Callback::from(move |_| {
+            if selected_image_index == 0 {
+                select_image.emit(slideshow_length - 1)
+            } else {
+                select_image.emit(selected_image_index - 1)
+            }
+        })
+    };
+
+    let on_next_image_clicked = {
+        let (slideshow_length, selected_image_index, select_image) = (
+            *slideshow_length,
+            *selected_image_index,
+            select_image.clone(),
+        );
+        Callback::from(move |_| {
+            if selected_image_index == slideshow_length - 1 {
+                select_image.emit(0)
+            } else {
+                select_image.emit(selected_image_index + 1)
+            }
+        })
+    };
+
     html! {
-        <div style={format!("display: flex; justify-content: {}; align-items: center; max-height: 32rem;", justify_content)}>
+        <div style={format!("display: flex; justify-content: {}; align-items: center; max-height: 28rem;", justify_content)}>
             {if *slideshow_length > 1 {
-                html! {
-                    <div>
-                        <Button
-                            icon_name="fa fa-chevron-left"
-                            onclick={
-                                let (slideshow_length, selected_image_index, select_image) =
-                                    (*slideshow_length, *selected_image_index, select_image.clone());
-                                Callback::from(move |_| {
-                                    if selected_image_index == 0 {
-                                        select_image.emit(slideshow_length - 1)
-                                    } else {
-                                        select_image.emit(selected_image_index - 1)
-                                    }
-                                })
-                            }
-                        />
-                    </div>
-                }
+                html! { <Button icon_name="fa fa-chevron-left" onclick={on_previous_image_clicked} /> }
             } else {
                 html! {}
             }}
             <img src={selected_image} style="width: 75%; object-fit: contain; align-self: stretch;"/>
             {if *slideshow_length > 1 {
-                html! {
-                    <div>
-                        <Button
-                            icon_name="fa fa-chevron-right"
-                            onclick={
-                                 let (slideshow_length, selected_image_index, select_image) =
-                                     (*slideshow_length, *selected_image_index, select_image.clone());
-                                 Callback::from(move |_| {
-                                     if selected_image_index == slideshow_length - 1 {
-                                         select_image.emit(0)
-                                     } else {
-                                         select_image.emit(selected_image_index + 1)
-                                     }
-                                 })
-                            }
-                        />
-                    </div>
-                }
+                html! { <Button icon_name="fa fa-chevron-right" onclick={on_next_image_clicked} /> }
             } else {
                 html! {}
             }}

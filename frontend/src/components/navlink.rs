@@ -10,7 +10,7 @@ pub struct NavLinkProps<'a> {
     #[prop_or_default]
     pub on_hover: Callback<(&'a str, bool)>,
     #[prop_or_default]
-    pub on_hover_label: &'a str,
+    pub label_on_hover: &'a str,
     #[prop_or_default]
     pub hovered: bool,
     #[prop_or_default]
@@ -23,7 +23,7 @@ pub fn navlink(
         label,
         on_hover,
         hovered,
-        on_hover_label,
+        label_on_hover,
         is_other_link_hovered,
     }: &NavLinkProps<'static>,
 ) -> Html {
@@ -39,7 +39,7 @@ pub fn navlink(
                        let (label, on_hover) = (*label, on_hover.clone());
                        Callback::from(move |_| on_hover.emit((label, false)))
              }
-             value={if *hovered { *on_hover_label } else { *label }}
+             value={if *hovered { *label_on_hover } else { *label }}
         />
     }
 }
