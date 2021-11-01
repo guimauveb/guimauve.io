@@ -62,7 +62,7 @@ pub fn article_header(ArticleHeaderProps { article_header, .. }: &ArticleHeaderP
             </div>
             <div style="margin-top: 8px; margin-bottom: 12px;">
                <div style="display: flex; flex: 1;">
-                <Image src={&article_header.image} width="100%" />
+                <Image src={&article_header.image} width="100%" object_fit="cover"/>
                     {match &article_header.image_credits {
                         Some(credits) => html! {
                             <p style="transform: rotate(180deg); writing-mode: tb-rl; font-style: italic; font-size: .8rem; margin-left: 4px;">
