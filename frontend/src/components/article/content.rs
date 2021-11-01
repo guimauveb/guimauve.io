@@ -2,7 +2,6 @@ use {
     crate::{
         components::{
             code::Code,
-            image::Image,
             text::{Text, TextVariant},
         },
         entities::{
@@ -23,7 +22,7 @@ use {
             button::{Button, ButtonVariant},
             loader::Loader,
             select::Select,
-            text_editor::TextEditor,
+            text_area::TextArea,
         },
         entities::{
             content_type::CONTENT_TYPES,
@@ -88,7 +87,7 @@ pub fn content(ContentProps { content, .. }: &ContentProps) -> Html {
                 },
                 ContentType::Image => html! {
                     <div style="display: flex; justify-content: center;">
-                        <Image src={&content.content} width="75%" height="100%" object_fit="contain" />
+                        <img src={&content.content} style="width: 75%; height: 100%; object-fit: contain;" />
                     </div>
                     }
                 }
@@ -403,7 +402,7 @@ pub fn content(
                     true => html! {
                         <div>
                             <Select<ContentType> selected={&form.content_type} options={&CONTENT_TYPES} onchange={on_change_content_type} />
-                            <TextEditor rows={8} data={&form.content} onchange={on_change_content_content} />
+                            <TextArea rows={8} value={&form.content} onchange={on_change_content_content} />
                             <div style="display: flex; margin-top: 4px; margin-bottom: 4px; justify-content: flex-end; font-size:.8em;">
                                 {match action {
                                     Action::Edit => html! {<Button variant={ButtonVariant::Danger} onclick={&on_delete_content} label="Delete"/>},
@@ -429,7 +428,7 @@ pub fn content(
                     true => html! {
                         <div>
                             <Select<ContentType> selected={&form.content_type} options={&CONTENT_TYPES} onchange={on_change_content_type} />
-                            <TextEditor rows={8} data={&form.content} onchange={on_change_content_content} />
+                            <TextArea rows={8} value={&form.content} onchange={on_change_content_content} />
                             <div style="display: flex; margin-top: 4px; margin-bottom: 4px; justify-content: flex-end; font-size:.8em;">
                                 {match action {
                                     Action::Edit => html! {<Button variant={ButtonVariant::Danger} onclick={&on_delete_content} label="Delete"/>},
@@ -456,8 +455,8 @@ pub fn content(
                     true => html! {
                         <div>
                             <Select<ContentType> selected={&form.content_type} options={&CONTENT_TYPES} onchange={on_change_content_type} />
-                            <TextEditor rows={8} data={&form.content} onchange={on_change_content_content} />
-                            <TextEditor rows={1} data={match &form.url {
+                            <TextArea rows={8} value={&form.content} onchange={on_change_content_content} />
+                            <TextArea rows={1} value={match &form.url {
                                     Some(url) => url,
                                     None => "URL...",
                                 }}
@@ -505,7 +504,7 @@ pub fn content(
                                     />
                                 </div>
                             </div>
-                            <TextEditor rows={8} data={&form.content} onchange={on_change_content_content} />
+                            <TextArea rows={8} value={&form.content} onchange={on_change_content_content} />
                             <div style="display: flex; margin-top: 4px; margin-bottom: 4px; justify-content: flex-end; font-size:.8em;">
                                {match action {
                                     Action::Edit => html! {<Button variant={ButtonVariant::Danger} onclick={&on_delete_content} label="Delete"/>},
@@ -536,7 +535,7 @@ pub fn content(
                     true => html! {
                         <div>
                             <Select<ContentType> selected={&form.content_type} options={&CONTENT_TYPES} onchange={on_change_content_type} />
-                            <TextEditor rows={1} data={&form.content} onchange={on_change_content_content} />
+                            <TextArea rows={1} value={&form.content} onchange={on_change_content_content} />
                             <div style="display: flex; margin-top: 4px; margin-bottom: 4px; justify-content: flex-end; font-size:.8em;">
                                 {match action {
                                     Action::Edit => html! {<Button variant={ButtonVariant::Danger} onclick={&on_delete_content} label="Delete"/>},
@@ -555,7 +554,7 @@ pub fn content(
                                         <i class="fa fa-edit"/>
                                     </div>
                                 </div>
-                                <Image src={&content.content} width="75%" />
+                                <img src={&content.content} style="width: 75%; height: 100%; object-fit: contain;" />
                             </div>
                         }
                     }

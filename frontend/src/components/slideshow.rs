@@ -1,5 +1,5 @@
 use {
-    crate::components::{button::Button, image::Image},
+    crate::components::button::Button,
     yew::{html, Callback, Properties},
     yew_functional::function_component,
 };
@@ -51,7 +51,7 @@ pub fn slideshow(
             } else {
                 html! {}
             }}
-            <Image src={selected_image} width="75%" object_fit="contain" style="align-self: stretch;"/>
+            <img src={selected_image} style="width: 75%; object-fit: contain; align-self: stretch;"/>
             {if *slideshow_length > 1 {
                 html! {
                     <div>

@@ -1,7 +1,6 @@
 use {
     crate::{
         components::{
-            image::Image,
             tag_label::TagLabel,
             text::{Text, TextVariant},
         },
@@ -19,7 +18,7 @@ use {
 #[cfg(feature = "editable")]
 use {
     crate::{
-        components::{button::Button, loader::Loader, text_editor::TextEditor},
+        components::{button::Button, loader::Loader, text_area::TextArea},
         entities::interfaces::Status,
         service::{articles::update_article_header, future::handle_future},
         store::store::BlogStore,
@@ -292,7 +291,7 @@ pub fn article_header(
             {match *is_title_edited {
                 true => html! {
                     <>
-                        <TextEditor rows={2} data={&form.title} onchange={on_change_title} />
+                        <TextArea rows={2} value={&form.title} onchange={on_change_title} />
                         <div style="display: flex; margin-top: 4px; margin-bottom: 4px; justify-content: flex-end; font-size: .8em;">
                             <>
                                 <Button onclick={&on_cancel_edit_title} label="Cancel"/>
@@ -325,7 +324,7 @@ pub fn article_header(
                 {match *is_image_edited {
                     true => html! {
                         <>
-                            <TextEditor rows={1} data={&form.image} onchange={on_change_image} />
+                            <TextArea rows={1} value={&form.image} onchange={on_change_image} />
                             <div style="display: flex; margin-top: 4px; margin-bottom: 4px; justify-content: flex-end; font-size: .8em;">
                             <>
                                 <Button onclick={&on_cancel_edit_image} label="Cancel"/>
@@ -343,7 +342,7 @@ pub fn article_header(
                                     <i class="fa fa-edit"></i>
                                 </div>
                                 <div style="display: flex; flex: 1;">
-                                    <Image src={&article_header.image} width="100%" />
+                                    <img src={&article_header.image} style="width: 100%;" />
                                     {match &article_header.image_credits {
                                         Some(credits) => html! {
                                             <p style="transform: rotate(180deg); writing-mode: tb-rl; font-style: italic; font-size: .8rem; margin-left: 4px;">
@@ -362,7 +361,7 @@ pub fn article_header(
                 {match *is_headline_edited {
                     true => html! {
                         <>
-                            <TextEditor rows={2} data={&form.headline} onchange={&on_change_headline} />
+                            <TextArea rows={2} value={&form.headline} onchange={&on_change_headline} />
                             <div style="display: flex; margin-top: 4px; margin-bottom: 4px; justify-content: flex-end; font-size: .8em;">
                             <>
                                 <Button onclick={&on_cancel_edit_headline} label="Cancel"/>

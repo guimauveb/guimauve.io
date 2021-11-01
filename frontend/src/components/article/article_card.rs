@@ -1,7 +1,6 @@
 use {
     crate::{
         components::{
-            image::Image,
             tag_label::TagLabel,
             text::{Text, TextVariant},
         },
@@ -41,7 +40,7 @@ pub fn article_card(ArticleCardProps { article, on_click }: &ArticleCardProps) -
                     }}
                 </div>
                 <div style="margin-top: 8px; margin-bottom: 8px;">
-                    <Image src={&article.image} object_fit="cover" height="16em" />
+                    <img src={&article.image} style="object-fit: cover; height: 16em; width: 100%;" />
                 </div>
                 <div style="margin-top: 8px; margin-bottom: 8px;">
                     <Text value={&article.headline} />
@@ -82,7 +81,7 @@ pub fn article_card(ArticleCardProps { article, on_click }: &ArticleCardProps) -
                     </div>
                 </div>
                 <div style="margin-top: 8px; margin-bottom: 8px;">
-                    <Image src={&article.image} object_fit="cover" height="16em" />
+                    <img src={&article.image} style="object-fit: cover; height: 16em; width: 100%;" />
                 </div>
                 <div style="margin-top: 8px; margin-bottom: 8px;">
                     <Text value={&article.headline} />

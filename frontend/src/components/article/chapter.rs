@@ -18,7 +18,7 @@ use {
         components::{
             button::{Button, ButtonVariant},
             loader::Loader,
-            text_editor::TextEditor,
+            text_area::TextArea,
         },
         entities::interfaces::Status,
         service::{
@@ -303,7 +303,7 @@ pub fn chapter(
             {match *edited {
                 true => html! {
                     <div>
-                        <TextEditor rows={2} data={&*chapter_title} onchange={on_change_chapter_title} />
+                        <TextArea rows={2} value={&*chapter_title} onchange={on_change_chapter_title} />
                         <div style="display: flex; margin-top: 4px; margin-bottom: 4px; justify-content: flex-end; font-size: .8em;">
                         {match action {
                             Action::Edit => html! {

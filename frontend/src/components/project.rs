@@ -3,7 +3,6 @@ use {
         components::{
             button::*,
             hr::Hr,
-            image::Image,
             modal::Modal,
             slideshow::Slideshow,
             tag_label::TagLabel,
@@ -45,7 +44,7 @@ pub fn project(
         <div style="display: flex; flex: 1; font-size: 0.8em; flex-direction: column;">
             <div style="display: flex; flex: 1">
                 <div style="margin-right: 12px">
-                    <Image width="8em" src={&project.image} />
+                    <img style="width: 8em;" src={&project.image} />
                 </div>
                 <div style="display: flex; flex: 1; flex-direction: column;">
                     <div style="margin-bottom: 4px;">
@@ -97,7 +96,7 @@ pub fn project(
                                                                        }
                                                                     >
                                                                         <div style="margin-left: 8px; position: relative; br: 2px; font-size: 0; width: 50px;">
-                                                                            <Image src={image} />
+                                                                            <img src={image} style="width: 100%;"/>
                                                                             <div class="project-gallery-img-container-middle"></div>
                                                                         </div>
                                                                    </div>

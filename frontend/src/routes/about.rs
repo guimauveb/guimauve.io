@@ -1,9 +1,6 @@
 use {
     crate::{
-        components::{
-            image::Image,
-            text::{Text, TextVariant},
-        },
+        components::text::{Text, TextVariant},
         API_URL,
     },
     yew::html,
@@ -31,10 +28,10 @@ pub fn about() -> Html {
                             </div>
                         </a>
                         <a href="https://stackoverflow.com/users/11676080/guimauve?tab=profile" target="_blank">
-                            <Image width="4em" src={API_URL.to_owned() + "/media/images/about/c815fb0a-4f58-4420-b0ba-8612199449c8.webp"}/>
+                            <img style="width: 4em;" src={API_URL.to_owned() + "/media/images/about/c815fb0a-4f58-4420-b0ba-8612199449c8.webp"}/>
                         </a>
                         <a href="https://www.linkedin.com/in/guillaume-b-4a167b19b/" target="_blank">
-                            <Image width="4em" src={API_URL.to_owned() + "/media/images/about/84adeaba-827f-4854-aa03-f4429d8ebfeb.webp"}/>
+                            <img style="width: 4em;" src={API_URL.to_owned() + "/media/images/about/84adeaba-827f-4854-aa03-f4429d8ebfeb.webp"}/>
                         </a>
                     </div>
                 </div>
