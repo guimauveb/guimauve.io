@@ -79,6 +79,7 @@ async fn main() -> std::io::Result<()> {
                 Cors::new()
                     .allowed_origin("http://localhost:3000")
                     .allowed_origin("http://127.0.0.1:3000")
+                    .allowed_origin("http://192.168.1.12:3000")
                     .allowed_headers(vec![
                         http::header::AUTHORIZATION,
                         http::header::ACCEPT,
@@ -146,7 +147,7 @@ async fn main() -> std::io::Result<()> {
                 web::get().to(handlers::projects::get_project_by_id),
             );
     })
-    .bind("127.0.0.1:8080")?
+    .bind("0.0.0.0:8080")?
     .run()
     .await
 }

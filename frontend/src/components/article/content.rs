@@ -88,7 +88,7 @@ pub fn content(ContentProps { content, .. }: &ContentProps) -> Html {
                 },
                 ContentType::Image => html! {
                     <div style="display: flex; justify-content: center;">
-                        <Image src={&content.content} width="75%" />
+                        <Image src={&content.content} width="75%" height="100%" object_fit="contain" />
                     </div>
                     }
                 }
