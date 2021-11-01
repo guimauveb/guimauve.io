@@ -94,11 +94,11 @@ fn db_update_content(
 #[cfg(feature = "editable")]
 pub async fn update_content(
     pool: web::Data<Pool>,
-    content_pk: web::Path<i32>,
+    content_id: web::Path<i32>,
     body: web::Json<Content>,
 ) -> Result<HttpResponse, Error> {
     Ok(
-        web::block(move || db_update_content(pool, content_pk.into_inner(), body.into_inner()))
+        web::block(move || db_update_content(pool, content_id.into_inner(), body.into_inner()))
             .await
             .map(|article| HttpResponse::Ok().json(article))
             .map_err(|_| HttpResponse::InternalServerError())?,
@@ -108,14 +108,14 @@ pub async fn update_content(
 #[cfg(feature = "editable")]
 fn db_add_content(
     pool: web::Data<Pool>,
-    content: NewContent,
+    new_content: NewContent,
 ) -> Result<i32, diesel::result::Error> {
     use diesel::pg::expression::dsl::any;
     let conn = pool.get().unwrap();
 
     let content_id = conn.transaction::<i32, diesel::result::Error, _>(|| {
         let chapter = chapters::table
-            .find(content.chapter_id)
+            .find(new_content.chapter_id)
             .first::<Chapter>(&conn)
             .expect("Could not load chapter.");
 
@@ -125,13 +125,13 @@ fn db_add_content(
             .expect("Could not load contents.");
 
         diesel::update(contents::table.filter(contents::id.eq(any(contents_ids))))
-            .filter(contents::index.ge(content.index))
+            .filter(contents::index.ge(new_content.index))
             .set(contents::index.eq(contents::index + 1))
             .execute(&conn)
             .expect("An error occured while incrementing contents ids.");
 
         let content_id = diesel::insert_into(contents::table)
-            .values(&content)
+            .values(&new_content)
             .returning(contents::id)
             .get_result(&conn)
             .expect("Could not insert content.");
@@ -182,13 +182,13 @@ pub async fn add_content(
 #[cfg(feature = "editable")]
 fn db_delete_content(
     pool: web::Data<Pool>,
-    content_pk: i32,
+    content_id: i32,
 ) -> Result<TAPIResponse<()>, diesel::result::Error> {
     use diesel::pg::expression::dsl::any;
     let conn = pool.get().unwrap();
     conn.transaction::<(), diesel::result::Error, _>(|| {
         let content = contents::table
-            .find(content_pk)
+            .find(content_id)
             .first::<Content>(&conn)
             .expect("Could not load chapter.");
 
@@ -208,7 +208,7 @@ fn db_delete_content(
             .execute(&conn)
             .expect("An error occured while decrementing contents ids.");
 
-        diesel::delete(contents::table.filter(contents::id.eq(content_pk)))
+        diesel::delete(contents::table.filter(contents::id.eq(content_id)))
             .execute(&conn)
             .expect("Could not delete content.");
 
@@ -223,10 +223,10 @@ fn db_delete_content(
 #[cfg(feature = "editable")]
 pub async fn delete_content(
     pool: web::Data<Pool>,
-    content_pk: web::Path<i32>,
+    content_id: web::Path<i32>,
 ) -> Result<HttpResponse, Error> {
     Ok(
-        web::block(move || db_delete_content(pool, content_pk.into_inner()))
+        web::block(move || db_delete_content(pool, content_id.into_inner()))
             .await
             .map(|response| HttpResponse::Ok().json(response))
             .map_err(|_| HttpResponse::InternalServerError())?,
@@ -269,12 +269,12 @@ fn db_get_chapters_results_by_article(
 #[cfg(feature = "editable")]
 fn db_update_chapter(
     pool: web::Data<Pool>,
-    chapter_pk: i32,
+    chapter_id: i32,
     updated_chapter: Chapter,
 ) -> Result<IArticle, diesel::result::Error> {
     let conn = pool.get().unwrap();
 
-    diesel::update(chapters::table.find(chapter_pk))
+    diesel::update(chapters::table.find(chapter_id))
         .set(&updated_chapter)
         .execute(&conn)?;
 
@@ -283,11 +283,11 @@ fn db_update_chapter(
 #[cfg(feature = "editable")]
 pub async fn update_chapter(
     pool: web::Data<Pool>,
-    chapter_pk: web::Path<i32>,
+    chapter_id: web::Path<i32>,
     body: web::Json<Chapter>,
 ) -> Result<HttpResponse, Error> {
     Ok(
-        web::block(move || db_update_chapter(pool, chapter_pk.into_inner(), body.into_inner()))
+        web::block(move || db_update_chapter(pool, chapter_id.into_inner(), body.into_inner()))
             .await
             .map(|article| HttpResponse::Ok().json(article))
             .map_err(|_| HttpResponse::InternalServerError())?,
@@ -297,13 +297,13 @@ pub async fn update_chapter(
 #[cfg(feature = "editable")]
 fn db_add_chapter(
     pool: web::Data<Pool>,
-    chapter: NewChapter,
+    new_chapter: NewChapter,
 ) -> Result<i32, diesel::result::Error> {
     use diesel::pg::expression::dsl::any;
     let conn = pool.get().unwrap();
     let chapter_id = conn.transaction::<i32, diesel::result::Error, _>(|| {
         let article = articles::table
-            .find(chapter.article_id)
+            .find(new_chapter.article_id)
             .first::<Article>(&conn)
             .expect("Could not load article.");
 
@@ -313,13 +313,13 @@ fn db_add_chapter(
             .expect("Could not load chapters.");
 
         diesel::update(chapters::table.filter(chapters::id.eq(any(chapters_ids))))
-            .filter(chapters::index.ge(chapter.index))
+            .filter(chapters::index.ge(new_chapter.index))
             .set(chapters::index.eq(chapters::index + 1))
             .execute(&conn)
             .expect("An error occured while incrementing chapters ids.");
 
         let chapter_id = diesel::insert_into(chapters::table)
-            .values(&chapter)
+            .values(&new_chapter)
             .returning(chapters::id)
             .get_result(&conn)
             .expect("Could not insert chapter.");
@@ -354,13 +354,13 @@ pub async fn add_chapter(
 #[cfg(feature = "editable")]
 fn db_delete_chapter(
     pool: web::Data<Pool>,
-    chapter_pk: i32,
+    chapter_id: i32,
 ) -> Result<TAPIResponse<()>, diesel::result::Error> {
     use diesel::pg::expression::dsl::any;
     let conn = pool.get().unwrap();
     conn.transaction::<(), diesel::result::Error, _>(|| {
         let chapter = chapters::table
-            .find(chapter_pk)
+            .find(chapter_id)
             .first::<Chapter>(&conn)
             .expect("Could not load chapter.");
 
@@ -380,7 +380,7 @@ fn db_delete_chapter(
             .execute(&conn)
             .expect("Could not update chapter.");
 
-        diesel::delete(chapters::table.filter(chapters::id.eq(chapter_pk))).execute(&conn)?;
+        diesel::delete(chapters::table.filter(chapters::id.eq(chapter_id))).execute(&conn)?;
 
         Ok(())
     })?;
@@ -393,10 +393,10 @@ fn db_delete_chapter(
 #[cfg(feature = "editable")]
 pub async fn delete_chapter(
     pool: web::Data<Pool>,
-    chapter_pk: web::Path<i32>,
+    chapter_id: web::Path<i32>,
 ) -> Result<HttpResponse, Error> {
     Ok(
-        web::block(move || db_delete_chapter(pool, chapter_pk.into_inner()))
+        web::block(move || db_delete_chapter(pool, chapter_id.into_inner()))
             .await
             .map(|response| HttpResponse::Ok().json(response))
             .map_err(|_| HttpResponse::InternalServerError())?,
@@ -478,17 +478,17 @@ pub async fn get_all_articles(pool: web::Data<Pool>) -> Result<HttpResponse, Err
 
 pub fn db_get_article_result_by_id(
     pool: web::Data<Pool>,
-    article_pk: i32,
+    article_id: i32,
 ) -> Result<IArticle, diesel::result::Error> {
     let conn = pool.get().unwrap();
     let article = match INCLUDE_UNPUBLISHED_ARTICLES {
         "true" => articles::table
-            .find(article_pk)
+            .find(article_id)
             .first::<Article>(&conn)
             .expect("Article not found."),
         _ => articles::table
             .filter(articles::published.eq(true))
-            .find(article_pk)
+            .find(article_id)
             .first::<Article>(&conn)
             .expect("Article not found."),
     };
@@ -496,7 +496,6 @@ pub fn db_get_article_result_by_id(
         db_get_tags_results_for_article(&conn, &article).expect("Could not load article tags.");
     let chapters = db_get_chapters_results_by_article(&conn, &article);
 
-    // Might be a better way to do it -> Destructuring?
     Ok(IArticle {
         id: article.id,
         title: article.title,
@@ -514,17 +513,16 @@ pub fn db_get_article_result_by_id(
 }
 pub async fn get_article_by_id(
     pool: web::Data<Pool>,
-    article_pk: web::Path<i32>,
+    article_id: web::Path<i32>,
 ) -> Result<HttpResponse, Error> {
     Ok(
-        web::block(move || db_get_article_result_by_id(pool, article_pk.into_inner()))
+        web::block(move || db_get_article_result_by_id(pool, article_id.into_inner()))
             .await
             .map(|article| HttpResponse::Ok().json(article))
             .map_err(|_| HttpResponse::NotFound())?,
     )
 }
 
-// Update article, chapters and contents are not supposed to be updated through this endpoint
 #[cfg(feature = "editable")]
 fn db_update_article_header(
     pool: web::Data<Pool>,
@@ -533,18 +531,16 @@ fn db_update_article_header(
 ) -> Result<IArticle, diesel::result::Error> {
     let conn = pool.get().unwrap();
 
-    let article_header = Article {
-        id: updated_header.article_id,
-        title: updated_header.title,
-        pub_date: updated_header.pub_date,
-        published: updated_header.published,
-        headline: updated_header.headline,
-        image: updated_header.image,
-        image_credits: updated_header.image_credits,
-    };
-
     diesel::update(articles::table.find(pk))
-        .set(&article_header)
+        .set(&Article {
+            id: updated_header.article_id,
+            title: updated_header.title,
+            pub_date: updated_header.pub_date,
+            published: updated_header.published,
+            headline: updated_header.headline,
+            image: updated_header.image,
+            image_credits: updated_header.image_credits,
+        })
         .get_result::<Article>(&conn)
         .expect("Could not update article.");
 
@@ -553,11 +549,11 @@ fn db_update_article_header(
 #[cfg(feature = "editable")]
 pub async fn update_article_header(
     pool: web::Data<Pool>,
-    article_pk: web::Path<i32>,
+    article_id: web::Path<i32>,
     body: web::Json<IArticleHeader>,
 ) -> Result<HttpResponse, Error> {
     Ok(web::block(move || {
-        db_update_article_header(pool, article_pk.into_inner(), body.into_inner())
+        db_update_article_header(pool, article_id.into_inner(), body.into_inner())
     })
     .await
     .map(|article| HttpResponse::Ok().json(article))
@@ -567,31 +563,31 @@ pub async fn update_article_header(
 #[cfg(feature = "editable")]
 fn db_add_article(
     pool: web::Data<Pool>,
-    article: NewArticle,
+    new_article: NewArticle,
 ) -> Result<IArticle, diesel::result::Error> {
     let conn = pool.get().unwrap();
 
     let inserted_article_id: i32 = diesel::insert_into(articles::table)
-        .values(&article.article_header)
+        .values(&new_article.article_header)
         .returning(articles::id)
         .get_result(&conn)
         .expect("Could not insert article.");
 
-    for chap in article.chapters {
+    for chapter_form in new_article.chapters {
         let inserted_chapter_id = db_add_chapter(
             pool.clone(),
             NewChapter {
                 article_id: inserted_article_id,
-                ..chap.chapter
+                ..chapter_form.chapter
             },
         )?;
-        for cont in chap.contents {
+        for content in chapter_form.contents {
             db_add_content(
                 pool.clone(),
                 NewContent {
                     article_id: inserted_article_id,
                     chapter_id: inserted_chapter_id,
-                    ..cont
+                    ..content
                 },
             )?;
         }
@@ -666,26 +662,26 @@ pub async fn add_article(
 #[cfg(feature = "editable")]
 fn db_publish_article(
     pool: web::Data<Pool>,
-    article_pk: i32,
+    article_id: i32,
     published: bool,
 ) -> Result<IArticle, diesel::result::Error> {
     let conn = pool.get().unwrap();
-    diesel::update(articles::table.filter(articles::id.eq(article_pk)))
+    diesel::update(articles::table.filter(articles::id.eq(article_id)))
         .set(articles::published.eq(published))
         .execute(&conn)
         .expect("An error occured while updating the article.");
 
-    db_get_article_result_by_id(pool, article_pk)
+    db_get_article_result_by_id(pool, article_id)
 }
 #[cfg(feature = "editable")]
 pub async fn publish_article(
     pool: web::Data<Pool>,
-    article_pk: web::Path<i32>,
+    article_id: web::Path<i32>,
     payload: web::Json<InputPublishArticle>,
 ) -> Result<HttpResponse, Error> {
     let published = payload.published;
     Ok(
-        web::block(move || db_publish_article(pool, article_pk.into_inner(), published))
+        web::block(move || db_publish_article(pool, article_id.into_inner(), published))
             .await
             .map(|response| HttpResponse::Ok().json(response))
             .map_err(|_| HttpResponse::InternalServerError())?,
@@ -695,10 +691,10 @@ pub async fn publish_article(
 #[cfg(feature = "editable")]
 fn db_delete_article(
     pool: web::Data<Pool>,
-    article_pk: i32,
+    article_id: i32,
 ) -> Result<TAPIResponse<()>, diesel::result::Error> {
     let conn = pool.get().unwrap();
-    diesel::delete(articles::table.filter(articles::id.eq(article_pk))).execute(&conn)?;
+    diesel::delete(articles::table.filter(articles::id.eq(article_id))).execute(&conn)?;
 
     Ok(TAPIResponse {
         status: Status::Success,
@@ -708,10 +704,10 @@ fn db_delete_article(
 #[cfg(feature = "editable")]
 pub async fn delete_article(
     pool: web::Data<Pool>,
-    article_pk: web::Path<i32>,
+    article_id: web::Path<i32>,
 ) -> Result<HttpResponse, Error> {
     Ok(
-        web::block(move || db_delete_article(pool, article_pk.into_inner()))
+        web::block(move || db_delete_article(pool, article_id.into_inner()))
             .await
             .map(|response| HttpResponse::Ok().json(response))
             .map_err(|_| HttpResponse::InternalServerError())?,
@@ -722,20 +718,20 @@ pub async fn delete_article(
 #[cfg(feature = "editable")]
 fn db_update_article_tags(
     pool: web::Data<Pool>,
-    article_pk: i32,
+    article_id: i32,
     updated_tags: Vec<Tag>,
 ) -> Result<IArticle, diesel::result::Error> {
     let conn = pool.get().unwrap();
     let new_article_tags: Vec<NewArticleTag> = updated_tags
         .into_iter()
         .map(|tag: Tag| NewArticleTag {
-            article_id: article_pk,
+            article_id,
             tag_id: tag.id,
         })
         .collect();
 
     conn.transaction::<(), _, _>(|| {
-        diesel::delete(article_tags::table.filter(article_tags::article_id.eq(article_pk)))
+        diesel::delete(article_tags::table.filter(article_tags::article_id.eq(article_id)))
             .execute(&conn)?;
         diesel::insert_into(article_tags::table)
             .values(new_article_tags)
@@ -744,18 +740,18 @@ fn db_update_article_tags(
         Err(diesel::result::Error::RollbackTransaction)
     })?;
 
-    db_get_article_result_by_id(pool, article_pk)
+    db_get_article_result_by_id(pool, article_id)
 }
 
 #[cfg(feature = "editable")]
 pub async fn update_article_tags(
     pool: web::Data<Pool>,
-    article_pk: web::Path<i32>,
+    article_id: web::Path<i32>,
     body: web::Json<Vec<Tag>>,
 ) -> Result<HttpResponse, Error> {
     Ok(
         web::block(move || {
-            db_update_article_tags(pool, article_pk.into_inner(), body.into_inner())
+            db_update_article_tags(pool, article_id.into_inner(), body.into_inner())
         })
         .await
         .map(|_| HttpResponse::Ok().json(()))
