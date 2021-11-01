@@ -1,3 +1,8 @@
+/* About Strings and concatenation (from https://rust-unofficial.github.io/patterns/idioms/concat-format.html)
+ *      Using format! is usually the most succinct and readable way to combine strings, BUT:
+ *      It is usually not the most efficient way to combine strings.
+ *      A series of push operations on a mutable string is usually the most efficient (especially if the string has been pre-allocated to the expected size).
+*/
 use {
     super::fetch::Fetch,
     crate::{
@@ -11,9 +16,12 @@ use {
 };
 
 pub async fn get_article_list() -> Result<HashMap<i32, IArticle>, Status> {
-    let url = format!("{}/articles", API_URL);
-    let json = Fetch::get(url).await;
+    // API_URL.len() + "/articles".len()
+    let mut url = String::with_capacity(API_URL.len() + 9);
+    url.push_str(API_URL);
+    url.push_str("/articles");
 
+    let json = Fetch::get(url).await;
     match json {
         Ok(json) => Ok(json.into_serde::<HashMap<i32, IArticle>>().unwrap()),
         Err(_err) => Err(Status::Error),
@@ -21,9 +29,12 @@ pub async fn get_article_list() -> Result<HashMap<i32, IArticle>, Status> {
 }
 
 pub async fn add_article(payload: &IArticle) -> Result<IArticle, Status> {
-    let url = format!("{}/articles", API_URL);
-    let json = Fetch::post(url, Some(json!(&payload).to_string())).await;
+    // API_URL.len() + "/articles".len()
+    let mut url = String::with_capacity(API_URL.len() + 9);
+    url.push_str(API_URL);
+    url.push_str("/articles");
 
+    let json = Fetch::post(url, Some(json!(&payload).to_string())).await;
     match json {
         Ok(json) => Ok(json.into_serde::<IArticle>().unwrap()),
         Err(_err) => Err(Status::Error),
@@ -31,9 +42,14 @@ pub async fn add_article(payload: &IArticle) -> Result<IArticle, Status> {
 }
 
 pub async fn get_article(id: &i32) -> Result<IArticle, Status> {
-    let url = format!("{}/articles/{}", API_URL, id);
-    let json = Fetch::get(url).await;
+    let id_str = id.to_string();
+    // API_URL.len() + "/articles/".len() + id_str.len()
+    let mut url = String::with_capacity(API_URL.len() + 10 + id_str.len());
+    url.push_str(API_URL);
+    url.push_str("/articles/");
+    url.push_str(&id_str);
 
+    let json = Fetch::get(url).await;
     match json {
         Ok(json) => Ok(json.into_serde::<IArticle>().unwrap()),
         Err(_err) => Err(Status::Error),
@@ -41,9 +57,14 @@ pub async fn get_article(id: &i32) -> Result<IArticle, Status> {
 }
 
 pub async fn update_article_header(payload: &IArticleHeader) -> Result<IArticle, Status> {
-    let url = format!("{}/articles/{}", API_URL, &payload.article_id);
-    let json = Fetch::patch(url, Some(json!(&payload).to_string())).await;
+    let article_id_str = &payload.article_id.to_string();
+    // API_URL.len() + "/articles/".len() + article_id_str.len()
+    let mut url = String::with_capacity(API_URL.len() + 10 + article_id_str.len());
+    url.push_str(API_URL);
+    url.push_str("/articles/");
+    url.push_str(&article_id_str);
 
+    let json = Fetch::patch(url, Some(json!(&payload).to_string())).await;
     match json {
         Ok(json) => Ok(json.into_serde::<IArticle>().unwrap()),
         Err(_err) => Err(Status::Error),
@@ -51,9 +72,14 @@ pub async fn update_article_header(payload: &IArticleHeader) -> Result<IArticle,
 }
 
 pub async fn publish_article(id: &i32, payload: &IPublishArticle) -> Result<IArticle, Status> {
-    let url = format!("{}/articles/publish/{}", API_URL, id);
-    let json = Fetch::patch(url, Some(json!(&payload).to_string())).await;
+    let id_str = id.to_string();
+    // API_URL.len() + "/articles/publish/".len() + article_id_str.len()
+    let mut url = String::with_capacity(API_URL.len() + 18 + id_str.len());
+    url.push_str(API_URL);
+    url.push_str("/articles/publish/");
+    url.push_str(&id_str);
 
+    let json = Fetch::patch(url, Some(json!(&payload).to_string())).await;
     match json {
         Ok(json) => Ok(json.into_serde::<IArticle>().unwrap()),
         Err(_err) => Err(Status::Error),
@@ -61,9 +87,14 @@ pub async fn publish_article(id: &i32, payload: &IPublishArticle) -> Result<IArt
 }
 
 pub async fn delete_article(id: &i32) -> Result<Status, Status> {
-    let url = format!("{}/articles/{}", API_URL, id);
-    let json = Fetch::delete(url).await;
+    let id_str = id.to_string();
+    // API_URL.len() + "/articles/".len() + id_str.len()
+    let mut url = String::with_capacity(API_URL.len() + 10 + id_str.len());
+    url.push_str(API_URL);
+    url.push_str("/articles/");
+    url.push_str(&id_str);
 
+    let json = Fetch::delete(url).await;
     match json {
         Ok(json) => {
             let response = json.into_serde::<TAPIResponse<()>>().unwrap();
@@ -74,9 +105,12 @@ pub async fn delete_article(id: &i32) -> Result<Status, Status> {
 }
 
 pub async fn add_content(payload: &IContent) -> Result<IArticle, Status> {
-    let url = format!("{}/contents", API_URL);
-    let json = Fetch::post(url, Some(json!(&payload).to_string())).await;
+    // API_URL.len() + "/contents".len()
+    let mut url = String::with_capacity(API_URL.len() + 9);
+    url.push_str(API_URL);
+    url.push_str("/contents");
 
+    let json = Fetch::post(url, Some(json!(&payload).to_string())).await;
     match json {
         Ok(json) => Ok(json.into_serde::<IArticle>().unwrap()),
         Err(_err) => Err(Status::Error),
@@ -84,9 +118,14 @@ pub async fn add_content(payload: &IContent) -> Result<IArticle, Status> {
 }
 
 pub async fn update_content(payload: &IContent) -> Result<IArticle, Status> {
-    let url = format!("{}/contents/{}", API_URL, &payload.id);
-    let json = Fetch::patch(url, Some(json!(&payload).to_string())).await;
+    let content_id_str = &payload.id.to_string();
+    // API_URL.len() + "/contents/".len() + content_id_str.len()
+    let mut url = String::with_capacity(API_URL.len() + 10 + content_id_str.len());
+    url.push_str(API_URL);
+    url.push_str("/contents/");
+    url.push_str(&content_id_str);
 
+    let json = Fetch::patch(url, Some(json!(&payload).to_string())).await;
     match json {
         Ok(json) => Ok(json.into_serde::<IArticle>().unwrap()),
         Err(_err) => Err(Status::Error),
@@ -94,9 +133,14 @@ pub async fn update_content(payload: &IContent) -> Result<IArticle, Status> {
 }
 
 pub async fn delete_content(id: &i32) -> Result<Status, Status> {
-    let url = format!("{}/contents/{}", API_URL, id);
-    let json = Fetch::delete(url).await;
+    let id_str = id.to_string();
+    // API_URL.len() + "/contents/".len() + id_str.len()
+    let mut url = String::with_capacity(API_URL.len() + 10 + id_str.len());
+    url.push_str(API_URL);
+    url.push_str("/contents/");
+    url.push_str(&id_str);
 
+    let json = Fetch::delete(url).await;
     match json {
         Ok(json) => Ok(json.into_serde::<TAPIResponse<()>>().unwrap().status),
         Err(_err) => Err(Status::Error),
@@ -104,9 +148,12 @@ pub async fn delete_content(id: &i32) -> Result<Status, Status> {
 }
 
 pub async fn add_chapter(payload: &IChapter) -> Result<IArticle, Status> {
-    let url = format!("{}/chapters", API_URL);
-    let json = Fetch::post(url, Some(json!(&payload).to_string())).await;
+    // API_URL.len() + "/chapters".len()
+    let mut url = String::with_capacity(API_URL.len() + 9);
+    url.push_str(API_URL);
+    url.push_str("/chapters");
 
+    let json = Fetch::post(url, Some(json!(&payload).to_string())).await;
     match json {
         Ok(json) => Ok(json.into_serde::<IArticle>().unwrap()),
         Err(_err) => Err(Status::Error),
@@ -114,9 +161,14 @@ pub async fn add_chapter(payload: &IChapter) -> Result<IArticle, Status> {
 }
 
 pub async fn update_chapter(payload: &IChapter) -> Result<IArticle, Status> {
-    let url = format!("{}/chapters/{}", API_URL, &payload.id);
-    let json = Fetch::patch(url, Some(json!(&payload).to_string())).await;
+    let id_str = payload.id.to_string();
+    // API_URL.len() + "/chapters/".len() + id_str.len()
+    let mut url = String::with_capacity(API_URL.len() + 10 + id_str.len());
+    url.push_str(API_URL);
+    url.push_str("/chapters/");
+    url.push_str(&id_str);
 
+    let json = Fetch::patch(url, Some(json!(&payload).to_string())).await;
     match json {
         Ok(json) => Ok(json.into_serde::<IArticle>().unwrap()),
         Err(_err) => Err(Status::Error),
@@ -124,9 +176,14 @@ pub async fn update_chapter(payload: &IChapter) -> Result<IArticle, Status> {
 }
 
 pub async fn delete_chapter(id: &i32) -> Result<Status, Status> {
-    let url = format!("{}/chapters/{}", API_URL, id);
-    let json = Fetch::delete(url).await;
+    let id_str = id.to_string();
+    // API_URL.len() + "/chapters/".len() + id_str.len()
+    let mut url = String::with_capacity(API_URL.len() + 10 + id_str.len());
+    url.push_str(API_URL);
+    url.push_str("/chapters/");
+    url.push_str(&id_str);
 
+    let json = Fetch::delete(url).await;
     match json {
         Ok(json) => Ok(json.into_serde::<TAPIResponse<()>>().unwrap().status),
         Err(_err) => Err(Status::Error),

@@ -14,6 +14,7 @@ pub enum Method {
     DELETE,
 }
 
+// TODO - Check payload type
 pub async fn fetch(
     url: String,
     method: String,

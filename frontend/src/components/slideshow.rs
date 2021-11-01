@@ -50,8 +50,13 @@ pub fn slideshow(
         "center"
     };
 
+    let mut container_style = String::with_capacity(32 + 13 + 41);
+    container_style.push_str("display: flex; justify-content: ");
+    container_style.push_str(&justify_content);
+    container_style.push_str("; align-items: center; max-height: 28rem;");
+
     html! {
-        <div style={format!("display: flex; justify-content: {}; align-items: center; max-height: 28rem;", justify_content)}>
+        <div style={container_style}>
             {if slideshow_length > 1 {
                 html! { <Button icon_name="fa fa-chevron-left" onclick={on_previous_image_clicked} /> }
             } else { html! {} }}

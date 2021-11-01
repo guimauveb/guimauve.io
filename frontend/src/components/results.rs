@@ -33,6 +33,16 @@ pub fn results(
         on_click_result,
     }: &ResultsProps,
 ) -> Html {
+    let articles_count_str = &articles_count.to_string();
+    let mut articles_count_header = String::with_capacity(articles_count_str.len() + 16);
+    articles_count_header.push_str(&articles_count_str);
+    articles_count_header.push_str(" articles found.");
+
+    let projects_count_str = &projects_count.to_string();
+    let mut projects_count_header = String::with_capacity(projects_count_str.len() + 16);
+    projects_count_header.push_str(&projects_count_str);
+    projects_count_header.push_str(" projects found.");
+
     html! {
         <div>
             <div style="margin-bottom: 16px;">
@@ -53,7 +63,7 @@ pub fn results(
                                 }
                             } else {
                                 html! {
-                                    <Text value={format!("{} articles found.", *articles_count)} />
+                                    <Text value={articles_count_header} />
                                 }
                             }}
                         </>
@@ -91,7 +101,7 @@ pub fn results(
                                 }
                             } else {
                                 html! {
-                                    <Text value={format!("{} projects found.", *projects_count)} />
+                                    <Text value={projects_count_header} />
                                 }
                             }}
                         </>

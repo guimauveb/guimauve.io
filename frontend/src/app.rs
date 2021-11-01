@@ -135,11 +135,11 @@ pub fn app() -> Html {
                                 #[cfg(feature = "editable")]
                                 AppRoute::LiveResume => html! {<LiveResume />},
                                 AppRoute::PageNotFound(Permissive(None)) => html! {<PageNotFound />},
-                                AppRoute::PageNotFound(Permissive(Some(missed_route))) => html! {
-                                    <PageNotFound
-                                        page_name={format!(" Page '{}' not found.", missed_route)}
-                                    />
-                                },
+                                AppRoute::PageNotFound(Permissive(Some(missed_route))) => {
+                                    html! {
+                                        <PageNotFound missed_route={&missed_route} />
+                                    }
+                                }
                             }
                         })
                         redirect = Router::redirect(|route: Route<()>| {

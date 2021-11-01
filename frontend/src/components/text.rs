@@ -56,10 +56,28 @@ pub fn text(
         ..
     }: &TextProps,
 ) -> Html {
-    let style = format!(
-        "white-space: {}; color: {}; user-select: {}; font-size: {}; font-weight: {};",
-        &white_space, &color, &user_select, &font_size, &font_weight
+    let mut style = String::with_capacity(
+        13 + white_space.len()
+            + 9
+            + color.len()
+            + 15
+            + user_select.len()
+            + 13
+            + font_size.len()
+            + 15
+            + font_weight.len(),
     );
+    style.push_str("white-space: ");
+    style.push_str(&white_space);
+    style.push_str("; color: ");
+    style.push_str(&color);
+    style.push_str("; user-select: ");
+    style.push_str(&user_select);
+    style.push_str("; font-size: ");
+    style.push_str(&font_size);
+    style.push_str("; font-weight: ");
+    style.push_str(&font_weight);
+
     let variant = match &variant {
         TextVariant::Normal => "",
         TextVariant::Heading => "heading",
