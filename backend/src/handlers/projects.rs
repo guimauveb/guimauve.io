@@ -101,10 +101,10 @@ pub async fn get_all_projects(pool: web::Data<Pool>) -> Result<HttpResponse, Err
 
 pub fn db_get_project_result_by_id(
     pool: web::Data<Pool>,
-    project_pk: i32,
+    project_id: i32,
 ) -> Result<IProject, diesel::result::Error> {
     let conn = pool.get().unwrap();
-    let project = projects::table.find(project_pk).first::<Project>(&conn)?;
+    let project = projects::table.find(project_id).first::<Project>(&conn)?;
 
     Ok(IProject {
         tags: db_get_tags_results_for_project(&conn, &project)
@@ -128,10 +128,10 @@ pub fn db_get_project_result_by_id(
 #[cfg(feature = "editable")]
 pub async fn get_project_by_id(
     pool: web::Data<Pool>,
-    project_pk: web::Path<i32>,
+    project_id: web::Path<i32>,
 ) -> Result<HttpResponse, Error> {
     Ok(
-        web::block(move || db_get_project_result_by_id(pool, project_pk.into_inner()))
+        web::block(move || db_get_project_result_by_id(pool, project_id.into_inner()))
             .await
             .map(|project| HttpResponse::Ok().json(project))
             .map_err(|_| HttpResponse::InternalServerError())?,
