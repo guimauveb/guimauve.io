@@ -45,7 +45,8 @@ fn db_get_project_gallery(
     let images = ProjectImage::belonging_to(project)
         .select(project_images::image)
         .order_by(project_images::id)
-        .load::<String>(conn)?;
+        .load::<String>(conn)
+        .expect("Could not load project gallery.");
 
     Ok(images
         .iter()
@@ -59,7 +60,8 @@ fn db_get_all_projects_results(
     let conn = pool.get().unwrap();
     let projects = projects::table
         .order_by(projects::id)
-        .load::<Project>(&conn)?;
+        .load::<Project>(&conn)
+        .expect("Cold not load projects.");
 
     let projects_results: HashMap<i32, IProject> = projects
         .into_iter()
@@ -102,10 +104,7 @@ pub fn db_get_project_result_by_id(
     project_pk: i32,
 ) -> Result<IProject, diesel::result::Error> {
     let conn = pool.get().unwrap();
-    let project = projects::table
-        .find(project_pk)
-        .first::<Project>(&conn)
-        .expect("Could not load project.");
+    let project = projects::table.find(project_pk).first::<Project>(&conn)?;
 
     Ok(IProject {
         tags: db_get_tags_results_for_project(&conn, &project)

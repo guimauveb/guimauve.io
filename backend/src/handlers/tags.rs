@@ -39,8 +39,7 @@ fn db_get_results_for_tags(
     let conn = pool.get().unwrap();
     let tag = tags::table
         .filter(tags::label.eq(&label))
-        .first::<Tag>(&conn)
-        .expect("Could not load tag.");
+        .first::<Tag>(&conn)?;
 
     let articles_ids_for_tag = ArticleTag::belonging_to(&tag)
         .select(article_tags::article_id)

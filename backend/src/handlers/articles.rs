@@ -482,15 +482,11 @@ pub fn db_get_article_result_by_id(
 ) -> Result<IArticle, diesel::result::Error> {
     let conn = pool.get().unwrap();
     let article = match INCLUDE_UNPUBLISHED_ARTICLES {
-        "true" => articles::table
-            .find(article_id)
-            .first::<Article>(&conn)
-            .expect("Article not found."),
+        "true" => articles::table.find(article_id).first::<Article>(&conn)?,
         _ => articles::table
             .filter(articles::published.eq(true))
             .find(article_id)
-            .first::<Article>(&conn)
-            .expect("Article not found."),
+            .first::<Article>(&conn)?,
     };
     let tags =
         db_get_tags_results_for_article(&conn, &article).expect("Could not load article tags.");
@@ -519,7 +515,7 @@ pub async fn get_article_by_id(
         web::block(move || db_get_article_result_by_id(pool, article_id.into_inner()))
             .await
             .map(|article| HttpResponse::Ok().json(article))
-            .map_err(|_| HttpResponse::NotFound())?,
+            .map_err(|_| HttpResponse::InternalServerError())?,
     )
 }
 
