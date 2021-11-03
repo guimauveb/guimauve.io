@@ -65,6 +65,10 @@
     color: rgba(241, 241, 241, 1);
   }
 
+  p {
+    line-height: 1.4rem;
+  }
+
   /* Loader */
   .lds-dual-ring {
     display: inline-block;

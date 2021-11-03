@@ -78,7 +78,7 @@ pub fn content(ContentProps { content, .. }: &ContentProps) -> Html {
                     </a>
                 },
                 ContentType::Code => html! {
-                    <div style="max-width: 100vw; display: flex; flex: 1;">
+                    <div style="max-width: 100vw; display: flex; flex: 1; overflow-x: auto;">
                         <Code highlighted_code={match &content.highlighted_code {
                             Some(code) => code,
                             None => &content.content,
