@@ -48,21 +48,21 @@ pub fn project(
                 </div>
                 <div style="display: flex; flex: 1; flex-direction: column;">
                     <div style="margin-bottom: 4px;">
-                        <Text value={&project.title} as_element="h3" font_weight="bold" font_size="1.rem" />
+                        <h3 style="font-weight: bold; font-size: 1rem;" >{&project.title}</h3>
                     </div>
                     <div style="display: flex; flex: 1; margin-top: 4px;">
                         <div style="display: flex; flex: 1 1 20%; margin-right: 8px;">
-                            <Text white_space="pre-line" value={&project.description} />
+                            <p style="white-space: pre-line; line-height: 1rem;">{&project.description}</p>
                         </div>
                         <div style="display: flex; flex: 1 1 20%; flex-direction: column; margin-right: 8px;">
                             <div style="margin-bottom: 8px;">
-                                <Text value="Features" />
+                                <p style="font-weight: bold;">{"Features"}</p>
                             </div>
-                            <Text white_space="pre-line" value={&project.features} />
+                            <p style="white-space: pre-line; line-height: 1rem;">{&project.features}</p>
                         </div>
                         <div style="display: flex; flex: 1; flex-direction: column; word-break: break-all;">
                             <div style="margin-bottom: 8px;">
-                                <Text value="Technologies" />
+                                <p style="font-weight: bold;">{"Technologies"}</p>
                             </div>
                             <div onclick={on_tag_clicked}>
                                 {for project.tags.iter().map(|tag| html! {<TagLabel tag={&tag.label}/>})}
@@ -79,7 +79,7 @@ pub fn project(
                                         <>
                                             <div style="display: flex; flex: 1; align-items: center;">
                                                 <div style="margin-right: 8px;">
-                                                    <Text value="Gallery" />
+                                                    <p>{"Gallery"}</p>
                                                 </div>
                                                 <div style="display: flex; flex: 0;">
                                                         {
