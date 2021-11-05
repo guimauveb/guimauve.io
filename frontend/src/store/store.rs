@@ -11,7 +11,7 @@ pub struct BlogStore {
     pub tags: Vec<ITag>,
     pub selected_tag: ITag,
     pub tag_results: HashMap<String, ResultsIds>,
-    pub current_search_query: String,
+    pub search_query: String,
     pub search_results: HashMap<String, ResultsIds>,
     pub is_error: bool,
 }
@@ -76,7 +76,7 @@ pub fn reducer(prev: std::rc::Rc<BlogStore>, action: Action) -> BlogStore {
         mut tag_results,
         mut search_results,
         ..
-    } = (&*prev).clone();
+    } = (*prev).clone();
 
     match action {
         Action::SetArticles(articles) => BlogStore {
@@ -123,7 +123,7 @@ pub fn reducer(prev: std::rc::Rc<BlogStore>, action: Action) -> BlogStore {
                 articles,
                 projects,
                 search_results,
-                current_search_query: search_query,
+                search_query,
                 is_error: false,
                 ..(*prev).clone()
             }

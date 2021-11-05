@@ -61,7 +61,7 @@ pub fn content(ContentProps { content, .. }: &ContentProps) -> Html {
         <div style="align-items: center; position: relative; display: flex; margin-bottom: 24px;">
             {match &content.content_type {
                 ContentType::Text => html! {
-                    <p>{&content.content}</p>
+                    <p style="white-space: break-spaces;">{&content.content}</p>
                 },
                 ContentType::Comment => html! {
                     <p class="comment">{&content.content}</p>
@@ -202,14 +202,6 @@ pub fn content(
             dispatch_error.clone(),
         );
         let context = use_context::<Rc<BlogStore>>().expect("Could not find context!");
-        let article = match article_action {
-            Action::Add => context.new_article.clone(),
-            Action::Edit => context
-                .articles
-                .get(&article_id)
-                .expect("Could not find article!")
-                .clone(),
-        };
         match article_action {
             // Existing article
             Action::Edit => Callback::from(move |_| {
@@ -245,7 +237,7 @@ pub fn content(
             }),
             // Article being created
             Action::Add => Callback::from(move |_| {
-                let mut article = article.clone();
+                let mut article = context.new_article.clone();
                 let chapter = article
                     .chapters
                     .iter_mut()
@@ -263,14 +255,13 @@ pub fn content(
                     .position(|c| c.id == content_id)
                     .expect("Could not find content");
                 chapter.contents.remove(content_index);
-                dispatch_article.emit(article)
+                dispatch_article.emit(article);
             }),
         }
     };
 
     let on_save_content: Callback<MouseEvent> = {
         let (
-            article_id,
             content_action,
             form,
             article_action,
@@ -279,7 +270,6 @@ pub fn content(
             dispatch_error,
             on_edit,
         ) = (
-            content.article_id,
             action.clone(),
             form.clone(),
             article_action.clone(),
@@ -289,14 +279,6 @@ pub fn content(
             on_edit.clone(),
         );
         let context = use_context::<Rc<BlogStore>>().expect("Could not find context!");
-        let article = match article_action {
-            Action::Add => context.new_article.clone(),
-            Action::Edit => context
-                .articles
-                .get(&article_id)
-                .expect("Could not find article!")
-                .clone(),
-        };
         Callback::from(move |_| {
             let (form, content_action, dispatch_article, dispatch_error, set_loading, on_edit) = (
                 IContent {
@@ -357,7 +339,7 @@ pub fn content(
                 // Article being created
                 Action::Add => {
                     set_loading(true);
-                    let mut article = article.clone();
+                    let mut article = context.new_article.clone();
                     let chapter = article
                         .chapters
                         .iter_mut()

@@ -22,7 +22,7 @@ use {
         API_URL,
     },
     yew::MouseEvent,
-    yew_functional::{use_effect_with_deps, use_state},
+    yew_functional::{use_effect_with_deps, use_ref, use_state},
     yew_router::agent::{RouteAgentDispatcher, RouteRequest},
 };
 
@@ -163,29 +163,35 @@ pub fn article(
         })
     };
 
-    // TODO - match Action + prevent request on first render
     let (published, set_published) = {
         let published = article.published;
         use_state(move || published)
     };
+    // TODO - match Action
     let on_publish_article: Callback<bool> = Callback::from(move |on| set_published(on));
     {
+        let rendered = use_ref(|| false);
         let (article_id, dispatch_article, dispatch_error) =
             (article.id, dispatch_article.clone(), dispatch_error.clone());
         use_effect_with_deps(
             move |published| {
                 set_loading(true);
-                let payload = IPublishArticle {
-                    published: *published,
-                };
-                let future = async move { publish_article(&article_id, &payload).await };
-                handle_future(future, move |data: Result<IArticle, Status>| {
-                    match data {
-                        Ok(article) => dispatch_article.emit(article),
-                        Err(_) => dispatch_error.emit(true),
+                if *rendered.borrow() {
+                    let payload = IPublishArticle {
+                        published: *published,
                     };
+                    let future = async move { publish_article(&article_id, &payload).await };
+                    handle_future(future, move |data: Result<IArticle, Status>| {
+                        match data {
+                            Ok(article) => dispatch_article.emit(article),
+                            Err(_) => dispatch_error.emit(true),
+                        };
+                        set_loading(false);
+                    });
+                } else {
+                    *rendered.borrow_mut() = true;
                     set_loading(false);
-                });
+                }
                 || {}
             },
             *published,

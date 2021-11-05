@@ -87,7 +87,7 @@ pub fn navlinks() -> Html {
                 </RouterAnchor<AppRoute>>
                 {if is_error {
                     html! {
-                        <div style="display: flex; flex: 1; margin-left: 12px; align-items: center; justify-content: center;" >
+                        <div style="display: flex; flex: 0; margin-left: 12px; align-items: center; justify-content: center;" >
                             <i style="color: rgb(178, 34, 34);" class="fa fa-exclamation-triangle"></i>
                             <div style="margin-left: 8px; align-items: baseline;">
                                 <p style="font-size: .7rem;">{"Error"}</p>

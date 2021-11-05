@@ -31,9 +31,8 @@ pub fn search(
     let context = use_context::<Rc<BlogStore>>().expect("No context found!");
 
     let (is_loading, set_loading) = use_state(|| false);
-    let dispatch_search_results = dispatch_search_results.clone();
 
-    let search_query = context.current_search_query.clone();
+    let search_query = context.search_query.clone();
     let (query, set_query) = use_state(move || search_query);
 
     // See if I could use references to the articles/projects states and pass them down the <Results/> component.
@@ -89,7 +88,8 @@ pub fn search(
     });
 
     {
-        let dispatch_error = dispatch_error.clone();
+        let (dispatch_search_results, dispatch_error) =
+            (dispatch_search_results.clone(), dispatch_error.clone());
         use_effect_with_deps(
             move |query| {
                 set_loading(true);

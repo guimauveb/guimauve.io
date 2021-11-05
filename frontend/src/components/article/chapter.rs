@@ -126,16 +126,6 @@ pub fn chapter(
             dispatch_error.clone(),
         );
         let context = use_context::<Rc<BlogStore>>().expect("Could not find context!");
-
-        let article = match article_action {
-            Action::Add => context.new_article.clone(),
-            Action::Edit => context
-                .articles
-                .get(&article_id)
-                .expect("Could not find article!")
-                .clone(),
-        };
-
         Callback::from(move |_| match article_action {
             Action::Edit => {
                 set_loading(true);
@@ -168,7 +158,7 @@ pub fn chapter(
                 );
             }
             Action::Add => {
-                let mut article = article.clone();
+                let mut article = context.new_article.clone();
                 for chap in &mut article.chapters {
                     if chap.index > chapter_index {
                         chap.index = chap.index - 1;
@@ -187,7 +177,6 @@ pub fn chapter(
 
     let on_save_chapter: Callback<MouseEvent> = {
         let (
-            article_id,
             article_action,
             chapter_index,
             chapter,
@@ -197,7 +186,6 @@ pub fn chapter(
             dispatch_error,
             on_edit,
         ) = (
-            chapter.article_id,
             article_action.clone(),
             chapter.index,
             Rc::new(IChapter {
@@ -214,15 +202,6 @@ pub fn chapter(
             on_edit.clone(),
         );
         let context = use_context::<Rc<BlogStore>>().expect("Could not find context!");
-        let article = match article_action {
-            Action::Add => context.new_article.clone(),
-            Action::Edit => context
-                .articles
-                .get(&article_id)
-                .expect("Could not find article!")
-                .clone(),
-        };
-
         Callback::from(move |_| {
             let (chapter, set_loading, dispatch_article, dispatch_error, on_edit) = (
                 chapter.clone(),
@@ -264,7 +243,7 @@ pub fn chapter(
                 // Article being created
                 Action::Add => {
                     set_loading(true);
-                    let mut article = article.clone();
+                    let mut article = context.new_article.clone();
                     match chapter_action {
                         Action::Add => {
                             for chap in &mut article.chapters {
