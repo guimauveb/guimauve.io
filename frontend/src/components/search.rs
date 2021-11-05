@@ -60,7 +60,6 @@ pub fn search(
         ),
         None => (HashMap::new(), HashMap::new()),
     };
-
     let (articles_count, projects_count) = (articles.len(), projects.len());
 
     let projects_by_category = projects.iter().fold(
