@@ -22,16 +22,13 @@ pub fn project(
     }: &ProjectProps,
 ) -> Html {
     let (selected_image_index, set_selected_image) = use_state(|| 0_usize);
+    let (is_gallery_modal_open, set_gallery_modal_open) = use_state(|| false);
 
-    let (is_gallery_modal_open, set_gallery_modal) = use_state(|| false);
-    let open_gallery_modal: Callback<()> = {
-        let set_gallery_modal = set_gallery_modal.clone();
-        Callback::from(move |_| set_gallery_modal(true))
+    let open_gallery_modal = {
+        let set_gallery_modal_open = set_gallery_modal_open.clone();
+        move || set_gallery_modal_open(true)
     };
-    let close_gallery_modal: Callback<()> = {
-        let set_gallery_modal = set_gallery_modal;
-        Callback::from(move |_| set_gallery_modal(false))
-    };
+    let close_gallery_modal = move || set_gallery_modal_open(false);
 
     html! {
         <div style="display: flex; flex: 1; font-size: 0.8em; flex-direction: column;">
@@ -81,10 +78,12 @@ pub fn project(
                                                                    <div
                                                                        style="position: relative; width: 100%; br: 6px; cursor: pointer;"
                                                                         onclick={
-                                                                           let (set_selected_image, open_gallery_modal) = (set_selected_image.clone(), open_gallery_modal.clone());
+                                                                           let (open_gallery_modal, index, set_selected_image) = (
+                                                                                open_gallery_modal.clone(),index, set_selected_image.clone()
+                                                                            );
                                                                            Callback::from(move |_| {
                                                                                set_selected_image(index);
-                                                                               open_gallery_modal.emit(())
+                                                                               open_gallery_modal()
                                                                            })
                                                                        }
                                                                     >
@@ -116,7 +115,7 @@ pub fn project(
                                                                             * and passing it to the callback doesn't work */
                                                                            select_image={Callback::from(move |index: usize| set_selected_image(index) )}
                                                                 />}}
-                                                            onclose={close_gallery_modal}
+                                                            onclose={Callback::from(move |_| close_gallery_modal())}
                                                         />
                                                     }
                                                 } else {
@@ -166,9 +165,6 @@ pub fn project(
                     },
                     None => html! {},
                 }}
-            </div>
-            <div style="margin-top: 16px; margin-bottom: 16px; flex: 1">
-                <hr style="border: 0; border-top: 1px solid rgb(41, 41, 41);"/>
             </div>
         </div>
     }

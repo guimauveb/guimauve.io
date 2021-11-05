@@ -117,7 +117,16 @@ pub fn results(
                             <div style="margin-top: 16px; margin-bottom: 16px;">
                                 <h3>{category.to_string()}</h3>
                             </div>
-                            {for projects.iter().map(|project| html! {<Project project={project} on_tag_clicked={on_click_result} />})}
+                            {for projects.iter().map(|project|
+                                html! {
+                                    <>
+                                        <Project project={project} on_tag_clicked={on_click_result} />
+                                        <div style="margin-top: 16px; margin-bottom: 16px; flex: 1">
+                                            <hr style="border: 0; border-top: 1px solid rgb(41, 41, 41);"/>
+                                        </div>
+                                    </>
+                                }
+                            )}
                         </>
                     }
                 }}

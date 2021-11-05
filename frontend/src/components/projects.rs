@@ -89,7 +89,16 @@ pub fn projects(
                                 <div style="margin-top: 4px; margin-bottom: 16px;">
                                     <h3 style="font-weight: bold;">{category.to_string()}</h3>
                                 </div>
-                                {for projects.iter().map(|project| { html! { <Project project={project} /> } })}
+                                {for projects.iter().map(|project| {
+                                    html! {
+                                        <>
+                                            <Project project={project} />
+                                            <div style="margin-top: 16px; margin-bottom: 16px; flex: 1">
+                                                <hr style="border: 0; border-top: 1px solid rgb(41, 41, 41);"/>
+                                            </div>
+                                        </>
+                                    }
+                                })}
                             </>
                         }
                     })}
@@ -102,14 +111,12 @@ pub fn projects(
                     } else {
                         html! {}
                     }}
-                    <div>
-                        <div style="display: flex; justify-content: center; margin-top: 12px; margin-bottom: 12px;">
-                            <a target="_blank" href="https://www.github.com/guimauveb/">
-                                <div style="display: flex; font-size: 1.4em; margin-top: 24px; margin-bottom: 48px; align-items: center;">
-                                    <p>{"See more projects on "}</p><i class="fa fa-github"/>
-                                </div>
-                            </a>
-                        </div>
+                    <div style="display: flex; justify-content: center; margin-top: 12px; margin-bottom: 12px;">
+                        <a target="_blank" href="https://www.github.com/guimauveb/">
+                            <div style="display: flex; font-size: 1.4em; margin-top: 24px; margin-bottom: 48px; align-items: center;">
+                                <p style="margin-right: 12px;">{"See more projects on "}</p><i class="fa fa-github"/>
+                            </div>
+                        </a>
                     </div>
                 </div>
             </div>
