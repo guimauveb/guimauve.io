@@ -11,10 +11,15 @@ pub struct TagLabelProps {
 }
 
 #[function_component(TagLabel)]
-pub fn tag_tag(TagLabelProps { tag }: &TagLabelProps) -> Html {
+pub fn tag_label(TagLabelProps { tag }: &TagLabelProps) -> Html {
+    let base_class = "tag-link ";
+    let mut class_name = String::with_capacity(base_class.len() + tag.len());
+    class_name.push_str(base_class);
+    class_name.push_str(tag);
+
     html! {
         <RouterAnchor<AppRoute> route={AppRoute::Tag { tag: tag.clone() }}>
-            <span class={"tag-link ".to_owned() + tag}>{&tag}</span>
+            <span class={&class_name}>{&tag}</span>
         </RouterAnchor<AppRoute>>
     }
 }

@@ -52,7 +52,7 @@ pub fn slideshow(
 
     let mut container_style = String::with_capacity(32 + 13 + 41);
     container_style.push_str("display: flex; justify-content: ");
-    container_style.push_str(&justify_content);
+    container_style.push_str(justify_content);
     container_style.push_str("; align-items: center; max-height: 28rem;");
 
     html! {

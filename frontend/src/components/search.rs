@@ -36,6 +36,7 @@ pub fn search(
     let search_query = context.current_search_query.clone();
     let (query, set_query) = use_state(move || search_query);
 
+    // See if I could use references to the articles/projects states and pass them down the <Results/> component.
     let (articles, projects) = match &context.search_results.get(&*query) {
         Some(results) => (
             results
@@ -55,23 +56,13 @@ pub fn search(
             results
                 .projects_ids
                 .iter()
-                .map(|id| {
-                    (
-                        *id,
-                        context
-                            .projects
-                            .get(id)
-                            .expect("Project not found!")
-                            .clone(),
-                    )
-                })
-                .collect::<HashMap<i32, IProject>>(),
+                .map(|id| (*id, context.projects.get(id).expect("Project not found!")))
+                .collect::<HashMap<i32, &IProject>>(),
         ),
         None => (HashMap::new(), HashMap::new()),
     };
 
-    let articles_count = articles.len();
-    let projects_count = projects.len();
+    let (articles_count, projects_count) = (articles.len(), projects.len());
 
     let projects_by_category = projects.iter().fold(
         HashMap::new(),
@@ -81,10 +72,10 @@ pub fn search(
                 match acc.get(&project.category) {
                     Some(results) => {
                         let mut results = results.clone();
-                        results.insert(0, project.clone());
+                        results.insert(0, (*project).clone());
                         results
                     }
-                    None => vec![project.clone()],
+                    None => vec![(*project).clone()],
                 },
             );
             acc

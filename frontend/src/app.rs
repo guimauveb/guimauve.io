@@ -3,8 +3,8 @@ use {
         components::{footer::Footer, header::Header, page_not_found::PageNotFound},
         entities::interfaces::{IArticle, IProject, ITag, SearchResults},
         routes::{
-            about::About, article::Article, articles::Articles, home::Home, projects::Projects,
-            tag::Tag, tags::Tags, AppRoute,
+            about::About, article::Article, articles::Articles, projects::Projects, tag::Tag,
+            tags::Tags, AppRoute,
         },
         store::store::{reducer, Action, BlogStore},
     },
@@ -87,7 +87,7 @@ pub fn app() -> Html {
                         render = Router::render(move |route: AppRoute| {
                             match route {
                                 AppRoute::Home => html! {
-                                    <Home
+                                    <Articles
                                         dispatch_articles={dispatch_articles.clone()}
                                         dispatch_error={dispatch_error.clone()}
                                     />

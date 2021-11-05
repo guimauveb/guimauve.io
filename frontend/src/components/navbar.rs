@@ -1,6 +1,6 @@
 use {
     crate::{
-        components::{modal::Modal, navlinks::NavLinks, search::Search, text::Text},
+        components::{modal::Modal, navlinks::NavLinks, search::Search},
         entities::interfaces::SearchResults,
     },
     yew::{html, Callback, MouseEvent, Properties},
@@ -50,7 +50,7 @@ pub fn navbar(
                             title={
                                 html! {
                                     <div style="display: flex; align-items: center;">
-                                        <Text value="Search" />
+                                        <p>{"Search"}</p>
                                     </div>
                                 }
                             }

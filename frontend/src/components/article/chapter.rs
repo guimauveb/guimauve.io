@@ -1,11 +1,8 @@
 use {
     super::contents::Contents,
-    crate::{
-        components::text::{Text, TextVariant},
-        entities::{
-            action::Action,
-            interfaces::{IArticle, IChapter},
-        },
+    crate::entities::{
+        action::Action,
+        interfaces::{IArticle, IChapter},
     },
     std::rc::Rc,
     yew::{html, Callback, Properties},
@@ -54,7 +51,7 @@ pub fn chapter(ChapterProps { chapter, .. }: &ChapterProps) -> Html {
     html! {
         <>
             <div style="align-items: center; position: relative; display: flex; margin-top: 8px; margin-bottom: 8px;">
-                <Text variant={TextVariant::ArticleChapter} as_element="h2" value={&chapter.title} />
+                <h2 class="article-chapter">{&chapter.title}</h2>
             </div>
             <Contents contents={Rc::new(chapter.contents.clone())} />
         </>
@@ -323,7 +320,7 @@ pub fn chapter(
                             style="width:42px; height:42px; display: flex; justify-content: center; align-items: center; position: absolute; right:-78px; cursor: pointer;">
                             <i class="fa fa-edit"></i>
                         </div>
-                        <Text variant={TextVariant::ArticleChapter} as_element="h2" value={&chapter.title} />
+                        <h2 class="article-chapter">{&chapter.title}</h2>
                     </div>
                     }
             }}

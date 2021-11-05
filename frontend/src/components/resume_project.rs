@@ -1,9 +1,6 @@
 #[cfg(feature = "editable")]
 use {
-    crate::{
-        components::{tag_label::TagLabel, text::Text},
-        entities::interfaces::IProject,
-    },
+    crate::{components::tag_label::TagLabel, entities::interfaces::IProject},
     yew::{html, Properties},
     yew_functional::function_component,
 };
@@ -22,21 +19,21 @@ pub fn resume_project(ResumeProjectProps { project }: &ResumeProjectProps) -> Ht
             <div style="display: flex; flex: 1;">
                 <div style="display: flex; flex: 1; flex-direction: column;">
                     <div style="margin-bottom: 4px;">
-                        <Text font_weight="bold" value={&project.title} as_element="h3" font_size="1.rem"/>
+                        <h3 style="font-weight: bold; font-size: 1rem;">{&project.title}</h3>
                     </div>
                     <div style="display: flex; flex: 1; margin-top: 4px;">
                         <div style="display: flex; flex: 1 1 20%; margin-right: 8px;">
-                            <Text white_space="pre-line" value={&project.description} />
+                            <p style="white-space: pre-line;">{&project.description}</p>
                         </div>
                         <div style="display: flex; flex: 1 1 20%; flex-direction: column; margin-right: 8px;">
                             <div style="margin-bottom: 8px;">
-                                <Text value="Features" />
+                                <p>{"Features"}</p>
                             </div>
-                            <Text white_space="pre-line" value={&project.features} />
+                            <p style="white-space: pre-line;">{&project.features}</p>
                         </div>
                         <div style="display: flex; flex: 1; flex-direction: column;">
                             <div style="margin-bottom: 8px;">
-                                <Text value="Technologies" />
+                                <p>{"Technologies"}</p>
                             </div>
                             <div>
                                 {for project.tags.iter().map(|tag| html! {<TagLabel tag={&tag.label}/>})}

@@ -11,7 +11,6 @@ use {
 
 #[cfg(feature = "editable")]
 use {
-    crate::components::text::Text,
     std::collections::HashMap,
     yew_functional::{use_effect_with_deps, use_state},
 };
@@ -177,7 +176,7 @@ pub fn contents(
                                             style="display: flex; align-items:center;cursor: pointer;position: relative; right: -64px; height: 42px">
                                             <i class="fa fa-plus"></i>
                                             <div style="margin-left: 8px;">
-                                                <Text value="Content" />
+                                                <p>{"Content"}</p>
                                             </div>
                                         </div>
                                     </div>
@@ -236,7 +235,7 @@ pub fn contents(
                                     style="display: flex; align-items:center; cursor: pointer; position: relative; right: -64px; height: 42px;">
                                     <i class="fa fa-plus"></i>
                                     <div style="margin-left: 8px;">
-                                        <Text value="Content" />
+                                        <p>{"Content"}</p>
                                     </div>
                                 </div>
                             </div>

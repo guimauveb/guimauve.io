@@ -1,6 +1,6 @@
 use {
     crate::{
-        components::{article::article_card::ArticleCard, hr::Hr, project::Project, text::Text},
+        components::{article::article_card::ArticleCard, project::Project},
         entities::{
             interfaces::{IArticle, IProject},
             project_category::ProjectCategory,
@@ -35,12 +35,12 @@ pub fn results(
 ) -> Html {
     let articles_count_str = &articles_count.to_string();
     let mut articles_count_header = String::with_capacity(articles_count_str.len() + 16);
-    articles_count_header.push_str(&articles_count_str);
+    articles_count_header.push_str(articles_count_str);
     articles_count_header.push_str(" articles found.");
 
     let projects_count_str = &projects_count.to_string();
     let mut projects_count_header = String::with_capacity(projects_count_str.len() + 16);
-    projects_count_header.push_str(&projects_count_str);
+    projects_count_header.push_str(projects_count_str);
     projects_count_header.push_str(" projects found.");
 
     html! {
@@ -48,22 +48,22 @@ pub fn results(
             <div style="margin-bottom: 16px;">
                 {if *is_loading {
                     html! {
-                        <Text value="- articles found." />
+                        <p>{"- articles found."}</p>
                     }
                 } else if *articles_count == 0 {
                          html! {
-                             <Text value="No article found." />
+                             <p>{"No article found."}</p>
                          }
                 } else {
                     html! {
                         <>
                             {if *articles_count == 1 {
                                 html! {
-                                    <Text value="1 article found." />
+                                    <p>{"1 article found."}</p>
                                 }
                             } else {
                                 html! {
-                                    <Text value={articles_count_header} />
+                                    <p>{articles_count_header}</p>
                                 }
                             }}
                         </>
@@ -77,7 +77,7 @@ pub fn results(
                             <ArticleCard article={article} />
                         </div>
                         <div style="margin-top: 12px;">
-                            <Hr />
+                            <hr style="border: 0; border-top: 1px solid rgb(41, 41, 41);"/>
                         </div>
                     </div>
                     }
@@ -86,38 +86,38 @@ pub fn results(
             <div style="margin-top: 16px;">
                 {if *is_loading {
                     html! {
-                        <Text value="- projects found." />
+                        <p>{"- projects found."}</p>
                     }
                 } else if *projects_count == 0 {
                     html! {
-                        <Text value="No project found." />
+                        <p>{"No project found."}</p>
                     }
                 } else {
                     html! {
                         <>
                             {if *projects_count == 1 {
                                 html! {
-                                    <Text value="1 project found." />
+                                    <p>{"1 project found."}</p>
                                 }
                             } else {
                                 html! {
-                                    <Text value={projects_count_header} />
+                                    <p>{projects_count_header}</p>
                                 }
                             }}
                         </>
                     }
                 }}
             </div>
-            {for projects_by_category.iter().map(move |(category, projects): (&ProjectCategory, &Vec<IProject>)| {
+            {for projects_by_category.iter().map(|(category, projects): (&ProjectCategory, &Vec<IProject>)| {
                 if projects.is_empty() {
                     html! {}
                 } else {
                     html! {
                         <>
                             <div style="margin-top: 16px; margin-bottom: 16px;">
-                                <Text as_element="h3" value={category.to_string()} />
+                                <h3>{category.to_string()}</h3>
                             </div>
-                            {for projects.iter().map(move |project| html! {<Project project={project} on_tag_clicked={on_click_result} />})}
+                            {for projects.iter().map(|project| html! {<Project project={project} on_tag_clicked={on_click_result} />})}
                         </>
                     }
                 }}

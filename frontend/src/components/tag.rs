@@ -1,10 +1,6 @@
 use {
     crate::{
-        components::{
-            loader::Loader,
-            results::Results,
-            text::{Text, TextVariant},
-        },
+        components::{loader::Loader, results::Results},
         entities::{
             interfaces::{IArticle, IProject, SearchResults, Status},
             project_category::ProjectCategory,
@@ -38,6 +34,7 @@ pub fn tag(
     let (is_loading, set_loading) = use_state(|| false);
     let dispatch_tag_results = dispatch_tag_results.clone();
 
+    // See if I could use references to the articles/projects states and pass them down the <Results/> component.
     let (articles, projects) = match &context.tag_results.get(tag) {
         Some(results) => (
             results
@@ -57,23 +54,13 @@ pub fn tag(
             results
                 .projects_ids
                 .iter()
-                .map(|id| {
-                    (
-                        *id,
-                        context
-                            .projects
-                            .get(id)
-                            .expect("Project not found!")
-                            .clone(),
-                    )
-                })
-                .collect::<HashMap<i32, IProject>>(),
+                .map(|id| (*id, context.projects.get(id).expect("Project not found!")))
+                .collect::<HashMap<i32, &IProject>>(),
         ),
         None => (HashMap::new(), HashMap::new()),
     };
 
-    let articles_count = articles.len();
-    let projects_count = projects.len();
+    let (articles_count, projects_count) = (articles.len(), projects.len());
 
     let projects_by_category = projects.iter().fold(
         HashMap::new(),
@@ -83,10 +70,10 @@ pub fn tag(
                 match acc.get(&project.category) {
                     Some(results) => {
                         let mut results = results.clone();
-                        results.insert(0, project.clone());
+                        results.insert(0, (*project).clone());
                         results
                     }
-                    None => vec![project.clone()],
+                    None => vec![(*project).clone()],
                 },
             );
             acc
@@ -116,12 +103,17 @@ pub fn tag(
         );
     };
 
+    let tag_header_base = "/tags/";
+    let mut tag_header = String::with_capacity(tag_header_base.len() + tag.len());
+    tag_header.push_str(tag_header_base);
+    tag_header.push_str(tag);
+
     html! {
         <div style="display: flex; justify-content: center; flex: 1;">
             <div style="flex: 1; max-width: 1024px;">
                 <div>
                     <div style="align-items: center; display: flex; margin-bottom: 24px;">
-                        <Text variant={TextVariant::Heading} value={"/tags/".to_owned() + tag}/>
+                        <p class="heading">{tag_header}</p>
                     </div>
                     <Results
                         articles={articles}

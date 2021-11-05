@@ -1,9 +1,6 @@
 use {
     crate::{
-        components::{
-            tag_label::TagLabel,
-            text::{Text, TextVariant},
-        },
+        components::tag_label::TagLabel,
         entities::{
             action::Action,
             interfaces::{IArticle, IArticleHeader},
@@ -48,15 +45,15 @@ pub fn article_header(ArticleHeaderProps { article_header, .. }: &ArticleHeaderP
     html! {
         <>
             <div style="margin-bottom: 8px;">
-                    <Text as_element="h1" variant={TextVariant::Heading} value={&article_header.title} />
+                    <h2 class="heading">{&article_header.title}</h2>
             </div>
             <div style="margin-top: 8px; margin-bottom: 8px;">
                 {for article_header.tags.iter().map(move |tag| html! { <TagLabel tag={&tag.label} /> })}
             </div>
             <div style="margin-top: 12px; margin-bottom: 12px;">
                 {match format_date(&article_header.pub_date) {
-                    Ok(date) => html! {<Text value={&date}/>},
-                    Err(_) => html! {<Text value="An error occured!"/>},
+                    Ok(date) => html! {<p>{&date}</p>},
+                    Err(_) => html! {<p>{"An error occured!"}</p>}
                 }}
             </div>
             <div style="margin-top: 8px; margin-bottom: 12px;">
@@ -73,7 +70,7 @@ pub fn article_header(ArticleHeaderProps { article_header, .. }: &ArticleHeaderP
                 </div>
             </div>
             <div style="margin-top: 8px; margin-bottom: 8px;">
-                <Text as_element="h3" value={&article_header.headline} variant={TextVariant::Comment} />
+                <h3 class="comment">{&article_header.headline}</h3>
             </div>
         </>
     }
@@ -90,11 +87,11 @@ pub fn article_header(
         dispatch_error,
     }: &ArticleHeaderProps,
 ) -> Html {
-    let edited = edited.clone();
+    let edited = *edited;
 
-    let (is_title_edited, set_title_edited) = use_state(move || edited.clone());
-    let (is_headline_edited, set_headline_edited) = use_state(move || edited.clone());
-    let (is_image_edited, set_image_edited) = use_state(move || edited.clone());
+    let (is_title_edited, set_title_edited) = use_state(move || edited);
+    let (is_headline_edited, set_headline_edited) = use_state(move || edited);
+    let (is_image_edited, set_image_edited) = use_state(move || edited);
 
     let (is_loading, set_loading) = use_state(|| false);
 
@@ -307,7 +304,7 @@ pub fn article_header(
                                 style="width:42px; height:42px; display: flex; justify-content: center; align-items:center; position: absolute; right: -78px; cursor: pointer;">
                                 <i class="fa fa-edit"></i>
                             </div>
-                            <Text as_element="h1" variant={TextVariant::Heading} value={&article_header.title} />
+                            <h1 class="heading">{&article_header.title}</h1>
                         </div>
                         }
                 }
@@ -318,7 +315,7 @@ pub fn article_header(
                 })}
             </div>
             <div style="display: flex; margin-top: 8px; margin-bottom: 12px;">
-                <Text value={readable_date}/>
+                <p>{readable_date}</p>
             </div>
             <div>
                 {match *is_image_edited {
@@ -377,7 +374,7 @@ pub fn article_header(
                                 style="width:42px; height:42px; display: flex; justify-content: center; align-items:center; position: absolute; right: -78px; cursor: pointer;">
                                 <i class="fa fa-edit"></i>
                             </div>
-                        <Text as_element="h3" value={&article_header.headline} variant={TextVariant::Comment} />
+                        <h3 class="comment">{&article_header.headline}</h3>
                         </div>
                         }
                 }}

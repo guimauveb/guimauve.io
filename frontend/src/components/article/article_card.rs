@@ -1,11 +1,6 @@
 use {
     crate::{
-        components::{
-            tag_label::TagLabel,
-            text::{Text, TextVariant},
-        },
-        entities::interfaces::IArticle,
-        routes::AppRoute,
+        components::tag_label::TagLabel, entities::interfaces::IArticle, routes::AppRoute,
         utils::date::format_date,
     },
     yew::{html, Callback, MouseEvent, Properties},
@@ -28,22 +23,22 @@ pub fn article_card(ArticleCardProps { article, on_click }: &ArticleCardProps) -
         <div onclick={on_click}>
             <RouterAnchor<AppRoute> route=AppRoute::Article{id: article.id}>
                 <div style="margin-bottom: 8px;">
-                    <Text as_element="h1" variant={TextVariant::Heading} value={&article.title} />
+                    <h1 class="heading">{&article.title}</h1>
                 </div>
                 <div style="margin-top: 8px; margin-bottom: 8px;">
-                    {for article.tags.iter().map(move |tag| { html! { <TagLabel tag={&tag.label} /> } })}
+                    {for article.tags.iter().map(|tag| { html! { <TagLabel tag={&tag.label} /> } })}
                 </div>
                 <div style="margin-top: 12px; margin-bottom: 8px;">
                     {match readable_date {
-                        Ok(date) => html! {<Text value={&date}/>},
-                        Err(_) => html! {<Text value="An error occured!"/>},
+                        Ok(date) => html! {<p>{date}</p>},
+                        Err(_) => html! {<p>{"An error occured!"}</p>}
                     }}
                 </div>
                 <div style="margin-top: 8px; margin-bottom: 8px;">
                     <img src={&article.image} style="object-fit: cover; height: 16em; width: 100%;" />
                 </div>
                 <div style="margin-top: 8px; margin-bottom: 8px;">
-                    <Text value={&article.headline} />
+                    <p>{&article.headline}</p>
                 </div>
             </RouterAnchor<AppRoute>>
         </div>
@@ -58,15 +53,15 @@ pub fn article_card(ArticleCardProps { article, on_click }: &ArticleCardProps) -
         <div onclick={on_click}>
             <RouterAnchor<AppRoute> route=AppRoute::Article{id: article.id}>
                 <div style="margin-bottom: 8px;">
-                    <Text as_element="h1" variant={TextVariant::Heading} value={&article.title} />
+                    <h1 class="heading">{&article.title}</h1>
                 </div>
                 <div style="margin-top: 8px; margin-bottom: 8px;">
-                    {for article.tags.iter().map(move |tag| { html! { <TagLabel tag={&tag.label} /> } })}
+                    {for article.tags.iter().map(|tag| { html! { <TagLabel tag={&tag.label} /> } })}
                 </div>
                 <div style="margin-top: 12px; margin-bottom: 8px; display: flex; justify-content: space-between;">
                     {match readable_date {
-                        Ok(date) => html! {<Text value={&date}/>},
-                        Err(_) => html! {<Text value="An error occured!"/>},
+                        Ok(date) => html! {<p>{date}</p>},
+                        Err(_) => html! {<p>{"An error occured!"}</p>}
                     }}
                     <div sytle="font-size: 1.2rem;">
                         {if article.published {
@@ -84,7 +79,7 @@ pub fn article_card(ArticleCardProps { article, on_click }: &ArticleCardProps) -
                     <img src={&article.image} style="object-fit: cover; height: 16em; width: 100%;" />
                 </div>
                 <div style="margin-top: 8px; margin-bottom: 8px;">
-                    <Text value={&article.headline} />
+                    <p>{&article.headline}</p>
                 </div>
             </RouterAnchor<AppRoute>>
         </div>

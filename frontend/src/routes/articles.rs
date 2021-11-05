@@ -23,8 +23,7 @@ pub fn articles(
         dispatch_error,
     }: &ArticlesProps,
 ) -> Html {
-    let dispatch_articles = dispatch_articles.clone();
-    let dispatch_error = dispatch_error.clone();
+    let (dispatch_articles, dispatch_error) = (dispatch_articles.clone(), dispatch_error.clone());
     let (is_loading, set_loading) = use_state(|| false);
 
     let context = use_context::<Rc<BlogStore>>().expect("No context found!");

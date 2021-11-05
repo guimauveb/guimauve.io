@@ -29,7 +29,7 @@ pub async fn get_results_for_tag(tag: &str) -> Result<SearchResults, Status> {
     let mut url = String::with_capacity(API_URL.len() + 6 + tag.len());
     url.push_str(API_URL);
     url.push_str("/tags/");
-    url.push_str(&tag);
+    url.push_str(tag);
 
     let json = Fetch::get(url).await;
     match json {

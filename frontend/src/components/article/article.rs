@@ -12,7 +12,7 @@ use {
 #[cfg(feature = "editable")]
 use {
     crate::{
-        components::{button::Button, loader::Loader, switch::Switch, text::Text},
+        components::{button::Button, loader::Loader, switch::Switch},
         entities::interfaces::{IPublishArticle, Status},
         routes::AppRoute,
         service::{
@@ -205,7 +205,7 @@ pub fn article(
                                     style="width: 42px; height: 42px; display: flex; justify-content: center; align-items:center; position: absolute; right: -48px; cursor: pointer;">
                                         <i class="fa fa-trash"></i>
                                     <div style="margin-left: 8px;">
-                                        <Text value="Delete" />
+                                        <p>{"Delete"}</p>
                                     </div>
                                 </div>
                             },
@@ -218,7 +218,7 @@ pub fn article(
                         }}
                         <div style="display: flex; align-items: center;">
                             <div style="margin-right: 12px;">
-                                <Text value="Publish" />
+                                <p>{"Publish"}</p>
                             </div>
                             <Switch
                                 on={*published}

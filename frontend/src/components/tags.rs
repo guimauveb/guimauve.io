@@ -1,10 +1,6 @@
 use {
     crate::{
-        components::{
-            loader::Loader,
-            tag_label::TagLabel,
-            text::{Text, TextVariant},
-        },
+        components::{loader::Loader, tag_label::TagLabel},
         entities::interfaces::{ITag, Status},
         service::{future::handle_future, tags::get_tag_list},
         store::store::BlogStore,
@@ -32,8 +28,7 @@ pub fn tags(
     let context = use_context::<Rc<BlogStore>>().expect("No context found!");
     let tags = &context.tags;
 
-    let dispatch_tags = dispatch_tags.clone();
-    let dispatch_error = dispatch_error.clone();
+    let (dispatch_tags, dispatch_error) = (dispatch_tags.clone(), dispatch_error.clone());
 
     use_effect_with_deps(
         move |_| {
@@ -55,10 +50,10 @@ pub fn tags(
         <div style="display: flex; justify-content: center; flex: 1;">
             <div style="flex: 1; max-width: 1024px;">
                 <div style="align-items: center; display: flex; margin-bottom: 24px;">
-                    <Text variant={TextVariant::Heading} value="/tags" />
+                    <p class="heading">{"/tags"}</p>
                 </div>
                 <div>
-                    {for tags.iter().map(move |tag| { html! {<TagLabel tag={&tag.label} />} }) }
+                    {for tags.iter().map(|tag| { html! {<TagLabel tag={&tag.label} />} }) }
                 </div>
                 {if *is_loading {
                     html! {

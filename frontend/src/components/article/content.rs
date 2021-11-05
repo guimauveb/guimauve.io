@@ -1,9 +1,6 @@
 use {
     crate::{
-        components::{
-            code::Code,
-            text::{Text, TextVariant},
-        },
+        components::code::Code,
         entities::{
             action::Action,
             content_type::ContentType,
@@ -64,17 +61,17 @@ pub fn content(ContentProps { content, .. }: &ContentProps) -> Html {
         <div style="align-items: center; position: relative; display: flex; margin-bottom: 24px;">
             {match &content.content_type {
                 ContentType::Text => html! {
-                    <Text value={&content.content} />
+                    <p>{&content.content}</p>
                 },
                 ContentType::Comment => html! {
-                    <Text variant={TextVariant::Comment} value={&content.content} />
+                    <p class="comment">{&content.content}</p>
                 },
                 ContentType::Link => html! {
                     <a target="_blank" href={match &content.url {
                         Some(url) => url,
                         None => ""
                     }}>
-                        <Text value={&content.content} />
+                        <p>{&content.content}</p>
                     </a>
                 },
                 ContentType::Code => html! {
@@ -420,7 +417,7 @@ pub fn content(
                                     <i class="fa fa-edit"/>
                                 </div>
                             </div>
-                            <Text value={&content.content} />
+                            <p>{&content.content}</p>
                         </div>
                         },
                 },
@@ -447,7 +444,7 @@ pub fn content(
                                         <i class="fa fa-edit"/>
                                     </div>
                                 </div>
-                                <Text variant={TextVariant::Comment} value={&content.content} />
+                                <p class="comment">{&content.content}</p>
                             </div>
                     },
                 },
@@ -483,7 +480,7 @@ pub fn content(
                                 Some(url) => url,
                                 None => ""
                             }}>
-                                <Text value={&content.content} />
+                                <p>{&content.content}</p>
                             </a>
                         </div>
                     },

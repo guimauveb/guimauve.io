@@ -1,12 +1,6 @@
 use {
     super::article_card::ArticleCard,
-    crate::{
-        components::{
-            hr::Hr,
-            text::{Text, TextVariant},
-        },
-        entities::interfaces::IArticle,
-    },
+    crate::entities::interfaces::IArticle,
     std::collections::HashMap,
     yew::{html, Properties},
     yew_functional::function_component,
@@ -27,7 +21,7 @@ pub fn articles(ArticlesProps { articles }: &ArticlesProps) -> Html {
         <div style="display: flex; justify-content: center; flex: 0;">
             <div style="flex: 1; max-width: 1024px;">
                 <div style="align-items: center; display: flex; margin-bottom: 24px;">
-                    <Text variant={TextVariant::Heading} value="/articles" />
+                    <h1 class="heading">{"/articles"}</h1>
                 </div>
                 <div>
                     {for articles.iter().map(move |(_, article)| {
@@ -37,7 +31,7 @@ pub fn articles(ArticlesProps { articles }: &ArticlesProps) -> Html {
                                     <ArticleCard article={article} />
                                 </div>
                                 <div style="margin-top: 12px;">
-                                    <Hr />
+                                    <hr style="border: 0; border-top: 1px solid rgb(41, 41, 41);"/>
                                 </div>
                             </div>
                             }
@@ -57,7 +51,7 @@ pub fn articles(ArticlesProps { articles }: &ArticlesProps) -> Html {
         <div style="display: flex; justify-content: center; flex: 0;">
             <div style="flex: 1; max-width: 1024px;">
                 <div style="align-items: center; display: flex; margin-bottom: 24px;">
-                    <Text variant={TextVariant::Heading} value="/articles" />
+                    <h1 class="heading">{"/articles"}</h1>
                     <RouterAnchor<AppRoute> route=AppRoute::NewArticle>
                         <div style="align-items: center; position: relative; display: flex;">
                             <div style="width: 42px; height: 42px; display: flex; justify-content: center; margin-left: 8px; align-items: center; cursor: pointer;">
@@ -73,7 +67,7 @@ pub fn articles(ArticlesProps { articles }: &ArticlesProps) -> Html {
                                 <ArticleCard article={article} />
                             </div>
                             <div style="margin-top: 12px;">
-                                 <Hr />
+                                <hr style="border: 0; border-top: 1px solid rgb(41, 41, 41);"/>
                             </div>
                         </div>
                           }

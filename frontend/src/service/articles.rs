@@ -6,13 +6,18 @@
 use {
     super::fetch::Fetch,
     crate::{
-        entities::interfaces::{
-            IArticle, IArticleHeader, IChapter, IContent, IPublishArticle, Status, TAPIResponse,
-        },
+        entities::interfaces::{IArticle, Status},
         API_URL,
     },
-    serde_json::json,
     std::collections::HashMap,
+};
+
+#[cfg(feature = "editable")]
+use {
+    crate::entities::interfaces::{
+        IArticleHeader, IChapter, IContent, IPublishArticle, TAPIResponse,
+    },
+    serde_json::json,
 };
 
 pub async fn get_article_list() -> Result<HashMap<i32, IArticle>, Status> {
@@ -24,19 +29,6 @@ pub async fn get_article_list() -> Result<HashMap<i32, IArticle>, Status> {
     let json = Fetch::get(url).await;
     match json {
         Ok(json) => Ok(json.into_serde::<HashMap<i32, IArticle>>().unwrap()),
-        Err(_err) => Err(Status::Error),
-    }
-}
-
-pub async fn add_article(payload: &IArticle) -> Result<IArticle, Status> {
-    // API_URL.len() + "/articles".len()
-    let mut url = String::with_capacity(API_URL.len() + 9);
-    url.push_str(API_URL);
-    url.push_str("/articles");
-
-    let json = Fetch::post(url, Some(json!(&payload).to_string())).await;
-    match json {
-        Ok(json) => Ok(json.into_serde::<IArticle>().unwrap()),
         Err(_err) => Err(Status::Error),
     }
 }
@@ -56,6 +48,21 @@ pub async fn get_article(id: &i32) -> Result<IArticle, Status> {
     }
 }
 
+#[cfg(feature = "editable")]
+pub async fn add_article(payload: &IArticle) -> Result<IArticle, Status> {
+    // API_URL.len() + "/articles".len()
+    let mut url = String::with_capacity(API_URL.len() + 9);
+    url.push_str(API_URL);
+    url.push_str("/articles");
+
+    let json = Fetch::post(url, Some(json!(&payload).to_string())).await;
+    match json {
+        Ok(json) => Ok(json.into_serde::<IArticle>().unwrap()),
+        Err(_err) => Err(Status::Error),
+    }
+}
+
+#[cfg(feature = "editable")]
 pub async fn update_article_header(payload: &IArticleHeader) -> Result<IArticle, Status> {
     let article_id_str = &payload.article_id.to_string();
     // API_URL.len() + "/articles/".len() + article_id_str.len()
@@ -71,6 +78,7 @@ pub async fn update_article_header(payload: &IArticleHeader) -> Result<IArticle,
     }
 }
 
+#[cfg(feature = "editable")]
 pub async fn publish_article(id: &i32, payload: &IPublishArticle) -> Result<IArticle, Status> {
     let id_str = id.to_string();
     // API_URL.len() + "/articles/publish/".len() + article_id_str.len()
@@ -86,6 +94,7 @@ pub async fn publish_article(id: &i32, payload: &IPublishArticle) -> Result<IArt
     }
 }
 
+#[cfg(feature = "editable")]
 pub async fn delete_article(id: &i32) -> Result<Status, Status> {
     let id_str = id.to_string();
     // API_URL.len() + "/articles/".len() + id_str.len()
@@ -104,6 +113,7 @@ pub async fn delete_article(id: &i32) -> Result<Status, Status> {
     }
 }
 
+#[cfg(feature = "editable")]
 pub async fn add_content(payload: &IContent) -> Result<IArticle, Status> {
     // API_URL.len() + "/contents".len()
     let mut url = String::with_capacity(API_URL.len() + 9);
@@ -117,6 +127,7 @@ pub async fn add_content(payload: &IContent) -> Result<IArticle, Status> {
     }
 }
 
+#[cfg(feature = "editable")]
 pub async fn update_content(payload: &IContent) -> Result<IArticle, Status> {
     let content_id_str = &payload.id.to_string();
     // API_URL.len() + "/contents/".len() + content_id_str.len()
@@ -132,6 +143,7 @@ pub async fn update_content(payload: &IContent) -> Result<IArticle, Status> {
     }
 }
 
+#[cfg(feature = "editable")]
 pub async fn delete_content(id: &i32) -> Result<Status, Status> {
     let id_str = id.to_string();
     // API_URL.len() + "/contents/".len() + id_str.len()
@@ -147,6 +159,7 @@ pub async fn delete_content(id: &i32) -> Result<Status, Status> {
     }
 }
 
+#[cfg(feature = "editable")]
 pub async fn add_chapter(payload: &IChapter) -> Result<IArticle, Status> {
     // API_URL.len() + "/chapters".len()
     let mut url = String::with_capacity(API_URL.len() + 9);
@@ -160,6 +173,7 @@ pub async fn add_chapter(payload: &IChapter) -> Result<IArticle, Status> {
     }
 }
 
+#[cfg(feature = "editable")]
 pub async fn update_chapter(payload: &IChapter) -> Result<IArticle, Status> {
     let id_str = payload.id.to_string();
     // API_URL.len() + "/chapters/".len() + id_str.len()
@@ -175,6 +189,7 @@ pub async fn update_chapter(payload: &IChapter) -> Result<IArticle, Status> {
     }
 }
 
+#[cfg(feature = "editable")]
 pub async fn delete_chapter(id: &i32) -> Result<Status, Status> {
     let id_str = id.to_string();
     // API_URL.len() + "/chapters/".len() + id_str.len()

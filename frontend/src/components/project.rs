@@ -1,13 +1,6 @@
 use {
     crate::{
-        components::{
-            button::*,
-            hr::Hr,
-            modal::Modal,
-            slideshow::Slideshow,
-            tag_label::TagLabel,
-            text::{Text, TextVariant},
-        },
+        components::{button::*, modal::Modal, slideshow::Slideshow, tag_label::TagLabel},
         entities::interfaces::IProject,
     },
     yew::{html, Callback, MouseEvent, Properties},
@@ -112,7 +105,7 @@ pub fn project(
                                                             id={"project-".to_string() + &project.id.to_string() + "-gallery"}
                                                             title={html! {
                                                                 <div style="margin-bottom: 8px;">
-                                                                    <Text variant={TextVariant::Heading} value={&project.title} />
+                                                                    <p class="heading">{&project.title}</p>
                                                                 </div>
                                                             }}
                                                             body={html! {
@@ -175,7 +168,7 @@ pub fn project(
                 }}
             </div>
             <div style="margin-top: 16px; margin-bottom: 16px; flex: 1">
-                <Hr />
+                <hr style="border: 0; border-top: 1px solid rgb(41, 41, 41);"/>
             </div>
         </div>
     }

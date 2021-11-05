@@ -1,11 +1,6 @@
 use {
     crate::{
-        components::{
-            hr::Hr,
-            loader::Loader,
-            project::Project,
-            text::{Text, TextVariant},
-        },
+        components::{loader::Loader, project::Project},
         entities::{
             interfaces::{IProject, Status},
             project_category::ProjectCategory,
@@ -81,20 +76,20 @@ pub fn projects(
         <div style="display: flex; justify-content: center; flex: 1;">
             <div style="flex: 1; max-width: 1024px;">
                 <div>
-                    <Text variant={TextVariant::Heading} value="/projects" />
+                    <h1 class="heading">{"/projects"}</h1>
                     <div style="margin-bottom: 24px; margin-top: 24px;">
-                        <Text value="I believe building projects is the best way to learn a new technology. Here are some of mine." />
+                        <p>{"I believe building projects is the best way to learn a new technology. Here are some of mine."}</p>
                     </div>
                     <div style="margin-bottom: 16px;">
-                        <Hr />
+                        <hr style="border: 0; border-top: 1px solid rgb(41, 41, 41);"/>
                     </div>
-                    {for projects_by_category.iter().map(move |(category, projects): (&ProjectCategory, &Vec<IProject>)| {
+                    {for projects_by_category.iter().map(|(category, projects): (&ProjectCategory, &Vec<IProject>)| {
                         html! {
                             <>
                                 <div style="margin-top: 4px; margin-bottom: 16px;">
-                                    <Text as_element="h2" value={category.to_string()} font_weight="bold" />
+                                    <h3 style="font-weight: bold;">{category.to_string()}</h3>
                                 </div>
-                                {for projects.iter().map(move |project| { html! { <Project project={project} /> } })}
+                                {for projects.iter().map(|project| { html! { <Project project={project} /> } })}
                             </>
                         }
                     })}
@@ -111,7 +106,7 @@ pub fn projects(
                         <div style="display: flex; justify-content: center; margin-top: 12px; margin-bottom: 12px;">
                             <a target="_blank" href="https://www.github.com/guimauveb/">
                                 <div style="display: flex; font-size: 1.4em; margin-top: 24px; margin-bottom: 48px; align-items: center;">
-                                    <Text value="See more projects on " /><i class="fa fa-github"/>
+                                    <p>{"See more projects on "}</p><i class="fa fa-github"/>
                                 </div>
                             </a>
                         </div>

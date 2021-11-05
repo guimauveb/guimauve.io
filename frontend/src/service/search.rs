@@ -16,7 +16,7 @@ pub async fn get_results_for_query(query: &str) -> Result<SearchResults, Status>
     let mut url = String::with_capacity(API_URL.len() + 13 + query.len());
     url.push_str(API_URL);
     url.push_str("/search?text=");
-    url.push_str(&query);
+    url.push_str(query);
 
     let json = Fetch::get(url).await;
     match json {

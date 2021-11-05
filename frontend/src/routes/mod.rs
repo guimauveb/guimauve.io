@@ -3,7 +3,6 @@ use {yew_router::prelude::Switch, yew_router::switch::Permissive};
 pub mod about;
 pub mod article;
 pub mod articles;
-pub mod home;
 pub mod new_article;
 pub mod projects;
 pub mod tag;

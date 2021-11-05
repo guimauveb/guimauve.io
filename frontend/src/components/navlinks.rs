@@ -1,13 +1,5 @@
 use {
-    crate::{
-        components::{
-            navlink::NavLink,
-            text::{Text, TextVariant},
-        },
-        routes::AppRoute,
-        store::store::BlogStore,
-        API_URL,
-    },
+    crate::{components::navlink::NavLink, routes::AppRoute, store::store::BlogStore, API_URL},
     std::{collections::HashMap, rc::Rc},
     yew::{html, Callback},
     yew_functional::{function_component, use_context, use_state},
@@ -49,6 +41,8 @@ const NAV_LINKS: &[TNavLink] = &[
     },
 ];
 
+const RESUME_SLUG: &str = "/media/resume/resume_Guillaume_Bournel_2021.pdf";
+
 #[function_component(NavLinks)]
 pub fn navlinks() -> Html {
     let context = use_context::<Rc<BlogStore>>().expect("No context found!");
@@ -80,6 +74,11 @@ pub fn navlinks() -> Html {
         })
     };
 
+    // Make completely const?
+    let mut resume_url = String::with_capacity(API_URL.len() + RESUME_SLUG.len());
+    resume_url.push_str(API_URL);
+    resume_url.push_str(RESUME_SLUG);
+
     html! {
         <>
             <div style="display: flex; flex: 1;">
@@ -91,7 +90,7 @@ pub fn navlinks() -> Html {
                         <div style="display: flex; flex: 1; margin-left: 12px; align-items: center; justify-content: center;" >
                             <i style="color: rgb(178, 34, 34);" class="fa fa-exclamation-triangle"></i>
                             <div style="margin-left: 8px; align-items: baseline;">
-                                <Text variant={TextVariant::Caption} value="Error" />
+                                <p style="font-size: .7rem;">{"Error"}</p>
                             </div>
                         </div>
                     }
@@ -122,7 +121,7 @@ pub fn navlinks() -> Html {
                                     </RouterAnchor<AppRoute>>
                                 },
                                 None => html! {
-                                    <a href={API_URL.to_owned() + "/media/resume/resume_Guillaume_Bournel_2021.pdf"} target="_blank">
+                                    <a href={&resume_url} target="_blank">
                                         <NavLink
                                             label={&nav_link.label}
                                             on_hover={&on_label_hovered}
