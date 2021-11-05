@@ -38,7 +38,7 @@ pub fn navbar(
             <div style="display: flex; flex: 1; justify-content: center; align-items: center; margin-top: 16px;">
                 <div style="display: flex; max-width: 1024px; flex: 1;">
                     <NavLinks />
-                    <div style="display: flex; flex: 0; justify-content: flex-end;">
+                    <div style="display: flex; flex: 1; justify-content: flex-end;">
                         <a onclick=open_search_modal><i class="fa fa-search" ></i></a>
                     </div>
                 </div>

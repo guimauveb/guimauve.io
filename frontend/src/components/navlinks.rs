@@ -82,7 +82,7 @@ pub fn navlinks() -> Html {
 
     html! {
         <>
-            <div style="display: flex; flex: 0;">
+            <div style="display: flex; flex: 1;">
                 <RouterAnchor<AppRoute> route={AppRoute::Home}>
                     <NavLink label="guimauve" />
                 </RouterAnchor<AppRoute>>
