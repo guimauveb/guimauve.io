@@ -71,7 +71,7 @@ pub fn content(ContentProps { content, .. }: &ContentProps) -> Html {
                         Some(url) => url,
                         None => ""
                     }}>
-                        <p>{&content.content}</p>
+                        <p style="white-space: break-spaces;">{&content.content}</p>
                     </a>
                 },
                 ContentType::Code => html! {
