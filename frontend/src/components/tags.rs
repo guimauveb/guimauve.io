@@ -50,7 +50,7 @@ pub fn tags(
         <div style="display: flex; justify-content: center; flex: 1;">
             <div style="flex: 1; max-width: 1024px;">
                 <div style="align-items: center; display: flex; margin-bottom: 24px;">
-                    <p class="heading">{"/tags"}</p>
+                    <h1 class="heading">{"/tags"}</h1>
                 </div>
                 <div>
                     {for tags.iter().map(|tag| { html! {<TagLabel tag={&tag.label} />} }) }

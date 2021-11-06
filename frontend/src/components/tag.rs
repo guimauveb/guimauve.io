@@ -113,7 +113,7 @@ pub fn tag(
             <div style="flex: 1; max-width: 1024px;">
                 <div>
                     <div style="align-items: center; display: flex; margin-bottom: 24px;">
-                        <p class="heading">{tag_header}</p>
+                        <h1 class="heading">{tag_header}</h1>
                     </div>
                     <Results
                         articles={articles}
