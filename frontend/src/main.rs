@@ -8,6 +8,7 @@ use wasm_bindgen::prelude::*;
 pub mod app;
 pub mod components;
 pub mod entities;
+pub mod hooks;
 pub mod routes;
 pub mod service;
 pub mod store;

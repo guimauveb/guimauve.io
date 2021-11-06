@@ -5,12 +5,13 @@ use {
             interfaces::{IArticle, IProject, SearchResults, Status},
             project_category::ProjectCategory,
         },
+        hooks::use_effect_except_on_mount::use_effect_except_on_mount,
         service::{future::handle_future, search::get_results_for_query},
         store::store::BlogStore,
     },
     std::{collections::HashMap, rc::Rc},
     yew::{html, Callback, ChangeData, MouseEvent, Properties},
-    yew_functional::{function_component, use_context, use_effect_with_deps, use_state},
+    yew_functional::{function_component, use_context, use_state},
 };
 
 #[derive(Properties, Clone, PartialEq)]
@@ -89,7 +90,7 @@ pub fn search(
     {
         let (dispatch_search_results, dispatch_error) =
             (dispatch_search_results.clone(), dispatch_error.clone());
-        use_effect_with_deps(
+        use_effect_except_on_mount(
             move |query| {
                 set_loading(true);
                 let (query, query_arg) = (query.clone(), query.clone());
@@ -101,7 +102,6 @@ pub fn search(
                     };
                     set_loading(false);
                 });
-                || {}
             },
             query.clone(),
         );
