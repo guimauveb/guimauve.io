@@ -21,7 +21,7 @@ pub fn about() -> Html {
                 <div flex="1">
                     <p style="white-space: break-spaces;">{"I am a passionate software developer who enjoys spending time in the various fields of programming. I am self-educated, and always keeping up to date and strengthening my skills play a big role in my everyday life.\n\nThe languages I have used the most include Rust, Typescript, Javascript, Python, C++, Bash script. I also tinker with Haskell from time to time. I have a strong interest in web development as well as OS development, embedded development, game development and compilers, even though most of my experience comes from web development."}</p>
                     <div style="margin-top: 24px; display: flex; justify-content: center;">
-                        <p style="margin-right: 4px;">{"You can email me at "}</p>
+                        <p style="margin-right: 8px;">{"You can email me at "}</p>
                         <a class="email-container" href="mailto:contact@guimauve.io">{"contact@guimauve.io"}</a>
                     </div>
                     <div style="margin-top: 24px; margin-right: 8px; display: flex; justify-content: center;">
