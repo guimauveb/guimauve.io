@@ -2,18 +2,22 @@
 extern crate diesel;
 #[macro_use]
 extern crate dotenv_codegen;
+extern crate env_logger;
+extern crate log;
 
 use {
     actix_cors::Cors,
     actix_files as fs,
-    actix_web::{http, web, App, HttpServer},
+    actix_web::{http, middleware, web, App, HttpServer},
     diesel::r2d2::{self, ConnectionManager},
     diesel::PgConnection,
+    logger::custom_logger::Logger,
 };
 
 mod code;
 mod handlers;
 mod interfaces;
+mod logger;
 mod models;
 mod schema;
 mod types;
@@ -27,17 +31,36 @@ pub type Pool = r2d2::Pool<ConnectionManager<PgConnection>>;
 
 #[actix_rt::main]
 async fn main() -> std::io::Result<()> {
-    #[cfg(debug_assertions)]
     std::env::set_var("RUST_LOG", "actix_web=debug");
+    std::env::set_var("LOG_LEVEL", "info");
 
     let manager = ConnectionManager::<PgConnection>::new(DATABASE_URL);
     let pool: Pool = r2d2::Pool::builder()
         .build(manager)
         .expect("Failed to create pool.");
 
+    #[cfg(not(debug_assertions))]
+    Logger::init(pool.clone()).unwrap();
+
+    #[cfg(debug_assertions)]
+    Logger::init().unwrap();
+
     HttpServer::new(move || {
         #[cfg(not(feature = "editable"))]
         return App::new()
+            .wrap(middleware::Logger::default())
+            /* %r: First line of request
+             * %s: Response status code
+             * %a: Remote IP address (might return the proxy address, try with the request headers [X-Forwarded-For] if that's the case)
+             * %{Referer}i: Referer
+             * %{X-Forwarded-For}i: X-Forwarded-For
+             * %{User-Agent}i: User-Agent
+             * %U: Request URL
+             * %D: Time taken to serve the request (in ms)
+             */
+            .wrap(middleware::Logger::new(
+                "%r | %s | %a | %{Referer}i | %{X-Forwarded-For}i | %{User-Agent}i | %U | %D",
+            ))
             .wrap(
                 Cors::new()
                     .allowed_origin("http://localhost:3000")
@@ -75,6 +98,18 @@ async fn main() -> std::io::Result<()> {
 
         #[cfg(feature = "editable")]
         return App::new()
+            /* %r: First line of request
+             * %s: Response status code
+             * %a: Remote IP address (might return the proxy address, try with the request headers [X-Forwarded-For] if that's the case)
+             * %{Referer}i: Referer
+             * %{X-Forwarded-For}i: X-Forwarded-For
+             * %{User-Agent}i: User-Agent
+             * %U: Request URL
+             * %D: Time taken to serve the request (in ms)
+             */
+            .wrap(middleware::Logger::new(
+                "%r | %s | %a | %{Referer}i | %{X-Forwarded-For}i | %{User-Agent}i | %U | %D",
+            ))
             .wrap(
                 Cors::new()
                     .allowed_origin("http://localhost:3000")

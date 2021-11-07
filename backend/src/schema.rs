@@ -43,6 +43,15 @@ table! {
 }
 
 table! {
+    logs (id) {
+        id -> Int4,
+        created -> Timestamp,
+        record_level -> Varchar,
+        record -> Text,
+    }
+}
+
+table! {
     project_images (id) {
         id -> Int4,
         project_id -> Int4,
