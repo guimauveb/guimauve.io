@@ -39,11 +39,7 @@ async fn main() -> std::io::Result<()> {
         .build(manager)
         .expect("Failed to create pool.");
 
-    #[cfg(not(debug_assertions))]
     Logger::init(pool.clone()).unwrap();
-
-    #[cfg(debug_assertions)]
-    Logger::init().unwrap();
 
     HttpServer::new(move || {
         #[cfg(not(feature = "editable"))]

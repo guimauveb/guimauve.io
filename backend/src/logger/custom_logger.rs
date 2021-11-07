@@ -1,36 +1,24 @@
-/* TODO - Find a better way (certainly by using macros) to avoid this whole code duplication mess.
- *   macro_rules! call {
- *       ($func:ident, $optional_arg:expr) => {{
- *           #[cfg(debug_assertions)]
- *           $func($optional_arg);
- *
- *           #[cfg(not(debug_assertions))]
- *           $func();
- *       }};
- *   }
-*/
 use {
+    crate::Pool,
     env_logger::filter::{Builder, Filter},
     log::{Log, Metadata, Record, SetLoggerError},
 };
 
 #[cfg(not(debug_assertions))]
 use {
-    crate::{diesel::prelude::*, models::logs::NewLog, schema::logs, Pool},
+    crate::{diesel::prelude::*, models::logs::NewLog, schema::logs},
     std::thread,
 };
 
 const FILTER_ENV: &str = "LOG_LEVEL";
 
+#[allow(dead_code)]
 pub struct Logger {
     inner: Filter,
-    #[cfg(not(debug_assertions))]
     pool: Pool,
 }
 
 impl Logger {
-    // new
-    #[cfg(not(debug_assertions))]
     pub fn new(pool: Pool) -> Logger {
         let mut builder = Builder::from_env(FILTER_ENV);
 
@@ -39,26 +27,9 @@ impl Logger {
             pool,
         }
     }
-    #[cfg(debug_assertions)]
-    pub fn new() -> Logger {
-        let mut builder = Builder::from_env(FILTER_ENV);
 
-        Logger {
-            inner: builder.build(),
-        }
-    }
-
-    // init
-    #[cfg(not(debug_assertions))]
     pub fn init(pool: Pool) -> Result<(), SetLoggerError> {
         let logger = Self::new(pool);
-
-        log::set_max_level(logger.inner.filter());
-        log::set_boxed_logger(Box::new(logger))
-    }
-    #[cfg(debug_assertions)]
-    pub fn init() -> Result<(), SetLoggerError> {
-        let logger = Self::new();
 
         log::set_max_level(logger.inner.filter());
         log::set_boxed_logger(Box::new(logger))
@@ -70,6 +41,7 @@ impl Log for Logger {
         self.inner.enabled(metadata)
     }
 
+    // Print logs to stdout in dev mode, store them in database in release.
     fn log(&self, record: &Record) {
         let (record_level, record) = (record.level().as_str(), record.args().to_string());
 
