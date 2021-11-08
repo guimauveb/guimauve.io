@@ -1,11 +1,8 @@
 use {
     super::{article_header::ArticleHeader, chapters::Chapters},
-    crate::{
-        entities::{
-            action::Action,
-            interfaces::{IArticle, IArticleHeader},
-        },
-        hooks::use_effect_except_on_mount::use_effect_except_on_mount,
+    crate::entities::{
+        action::Action,
+        interfaces::{IArticle, IArticleHeader},
     },
     std::rc::Rc,
     yew::{html, Callback, Properties},
@@ -17,6 +14,7 @@ use {
     crate::{
         components::{button::Button, loader::Loader, switch::Switch},
         entities::interfaces::{IPublishArticle, Status},
+        hooks::use_effect_except_on_mount::use_effect_except_on_mount,
         routes::AppRoute,
         service::{
             articles::{add_article, delete_article, publish_article},
