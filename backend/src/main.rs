@@ -44,7 +44,6 @@ async fn main() -> std::io::Result<()> {
     HttpServer::new(move || {
         #[cfg(not(feature = "editable"))]
         return App::new()
-            .wrap(middleware::Logger::default())
             /* %r: First line of request
              * %s: Response status code
              * %a: Remote IP address (might return the proxy address, try with the request headers [X-Forwarded-For] if that's the case)
