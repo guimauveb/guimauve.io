@@ -8,7 +8,6 @@ use {
 pub enum Method {
     GET,
     POST,
-    PUT,
     PATCH,
     OPTIONS,
     DELETE,
@@ -64,7 +63,6 @@ impl Fetch {
         let method = match method {
             Method::GET => "GET",
             Method::POST => "POST",
-            Method::PUT => "PUT",
             Method::PATCH => "PATCH",
             Method::OPTIONS => "OPTIONS",
             Method::DELETE => "DELETE",
@@ -82,10 +80,6 @@ impl Fetch {
 
     pub async fn post(url: String, payload: Option<String>) -> Result<JsValue, JsValue> {
         Fetch::fetch(url, Method::POST, payload).await
-    }
-
-    pub async fn put(url: String, payload: Option<String>) -> Result<JsValue, JsValue> {
-        Fetch::fetch(url, Method::PUT, payload).await
     }
 
     pub async fn delete(url: String) -> Result<JsValue, JsValue> {

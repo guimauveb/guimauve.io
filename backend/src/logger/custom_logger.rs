@@ -36,6 +36,17 @@ impl Logger {
     }
 }
 
+/*
+ * "%r | %s | %a | %{Referer}i | %{X-Forwarded-For}i | %{User-Agent}i | %U | %D":
+ *  %r: First line of request
+ *  %s: Response status code
+ *  %a: Remote IP address (might return the proxy address, try with the request headers [X-Forwarded-For] if that's the case)
+ *  %{Referer}i: Referer
+ *  %{X-Forwarded-For}i: X-Forwarded-For
+ *  %{User-Agent}i: User-Agent
+ *  %U: Request URL
+ *  %D: Time taken to serve the request (in ms)
+ */
 impl Log for Logger {
     fn enabled(&self, metadata: &Metadata) -> bool {
         self.inner.enabled(metadata)
@@ -51,7 +62,6 @@ impl Log for Logger {
         #[cfg(not(debug_assertions))]
         {
             let pool = self.pool.clone();
-            // Wanted to try using asynchronous code, but it seems way too complicated for the purpose of this blog.
             thread::spawn(move || {
                 let conn = pool.get().unwrap();
                 diesel::insert_into(logs::table)
