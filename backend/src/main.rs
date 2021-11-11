@@ -15,6 +15,7 @@ use {
 };
 
 mod code;
+mod errors;
 mod handlers;
 mod interfaces;
 mod logger;

@@ -1,6 +1,7 @@
 use {
     super::{articles::db_get_article_result_by_id, projects::db_get_project_result_by_id},
     crate::{
+        errors::database_error::DatabaseError,
         interfaces::{BlogQuery, IArticle, IProject, SearchResults},
         schema::{articles, projects},
         Pool, INCLUDE_UNPUBLISHED_ARTICLES,
@@ -10,6 +11,8 @@ use {
     std::collections::HashMap,
 };
 
+// TODO - Add columns
+// Remove format!
 fn db_search(pool: web::Data<Pool>, query: String) -> Result<SearchResults, diesel::result::Error> {
     let conn = pool.get().unwrap();
     let articles_ids = match INCLUDE_UNPUBLISHED_ARTICLES {
@@ -56,5 +59,5 @@ pub async fn search(
     Ok(web::block(move || db_search(pool, query.into_inner().text))
         .await
         .map(|results| HttpResponse::Ok().json(results))
-        .map_err(|_| HttpResponse::InternalServerError())?)
+        .map_err(|err| DatabaseError(err))?)
 }

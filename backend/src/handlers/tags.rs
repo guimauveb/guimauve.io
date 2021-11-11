@@ -1,6 +1,7 @@
 use {
     super::{articles::db_get_article_result_by_id, projects::db_get_project_result_by_id},
     crate::{
+        errors::database_error::DatabaseError,
         interfaces::{IArticle, IProject, ITag, SearchResults},
         models::{articles::ArticleTag, projects::ProjectTag, tags::Tag},
         schema::{article_tags, articles, project_tags, tags},
@@ -28,10 +29,10 @@ pub async fn get_tags(pool: web::Data<Pool>) -> Result<HttpResponse, Error> {
     Ok(web::block(move || db_get_tags(pool))
         .await
         .map(|tags| HttpResponse::Ok().json(tags))
-        .map_err(|_| HttpResponse::InternalServerError())?)
+        .map_err(|e| DatabaseError(e))?)
 }
 
-fn db_get_results_for_tags(
+fn db_get_results_for_tag(
     pool: web::Data<Pool>,
     label: String,
 ) -> Result<SearchResults, diesel::result::Error> {
@@ -91,9 +92,9 @@ pub async fn get_results_for_tag(
     tag: web::Path<String>,
 ) -> Result<HttpResponse, Error> {
     Ok(
-        web::block(move || db_get_results_for_tags(pool, tag.into_inner()))
+        web::block(move || db_get_results_for_tag(pool, tag.into_inner()))
             .await
             .map(|results| HttpResponse::Ok().json(results))
-            .map_err(|_| HttpResponse::InternalServerError())?,
+            .map_err(|e| DatabaseError(e))?,
     )
 }
