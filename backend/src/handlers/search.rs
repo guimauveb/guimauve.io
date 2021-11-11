@@ -11,7 +11,19 @@ use {
     std::collections::HashMap,
 };
 
-// TODO - Add columns
+/*
+ * SELECT DISTINCT a.id,
+ *                 a.pub_date,
+ *                 a.title
+ * FROM articles a
+ * INNER JOIN article_tags atags ON a.id = atags.article_id
+ * INNER JOIN tags t ON t.id = atags.tag_id
+ * INNER JOIN CONTENTS con ON con.article_id = a.id
+ * WHERE a.title ilike '%nginx%'
+ *     OR t.label = 'nginx'
+ *     OR con.content ilike '%nginx%'
+ * ORDER BY a.id;
+*/
 // Remove format!
 fn db_search(pool: web::Data<Pool>, query: String) -> Result<SearchResults, diesel::result::Error> {
     let conn = pool.get().unwrap();
@@ -59,5 +71,5 @@ pub async fn search(
     Ok(web::block(move || db_search(pool, query.into_inner().text))
         .await
         .map(|results| HttpResponse::Ok().json(results))
-        .map_err(|err| DatabaseError(err))?)
+        .map_err(|e| DatabaseError(e))?)
 }
