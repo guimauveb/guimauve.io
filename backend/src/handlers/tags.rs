@@ -29,7 +29,7 @@ pub async fn get_tags(pool: web::Data<Pool>) -> Result<HttpResponse, Error> {
     Ok(web::block(move || db_get_tags(pool))
         .await
         .map(|tags| HttpResponse::Ok().json(tags))
-        .map_err(|e| DatabaseError(e))?)
+        .map_err(DatabaseError)?)
 }
 
 fn db_get_results_for_tag(
@@ -95,6 +95,6 @@ pub async fn get_results_for_tag(
         web::block(move || db_get_results_for_tag(pool, tag.into_inner()))
             .await
             .map(|results| HttpResponse::Ok().json(results))
-            .map_err(|e| DatabaseError(e))?,
+            .map_err(DatabaseError)?,
     )
 }

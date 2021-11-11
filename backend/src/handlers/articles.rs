@@ -102,7 +102,7 @@ pub async fn update_content(
         web::block(move || db_update_content(pool, content_id.into_inner(), body.into_inner()))
             .await
             .map(|article| HttpResponse::Ok().json(article))
-            .map_err(|e| DatabaseError(e))?,
+            .map_err(DatabaseError)?,
     )
 }
 
@@ -177,7 +177,7 @@ pub async fn add_content(
     })
     .await
     .map(|chapter| HttpResponse::Ok().json(chapter))
-    .map_err(|e| DatabaseError(e))?)
+    .map_err(DatabaseError)?)
 }
 
 #[cfg(feature = "editable")]
@@ -230,7 +230,7 @@ pub async fn delete_content(
         web::block(move || db_delete_content(pool, content_id.into_inner()))
             .await
             .map(|response| HttpResponse::Ok().json(response))
-            .map_err(|e| DatabaseError(e))?,
+            .map_err(DatabaseError)?,
     )
 }
 
@@ -291,7 +291,7 @@ pub async fn update_chapter(
         web::block(move || db_update_chapter(pool, chapter_id.into_inner(), body.into_inner()))
             .await
             .map(|article| HttpResponse::Ok().json(article))
-            .map_err(|e| DatabaseError(e))?,
+            .map_err(DatabaseError)?,
     )
 }
 
@@ -349,7 +349,7 @@ pub async fn add_chapter(
     })
     .await
     .map(|article| HttpResponse::Ok().json(article))
-    .map_err(|e| DatabaseError(e))?)
+    .map_err(DatabaseError)?)
 }
 
 #[cfg(feature = "editable")]
@@ -400,7 +400,7 @@ pub async fn delete_chapter(
         web::block(move || db_delete_chapter(pool, chapter_id.into_inner()))
             .await
             .map(|response| HttpResponse::Ok().json(response))
-            .map_err(|e| DatabaseError(e))?,
+            .map_err(DatabaseError)?,
     )
 }
 
@@ -474,7 +474,7 @@ pub async fn get_all_articles(pool: web::Data<Pool>) -> Result<HttpResponse, Err
     Ok(web::block(move || db_get_all_articles_results(pool))
         .await
         .map(|articles| HttpResponse::Ok().json(articles))
-        .map_err(|e| DatabaseError(e))?)
+        .map_err(DatabaseError)?)
 }
 
 pub fn db_get_article_result_by_id(
@@ -519,7 +519,7 @@ pub async fn get_article_by_id(
         web::block(move || db_get_article_result_by_id(pool, article_id.into_inner()))
             .await
             .map(|article| HttpResponse::Ok().json(article))
-            .map_err(|e| DatabaseError(e))?,
+            .map_err(DatabaseError)?,
     )
 }
 
@@ -557,7 +557,7 @@ pub async fn update_article_header(
     })
     .await
     .map(|article| HttpResponse::Ok().json(article))
-    .map_err(|e| DatabaseError(e))?)
+    .map_err(DatabaseError)?)
 }
 
 #[cfg(feature = "editable")]
@@ -656,7 +656,7 @@ pub async fn add_article(
     })
     .await
     .map(|article| HttpResponse::Ok().json(article))
-    .map_err(|e| DatabaseError(e))?)
+    .map_err(DatabaseError)?)
 }
 
 #[cfg(feature = "editable")]
@@ -684,7 +684,7 @@ pub async fn publish_article(
         web::block(move || db_publish_article(pool, article_id.into_inner(), published))
             .await
             .map(|response| HttpResponse::Ok().json(response))
-            .map_err(|e| DatabaseError(e))?,
+            .map_err(DatabaseError)?,
     )
 }
 
@@ -710,7 +710,7 @@ pub async fn delete_article(
         web::block(move || db_delete_article(pool, article_id.into_inner()))
             .await
             .map(|response| HttpResponse::Ok().json(response))
-            .map_err(|e| DatabaseError(e))?,
+            .map_err(DatabaseError)?,
     )
 }
 
@@ -755,6 +755,6 @@ pub async fn update_article_tags(
         })
         .await
         .map(|_| HttpResponse::Ok().json(()))
-        .map_err(|e| DatabaseError(e))?,
+        .map_err(DatabaseError)?,
     )
 }

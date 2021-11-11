@@ -71,5 +71,5 @@ pub async fn search(
     Ok(web::block(move || db_search(pool, query.into_inner().text))
         .await
         .map(|results| HttpResponse::Ok().json(results))
-        .map_err(|e| DatabaseError(e))?)
+        .map_err(DatabaseError)?)
 }
