@@ -19,7 +19,7 @@ pub async fn get_tag_list() -> Result<Vec<ITag>, Status> {
 
     let json = Fetch::get(url).await;
     match json {
-        Ok(json) => Ok(json.into_serde::<Vec<ITag>>().unwrap()),
+        Ok(json) => Ok(json.into_serde().unwrap()),
         Err(_err) => Err(Status::Error),
     }
 }
@@ -33,7 +33,7 @@ pub async fn get_results_for_tag(tag: &str) -> Result<SearchResults, Status> {
 
     let json = Fetch::get(url).await;
     match json {
-        Ok(json) => Ok(json.into_serde::<SearchResults>().unwrap()),
+        Ok(json) => Ok(json.into_serde().unwrap()),
         Err(_err) => Err(Status::Error),
     }
 }

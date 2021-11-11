@@ -21,6 +21,7 @@ mod interfaces;
 mod logger;
 mod models;
 mod schema;
+mod service;
 mod types;
 
 // Constants

@@ -28,7 +28,7 @@ pub async fn get_article_list() -> Result<HashMap<i32, IArticle>, Status> {
 
     let json = Fetch::get(url).await;
     match json {
-        Ok(json) => Ok(json.into_serde::<HashMap<i32, IArticle>>().unwrap()),
+        Ok(json) => Ok(json.into_serde().unwrap()),
         Err(_err) => Err(Status::Error),
     }
 }
@@ -43,7 +43,7 @@ pub async fn get_article(id: &i32) -> Result<IArticle, Status> {
 
     let json = Fetch::get(url).await;
     match json {
-        Ok(json) => Ok(json.into_serde::<IArticle>().unwrap()),
+        Ok(json) => Ok(json.into_serde().unwrap()),
         Err(_err) => Err(Status::Error),
     }
 }
@@ -57,7 +57,7 @@ pub async fn add_article(payload: &IArticle) -> Result<IArticle, Status> {
 
     let json = Fetch::post(url, Some(json!(&payload).to_string())).await;
     match json {
-        Ok(json) => Ok(json.into_serde::<IArticle>().unwrap()),
+        Ok(json) => Ok(json.into_serde().unwrap()),
         Err(_err) => Err(Status::Error),
     }
 }
@@ -73,7 +73,7 @@ pub async fn update_article_header(payload: &IArticleHeader) -> Result<IArticle,
 
     let json = Fetch::patch(url, Some(json!(&payload).to_string())).await;
     match json {
-        Ok(json) => Ok(json.into_serde::<IArticle>().unwrap()),
+        Ok(json) => Ok(json.into_serde().unwrap()),
         Err(_err) => Err(Status::Error),
     }
 }
@@ -89,7 +89,7 @@ pub async fn publish_article(id: &i32, payload: &IPublishArticle) -> Result<IArt
 
     let json = Fetch::patch(url, Some(json!(&payload).to_string())).await;
     match json {
-        Ok(json) => Ok(json.into_serde::<IArticle>().unwrap()),
+        Ok(json) => Ok(json.into_serde().unwrap()),
         Err(_err) => Err(Status::Error),
     }
 }
@@ -105,10 +105,7 @@ pub async fn delete_article(id: &i32) -> Result<Status, Status> {
 
     let json = Fetch::delete(url).await;
     match json {
-        Ok(json) => {
-            let response = json.into_serde::<TAPIResponse<()>>().unwrap();
-            Ok(response.status)
-        }
+        Ok(json) => Ok(json.into_serde::<TAPIResponse<()>>().unwrap().status),
         Err(_err) => Err(Status::Error),
     }
 }
@@ -122,7 +119,7 @@ pub async fn add_content(payload: &IContent) -> Result<IArticle, Status> {
 
     let json = Fetch::post(url, Some(json!(&payload).to_string())).await;
     match json {
-        Ok(json) => Ok(json.into_serde::<IArticle>().unwrap()),
+        Ok(json) => Ok(json.into_serde().unwrap()),
         Err(_err) => Err(Status::Error),
     }
 }
@@ -138,7 +135,7 @@ pub async fn update_content(payload: &IContent) -> Result<IArticle, Status> {
 
     let json = Fetch::patch(url, Some(json!(&payload).to_string())).await;
     match json {
-        Ok(json) => Ok(json.into_serde::<IArticle>().unwrap()),
+        Ok(json) => Ok(json.into_serde().unwrap()),
         Err(_err) => Err(Status::Error),
     }
 }
@@ -168,7 +165,7 @@ pub async fn add_chapter(payload: &IChapter) -> Result<IArticle, Status> {
 
     let json = Fetch::post(url, Some(json!(&payload).to_string())).await;
     match json {
-        Ok(json) => Ok(json.into_serde::<IArticle>().unwrap()),
+        Ok(json) => Ok(json.into_serde().unwrap()),
         Err(_err) => Err(Status::Error),
     }
 }
@@ -184,7 +181,7 @@ pub async fn update_chapter(payload: &IChapter) -> Result<IArticle, Status> {
 
     let json = Fetch::patch(url, Some(json!(&payload).to_string())).await;
     match json {
-        Ok(json) => Ok(json.into_serde::<IArticle>().unwrap()),
+        Ok(json) => Ok(json.into_serde().unwrap()),
         Err(_err) => Err(Status::Error),
     }
 }
