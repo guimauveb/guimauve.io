@@ -1,8 +1,3 @@
-/*
- * Order of structs must match the columns order!
- *  "When this trait is derived, it will assume that the order of fields on your struct match the order of the fields in the query.
- *   This means that field order is significant if you are using #[derive(Queryable)]. Field name has no effect."
-*/
 use {
     super::tags::Tag,
     crate::{
@@ -117,19 +112,18 @@ impl Project {
 
         Ok(images
             .iter()
-            .map(|image| API_URL.to_owned() + image) // TODO - build_url()
+            .map(|image| API_URL.to_owned() + image)
             .collect())
     }
 
-    // TODO - Use Into<ProjectRepresentation> instead?
-    fn to_representation(self, connection: &PgConnection) -> ProjectRepresentation {
+    fn into_representation(self, connection: &PgConnection) -> ProjectRepresentation {
         ProjectRepresentation {
             tags: self.tags(connection).expect("Error loading tags."),
             gallery: self.gallery(connection).expect("Error loading gallery."),
             id: self.id,
             category: self.category,
             title: self.title,
-            image: API_URL.to_owned() + &self.image, // TODO - build_url()
+            image: API_URL.to_owned() + &self.image,
             description: self.description,
             features: self.features,
             visit_link: self.visit_link,
@@ -148,7 +142,7 @@ impl Project {
             .find(id)
             .first::<Project>(connection)?;
 
-        Ok(project.to_representation(connection))
+        Ok(project.into_representation(connection))
     }
 
     pub fn list(
@@ -161,7 +155,7 @@ impl Project {
 
         let results: HashMap<i32, ProjectRepresentation> = projects
             .into_iter()
-            .map(|project: Project| (project.id, project.to_representation(connection)))
+            .map(|project: Project| (project.id, project.into_representation(connection)))
             .collect();
 
         Ok(results)
@@ -179,7 +173,7 @@ impl Project {
             .expect("Error loading projects.");
         let results: HashMap<i32, ProjectRepresentation> = projects
             .into_iter()
-            .map(|project: Project| (project.id, project.to_representation(connection)))
+            .map(|project: Project| (project.id, project.into_representation(connection)))
             .collect();
 
         Ok(results)
@@ -205,7 +199,7 @@ impl Project {
 
         let results: HashMap<i32, ProjectRepresentation> = projects
             .into_iter()
-            .map(|project: Project| (project.id, project.to_representation(connection)))
+            .map(|project: Project| (project.id, project.into_representation(connection)))
             .collect();
 
         Ok(results)
@@ -225,7 +219,7 @@ impl Project {
 
         let resume_projects_results: HashMap<i32, ProjectRepresentation> = resume_projects
             .into_iter()
-            .map(|project: Project| (project.id, project.to_representation(connection)))
+            .map(|project: Project| (project.id, project.into_representation(connection)))
             .collect();
 
         Ok(resume_projects_results)

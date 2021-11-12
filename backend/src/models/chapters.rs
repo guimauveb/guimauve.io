@@ -58,13 +58,13 @@ pub struct NewChapterForm<'a> {
 }
 
 impl Chapter {
-    fn to_representation(self, connection: &PgConnection) -> ChapterRepresentation {
+    fn into_representation(self, connection: &PgConnection) -> ChapterRepresentation {
         ChapterRepresentation {
             id: self.id,
             article_id: self.article_id,
             index: self.index,
             title: self.title.clone(),
-            contents: Content::belonging_to_chapter(connection, &self).unwrap_or_default(),
+            contents: Content::belonging_to_chapter(&self, connection).unwrap_or_default(),
         }
     }
     #[cfg(feature = "editable")]
@@ -103,7 +103,7 @@ impl Chapter {
 
         Ok(TAPIResponse {
             status: Status::Success,
-            content: Some(()),
+            content: None,
         })
     }
 
@@ -157,8 +157,8 @@ impl Chapter {
     }
 
     pub fn belonging_to_article(
-        connection: &PgConnection,
         article: &Article,
+        connection: &PgConnection,
     ) -> Result<Vec<ChapterRepresentation>, diesel::result::Error> {
         let chapters = Chapter::belonging_to(article)
             .order_by(chapters::index)
@@ -167,7 +167,7 @@ impl Chapter {
 
         Ok(chapters
             .into_iter()
-            .map(|chapter| chapter.to_representation(connection))
+            .map(|chapter| chapter.into_representation(connection))
             .collect())
     }
 }

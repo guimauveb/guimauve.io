@@ -65,7 +65,7 @@ pub struct NewContent<'a> {
 }
 
 impl Content {
-    fn to_representation(self) -> ContentRepresentation {
+    fn into_representation(self) -> ContentRepresentation {
         ContentRepresentation {
             id: self.id,
             article_id: self.article_id,
@@ -81,6 +81,7 @@ impl Content {
             url: self.url,
         }
     }
+
     #[cfg(feature = "editable")]
     pub fn update(
         connection: &PgConnection,
@@ -174,13 +175,13 @@ impl Content {
 
         Ok(TAPIResponse {
             status: Status::Success,
-            content: Some(()),
+            content: None,
         })
     }
 
     pub fn belonging_to_chapter(
-        connection: &PgConnection,
         chapter: &Chapter,
+        connection: &PgConnection,
     ) -> Result<Vec<ContentRepresentation>, diesel::result::Error> {
         let contents = Content::belonging_to(chapter)
             .order_by(contents::index)
@@ -189,7 +190,7 @@ impl Content {
 
         Ok(contents
             .into_iter()
-            .map(|content| content.to_representation())
+            .map(|content| content.into_representation())
             .collect())
     }
 }

@@ -122,11 +122,11 @@ impl Article {
         &self,
         connection: &PgConnection,
     ) -> Result<Vec<ChapterRepresentation>, diesel::result::Error> {
-        Chapter::belonging_to_article(connection, self)
+        Chapter::belonging_to_article(self, connection)
     }
 
     // TODO - Use Into<ArticleRepresentation> instead?
-    fn to_representation(self, connection: &PgConnection) -> ArticleRepresentation {
+    fn into_representation(self, connection: &PgConnection) -> ArticleRepresentation {
         ArticleRepresentation {
             tags: self.tags(connection).expect("Error loading article tags."),
             chapters: self.chapters(connection).expect("Error loading chapters."),
@@ -149,7 +149,7 @@ impl Article {
             .find(id)
             .first::<Article>(connection)?;
 
-        Ok(article.to_representation(connection))
+        Ok(article.into_representation(connection))
     }
 
     #[cfg(feature = "editable")]
@@ -196,7 +196,7 @@ impl Article {
 
         Ok(TAPIResponse {
             status: Status::Success,
-            content: Some(()),
+            content: None,
         })
     }
 
@@ -246,7 +246,7 @@ impl Article {
 
         let results: HashMap<i32, ArticleRepresentation> = articles
             .into_iter()
-            .map(|article: Article| (article.id, article.to_representation(connection)))
+            .map(|article: Article| (article.id, article.into_representation(connection)))
             .collect();
 
         Ok(results)
@@ -272,7 +272,7 @@ impl Article {
 
         let results: HashMap<i32, ArticleRepresentation> = articles
             .into_iter()
-            .map(|article: Article| (article.id, article.to_representation(connection)))
+            .map(|article: Article| (article.id, article.into_representation(connection)))
             .collect();
 
         Ok(results)
@@ -299,7 +299,7 @@ impl Article {
         // TODO - Use a vec
         let results: HashMap<i32, ArticleRepresentation> = articles
             .into_iter()
-            .map(|article: Article| (article.id, article.to_representation(connection)))
+            .map(|article: Article| (article.id, article.into_representation(connection)))
             .collect();
 
         Ok(results)
