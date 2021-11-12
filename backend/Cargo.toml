@@ -15,6 +15,7 @@ chrono = { version = "0.4.10", features = ["serde"] }
 derive_more = "0.99.2"
 diesel = { version = "1.4.8", features = ["postgres","uuidv07", "r2d2", "chrono"] }
 diesel-derive-enum = { version = "1.1.1", features = ["postgres"] }
+diesel_full_text_search = "1.0.1"
 r2d2 = "0.8.8"
 serde = "1.0"
 serde_derive = "1.0"

@@ -2,7 +2,7 @@ use {
     crate::{
         interfaces::{IArticle, IChapter, IContent, ITag},
         models::{
-            articles::{Article, ArticleTag, Chapter, Content},
+            articles::{Article, ArticleTag, Chapter, Content, ARTICLE_COLUMNS},
             tags::Tag,
         },
         schema::{article_tags, articles, chapters, contents, tags},
@@ -182,6 +182,7 @@ pub fn db_delete_chapter(
 
         let article = articles::table
             .find(chapter.article_id)
+            .select(ARTICLE_COLUMNS)
             .load::<Article>(&conn)
             .expect("Could not load article.");
 
@@ -217,6 +218,7 @@ pub fn db_add_chapter(
     let chapter_id = conn.transaction::<i32, diesel::result::Error, _>(|| {
         let article = articles::table
             .find(new_chapter.article_id)
+            .select(ARTICLE_COLUMNS)
             .first::<Article>(&conn)
             .expect("Could not load article.");
 
@@ -375,7 +377,7 @@ pub fn db_update_article_header(
             image: updated_header.image,
             image_credits: updated_header.image_credits,
         })
-        .get_result::<Article>(&conn)
+        .execute(&conn)
         .expect("Could not update article.");
 
     db_get_article_result_by_id(pool, pk)
@@ -386,20 +388,23 @@ pub fn db_get_article_result_by_id(
     article_id: i32,
 ) -> Result<IArticle, diesel::result::Error> {
     let conn = pool.get().unwrap();
-    println!("helo");
     let article = match INCLUDE_UNPUBLISHED_ARTICLES {
         "true" => articles::table
+            .select(ARTICLE_COLUMNS)
             .filter(articles::id.eq(article_id))
             .get_result::<Article>(&conn)?,
         _ => articles::table
+            .select(ARTICLE_COLUMNS)
             .filter(articles::published.eq(true))
             .filter(articles::id.eq(article_id))
             .get_result::<Article>(&conn)?,
     };
     let tags =
         db_get_tags_results_for_article(&conn, &article).expect("Could not load article tags.");
-    let chapters = db_get_chapters_results_by_article(&conn, &article);
+    let chapters =
+        db_get_chapters_results_by_article(&conn, &article).expect("Could not load chapters.");
 
+    // TODO - Impl something like to_interface()
     Ok(IArticle {
         id: article.id,
         title: article.title,
@@ -409,10 +414,7 @@ pub fn db_get_article_result_by_id(
         headline: article.headline,
         image: API_URL.to_owned() + &article.image,
         image_credits: article.image_credits,
-        chapters: match chapters {
-            Ok(chapters) => chapters,
-            Err(_) => vec![],
-        },
+        chapters,
     })
 }
 
@@ -423,6 +425,7 @@ pub fn db_get_all_articles_results(
     let articles = db_get_all_articles(pool)?;
     let results: HashMap<i32, IArticle> = articles
         .into_iter()
+        // TODO - Impl something like to_interface()
         .map(|article: Article| {
             (
                 article.id,
@@ -450,10 +453,12 @@ pub fn db_get_all_articles(pool: web::Data<Pool>) -> Result<Vec<Article>, diesel
     let conn = pool.get().unwrap();
     let articles = match INCLUDE_UNPUBLISHED_ARTICLES {
         "true" => articles::table
+            .select(ARTICLE_COLUMNS)
             .order_by(articles::pub_date.desc())
             .load::<Article>(&conn)
             .expect("Could not load articles."),
         _ => articles::table
+            .select(ARTICLE_COLUMNS)
             .filter(articles::published.eq(true))
             .order_by(articles::pub_date.desc())
             .load::<Article>(&conn)

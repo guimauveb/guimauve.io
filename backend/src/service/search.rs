@@ -7,6 +7,7 @@ use {
     },
     actix_web::web,
     diesel::{prelude::*, QueryDsl, RunQueryDsl},
+    diesel_full_text_search::{plainto_tsquery, TsVectorExtensions},
     std::collections::HashMap,
 };
 
@@ -29,17 +30,19 @@ pub fn db_search(
     query: String,
 ) -> Result<SearchResults, diesel::result::Error> {
     let conn = pool.get().unwrap();
+
     let articles_ids = match INCLUDE_UNPUBLISHED_ARTICLES {
         "true" => articles::table
-            .filter(articles::title.ilike(format!("%{}%", &query)))
             .select(articles::id)
-            .get_results::<i32>(&conn)?,
+            .filter(articles::text_searchable_article.matches(plainto_tsquery(&query)))
+            .load::<i32>(&conn)?,
         _ => articles::table
-            .filter(articles::title.ilike(format!("%{}%", &query)))
             .filter(articles::published.eq(true))
             .select(articles::id)
-            .get_results::<i32>(&conn)?,
+            .filter(articles::text_searchable_article.matches(plainto_tsquery(&query)))
+            .load::<i32>(&conn)?,
     };
+
     let articles: HashMap<i32, IArticle> = articles_ids
         .into_iter()
         .map(|id| {

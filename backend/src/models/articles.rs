@@ -54,6 +54,7 @@ pub struct Content {
 }
 
 #[derive(Identifiable, Debug, Serialize, Deserialize, Queryable, Clone, AsChangeset)]
+#[table_name = "articles"]
 pub struct Article {
     pub id: i32,
     pub title: String,
@@ -64,6 +65,67 @@ pub struct Article {
     pub image_credits: Option<String>,
 }
 
+type ArticleColumns = (
+    articles::id,
+    articles::title,
+    articles::pub_date,
+    articles::published,
+    articles::headline,
+    articles::image,
+    articles::image_credits,
+);
+
+pub const ARTICLE_COLUMNS: ArticleColumns = (
+    articles::id,
+    articles::title,
+    articles::pub_date,
+    articles::published,
+    articles::headline,
+    articles::image,
+    articles::image_credits,
+);
+
+//impl ArticleList {
+//    pub fn list(connection: &PgConnection, search: &str) -> Self {
+//        use crate::schema;
+//        use crate::schema::articles::dsl::*;
+//        use diesel::pg::Pg;
+//        use diesel::QueryDsl;
+//        use diesel::RunQueryDsl;
+//        use diesel_full_text_search::{plainto_tsquery, TsVectorExtensions};
+//
+//        let mut query = schema::articles::table.into_boxed::<Pg>();
+//
+//        if !search.is_empty() {
+//            query = query.filter(text_searchable_article.matches(plainto_tsquery(search)));
+//        }
+//        let result = query
+//            .select(ARTICLE_COLUMNS)
+//            .limit(10)
+//            .load::<Article>(connection)
+//            .expect("Error loading articles");
+//
+//        ArticleList(result)
+//    }
+//}
+
+//impl Article {
+//    pub fn find(id: &i32, connection: &PgConnection) -> Result<Article, diesel::result::Error> {
+//        use diesel::{QueryDsl, RunQueryDsl};
+//
+//        articles::table
+//            .find(id)
+//            .first(connection)
+//    }
+//
+//    pub fn load() -> Result<Article, diesel::result::Error> {
+//        articles::table
+//            .find(id)
+//            .select(ARTICLE_COLUMNS)
+//            .first(connection)
+//    }
+//}
+//
 // Insertables
 #[derive(Insertable, Debug, Serialize, Deserialize)]
 #[table_name = "articles"]
