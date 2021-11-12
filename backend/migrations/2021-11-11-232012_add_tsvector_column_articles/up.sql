@@ -3,7 +3,7 @@ UPDATE
    articles 
 SET
    text_searchable_article = to_tsvector('english', title || ' ' || headline);
-CREATE INDEX textsearch_idx 
+CREATE INDEX textsearch_article_idx 
 ON articles USING GIN (text_searchable_article);
 CREATE TRIGGER tsvectorupdatearticles BEFORE INSERT 
 OR 

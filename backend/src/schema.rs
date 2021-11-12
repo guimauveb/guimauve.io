@@ -80,6 +80,7 @@ table! {
         download_link -> Nullable<Varchar>,
         git -> Nullable<Varchar>,
         category -> crate::types::project_category::ProjectCategoryMapping,
+        text_searchable_project -> crate::diesel_full_text_search::TsVector,
     }
 }
 

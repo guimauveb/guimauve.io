@@ -64,24 +64,15 @@ async fn main() -> std::io::Result<()> {
             )
             .service(fs::Files::new("/media", "./media").show_files_listing())
             .data(pool.clone())
-            .route(
-                "/articles/{id}",
-                web::get().to(handlers::articles::get_article_by_id),
-            )
-            .route(
-                "/articles",
-                web::get().to(handlers::articles::get_all_articles),
-            )
+            .route("/articles/{id}", web::get().to(handlers::articles::get))
+            .route("/articles", web::get().to(handlers::articles::list))
             .route(
                 "/tags/{tag}",
                 web::get().to(handlers::tags::get_results_for_tag),
             )
-            .route("/tags", web::get().to(handlers::tags::get_tags))
+            .route("/tags", web::get().to(handlers::tags::list))
             .route("/search", web::get().to(handlers::search::search))
-            .route(
-                "/projects",
-                web::get().to(handlers::projects::get_all_projects),
-            );
+            .route("/projects", web::get().to(handlers::projects::list));
 
         #[cfg(feature = "editable")]
         return App::new()
@@ -102,56 +93,42 @@ async fn main() -> std::io::Result<()> {
             .data(pool.clone())
             .service(
                 web::resource("/articles")
-                    .route(web::get().to(handlers::articles::get_all_articles))
-                    .route(web::post().to(handlers::articles::add_article)),
+                    .route(web::get().to(handlers::articles::list))
+                    .route(web::post().to(handlers::articles::add)),
             )
             .service(
                 web::resource("/articles/{id}")
-                    .route(web::get().to(handlers::articles::get_article_by_id))
-                    .route(web::patch().to(handlers::articles::update_article_header))
-                    .route(web::delete().to(handlers::articles::delete_article)),
-            )
-            .service(
-                web::resource("/articles/{id}/tags")
-                    .route(web::patch().to(handlers::articles::update_article_tags)),
+                    .route(web::get().to(handlers::articles::get))
+                    .route(web::patch().to(handlers::articles::update))
+                    .route(web::delete().to(handlers::articles::delete)),
             )
             .service(
                 web::resource("/articles/publish/{id}")
-                    .route(web::patch().to(handlers::articles::publish_article)),
+                    .route(web::patch().to(handlers::articles::publish)),
             )
-            .service(
-                web::resource("/chapters").route(web::post().to(handlers::articles::add_chapter)),
-            )
+            .service(web::resource("/chapters").route(web::post().to(handlers::chapters::add)))
             .service(
                 web::resource("/chapters/{id}")
-                    .route(web::patch().to(handlers::articles::update_chapter))
-                    .route(web::delete().to(handlers::articles::delete_chapter)),
+                    .route(web::patch().to(handlers::chapters::update))
+                    .route(web::delete().to(handlers::chapters::delete)),
             )
-            .service(
-                web::resource("/contents").route(web::post().to(handlers::articles::add_content)),
-            )
+            .service(web::resource("/contents").route(web::post().to(handlers::contents::add)))
             .service(
                 web::resource("/contents/{id}")
-                    .route(web::patch().to(handlers::articles::update_content))
-                    .route(web::delete().to(handlers::articles::delete_content)),
+                    .route(web::patch().to(handlers::contents::update))
+                    .route(web::delete().to(handlers::contents::delete)),
             )
             .route(
                 "/tags/{tag}",
                 web::get().to(handlers::tags::get_results_for_tag),
             )
-            .route("/tags", web::get().to(handlers::tags::get_tags))
+            .route("/tags", web::get().to(handlers::tags::list))
             .route("/search", web::get().to(handlers::search::search))
-            .route(
-                "/projects",
-                web::get().to(handlers::projects::get_all_projects),
-            )
-            .route(
-                "/projects/{id}",
-                web::get().to(handlers::projects::get_project_by_id),
-            )
+            .route("/projects", web::get().to(handlers::projects::list))
+            .route("/projects/{id}", web::get().to(handlers::projects::get))
             .route(
                 "/resume-projects",
-                web::get().to(handlers::projects::get_resume_projects),
+                web::get().to(handlers::resume_projects::list),
             );
     })
     .bind(("0.0.0.0", 8080))?

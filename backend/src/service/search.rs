@@ -1,71 +1,17 @@
 use {
     crate::{
-        interfaces::{IArticle, IProject, SearchResults},
-        schema::{articles, projects},
-        service::{articles::db_get_article_result_by_id, projects::db_get_project_result_by_id},
-        Pool, INCLUDE_UNPUBLISHED_ARTICLES,
+        interfaces::SearchResults,
+        models::{articles::Article, projects::Project},
     },
-    actix_web::web,
-    diesel::{prelude::*, QueryDsl, RunQueryDsl},
-    diesel_full_text_search::{plainto_tsquery, TsVectorExtensions},
-    std::collections::HashMap,
+    diesel::pg::PgConnection,
 };
 
-/* TODO
- * SELECT DISTINCT a.id,
- *                 a.pub_date,
- *                 a.title
- * FROM articles a
- * INNER JOIN article_tags atags ON a.id = atags.article_id
- * INNER JOIN tags t ON t.id = atags.tag_id
- * INNER JOIN CONTENTS con ON con.article_id = a.id
- * WHERE a.title ilike '%nginx%'
- *     OR t.label = 'nginx'
- *     OR con.content ilike '%nginx%'
- * ORDER BY a.id;
-*/
-// Remove format!
-pub fn db_search(
-    pool: web::Data<Pool>,
-    query: String,
+pub fn search(
+    connection: &PgConnection,
+    query: &str,
 ) -> Result<SearchResults, diesel::result::Error> {
-    let conn = pool.get().unwrap();
-
-    let articles_ids = match INCLUDE_UNPUBLISHED_ARTICLES {
-        "true" => articles::table
-            .select(articles::id)
-            .filter(articles::text_searchable_article.matches(plainto_tsquery(&query)))
-            .load::<i32>(&conn)?,
-        _ => articles::table
-            .filter(articles::published.eq(true))
-            .select(articles::id)
-            .filter(articles::text_searchable_article.matches(plainto_tsquery(&query)))
-            .load::<i32>(&conn)?,
-    };
-
-    let articles: HashMap<i32, IArticle> = articles_ids
-        .into_iter()
-        .map(|id| {
-            (id, {
-                db_get_article_result_by_id(pool.clone(), id)
-                    .expect("Error while loading article result.")
-            })
-        })
-        .collect();
-
-    let projects_ids = projects::table
-        .filter(projects::title.ilike(format!("%{}%", &query)))
-        .select(projects::id)
-        .get_results::<i32>(&conn)?;
-    let projects: HashMap<i32, IProject> = projects_ids
-        .into_iter()
-        .map(|id| {
-            (id, {
-                db_get_project_result_by_id(pool.clone(), id)
-                    .expect("Error while loading project result.")
-            })
-        })
-        .collect();
+    let articles = Article::search(connection, query)?;
+    let projects = Project::search(connection, query)?;
 
     Ok(SearchResults { articles, projects })
 }

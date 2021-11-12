@@ -1,5 +1,7 @@
 use {
-    crate::schema::tags,
+    super::{articles::Article, projects::Project},
+    crate::{interfaces::TagResults, schema::tags},
+    diesel::{PgConnection, RunQueryDsl},
     serde_derive::{Deserialize, Serialize},
 };
 
@@ -7,4 +9,21 @@ use {
 pub struct Tag {
     pub id: i32,
     pub label: String,
+}
+
+impl Tag {
+    pub fn list(connection: &PgConnection) -> Result<Vec<Tag>, diesel::result::Error> {
+        let results = tags::table.load::<Tag>(connection)?;
+        Ok(results)
+    }
+
+    pub fn results(
+        connection: &PgConnection,
+        label: &str,
+    ) -> Result<TagResults, diesel::result::Error> {
+        let articles = Article::tagged(connection, label)?;
+        let projects = Project::tagged(connection, label)?;
+
+        Ok(TagResults { articles, projects })
+    }
 }

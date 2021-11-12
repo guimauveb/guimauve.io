@@ -1,18 +1,12 @@
 use {
-    crate::Pool,
+    crate::{diesel::prelude::*, models::logs::NewLog, schema::logs, Pool},
     env_logger::filter::{Builder, Filter},
     log::{Log, Metadata, Record, SetLoggerError},
-};
-
-#[cfg(not(debug_assertions))]
-use {
-    crate::{diesel::prelude::*, models::logs::NewLog, schema::logs},
     std::thread,
 };
 
 const FILTER_ENV: &str = "LOG_LEVEL";
 
-#[allow(dead_code)]
 pub struct Logger {
     inner: Filter,
     pool: Pool,
@@ -20,10 +14,8 @@ pub struct Logger {
 
 impl Logger {
     pub fn new(pool: Pool) -> Logger {
-        let mut builder = Builder::from_env(FILTER_ENV);
-
         Logger {
-            inner: builder.build(),
+            inner: Builder::from_env(FILTER_ENV).build(),
             pool,
         }
     }
@@ -59,7 +51,6 @@ impl Log for Logger {
         #[cfg(debug_assertions)]
         println!("{} {}", &record_level, &record);
 
-        #[cfg(not(debug_assertions))]
         {
             let pool = self.pool.clone();
             thread::spawn(move || {
