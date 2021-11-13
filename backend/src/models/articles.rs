@@ -14,8 +14,8 @@ use {
     },
     crate::{
         diesel::{
-            pg::expression::dsl::any, BelongingToDsl, ExpressionMethods, PgConnection, QueryDsl,
-            RunQueryDsl,
+            connection::Connection, pg::expression::dsl::any, BelongingToDsl, ExpressionMethods,
+            PgConnection, QueryDsl, RunQueryDsl,
         },
         diesel_full_text_search::{plainto_tsquery, TsVectorExtensions},
         schema::{article_tags, articles, tags},
@@ -125,7 +125,6 @@ impl Article {
         Chapter::belonging_to_article(self, connection)
     }
 
-    // TODO - Use Into<ArticleRepresentation> instead?
     fn into_representation(self, connection: &PgConnection) -> ArticleRepresentation {
         ArticleRepresentation {
             tags: self.tags(connection).expect("Error loading article tags."),
@@ -157,33 +156,38 @@ impl Article {
         connection: &PgConnection,
         new_article: NewArticle,
     ) -> Result<ArticleRepresentation, diesel::result::Error> {
-        let inserted_article_id: i32 = diesel::insert_into(articles::table)
-            .values(&new_article.article_header)
-            .returning(articles::id)
-            .get_result(connection)
-            .expect("Could not insert article.");
+        let inserted_article =
+            connection.transaction::<Article, diesel::result::Error, _>(|| {
+                let inserted_article = diesel::insert_into(articles::table)
+                    .values(&new_article.article_header)
+                    .returning(ARTICLE_COLUMNS)
+                    .get_result::<Article>(connection)?;
 
-        for chapter_form in new_article.chapters {
-            let inserted_chapter_id = Chapter::add(
-                connection,
-                NewChapter {
-                    article_id: inserted_article_id,
-                    ..chapter_form.chapter
-                },
-            )?;
-            for content in chapter_form.contents {
-                Content::add(
-                    connection,
-                    NewContent {
-                        article_id: inserted_article_id,
-                        chapter_id: inserted_chapter_id,
-                        ..content
-                    },
-                )?;
-            }
-        }
+                for new_chapter in new_article.chapters {
+                    let inserted_chapter_id = Chapter::add(
+                        connection,
+                        NewChapter {
+                            article_id: inserted_article.id,
+                            ..new_chapter.chapter
+                        },
+                    )?;
 
-        Article::find(connection, &inserted_article_id)
+                    for new_content in new_chapter.contents {
+                        Content::add(
+                            connection,
+                            NewContent {
+                                article_id: inserted_article.id,
+                                chapter_id: inserted_chapter_id,
+                                ..new_content
+                            },
+                        )?;
+                    }
+                }
+
+                Ok(inserted_article)
+            })?;
+
+        Ok(inserted_article.into_representation(connection))
     }
 
     // TODO - Check return type

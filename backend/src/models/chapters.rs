@@ -67,6 +67,7 @@ impl Chapter {
             contents: Content::belonging_to_chapter(&self, connection).unwrap_or_default(),
         }
     }
+
     #[cfg(feature = "editable")]
     pub fn delete(
         connection: &PgConnection,
