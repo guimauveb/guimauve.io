@@ -118,7 +118,7 @@ impl Article {
         Ok(tags)
     }
 
-    pub fn chapters(
+    fn chapters(
         &self,
         connection: &PgConnection,
     ) -> Result<Vec<ChapterRepresentation>, diesel::result::Error> {

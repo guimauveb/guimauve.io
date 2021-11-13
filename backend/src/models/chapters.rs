@@ -58,9 +58,16 @@ pub struct NewChapterForm<'a> {
 }
 
 impl Chapter {
+    fn contents(
+        &self,
+        connection: &PgConnection,
+    ) -> Result<Vec<ContentRepresentation>, diesel::result::Error> {
+        Content::belonging_to_chapter(&self, connection)
+    }
+
     fn into_representation(self, connection: &PgConnection) -> ChapterRepresentation {
         ChapterRepresentation {
-            contents: Content::belonging_to_chapter(&self, connection).unwrap_or_default(),
+            contents: self.contents(connection).unwrap_or_default(),
             id: self.id,
             article_id: self.article_id,
             index: self.index,
