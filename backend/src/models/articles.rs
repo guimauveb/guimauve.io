@@ -190,7 +190,6 @@ impl Article {
         Ok(inserted_article.into_representation(connection))
     }
 
-    // TODO - Check return type
     #[cfg(feature = "editable")]
     pub fn delete(
         connection: &PgConnection,
@@ -210,7 +209,7 @@ impl Article {
         id: &i32,
         updated_header: IArticleHeader, // TODO - Check type
     ) -> Result<ArticleRepresentation, diesel::result::Error> {
-        diesel::update(articles::table.find(id))
+        let article = diesel::update(articles::table.find(id))
             .set(&Article {
                 id: updated_header.article_id,
                 title: updated_header.title,
@@ -220,10 +219,10 @@ impl Article {
                 image: updated_header.image,
                 image_credits: updated_header.image_credits,
             })
-            .execute(connection)
-            .expect("Could not update article.");
+            .returning(ARTICLE_COLUMNS)
+            .get_result::<Article>(connection)?;
 
-        Article::find(connection, id)
+        Ok(article.into_representation(connection))
     }
 
     #[cfg(feature = "editable")]
@@ -232,12 +231,12 @@ impl Article {
         id: &i32,
         published: &bool,
     ) -> Result<ArticleRepresentation, diesel::result::Error> {
-        diesel::update(articles::table.filter(articles::id.eq(id)))
+        let article = diesel::update(articles::table.filter(articles::id.eq(id)))
             .set(articles::published.eq(published))
-            .execute(connection)
-            .expect("An error occured while updating the article.");
+            .returning(ARTICLE_COLUMNS)
+            .get_result::<Article>(connection)?;
 
-        Article::find(connection, id)
+        Ok(article.into_representation(connection))
     }
 
     pub fn list(
@@ -284,10 +283,10 @@ impl Article {
 
     pub fn tagged(
         connection: &PgConnection,
-        label: &str, // TODO - Tag
+        tag: &str, // TODO - Tag
     ) -> Result<HashMap<i32, ArticleRepresentation>, diesel::result::Error> {
         let tag = tags::table
-            .filter(tags::label.eq(label))
+            .filter(tags::label.eq(tag))
             .first::<Tag>(connection)?;
 
         let article_ids = ArticleTag::belonging_to(&tag)
