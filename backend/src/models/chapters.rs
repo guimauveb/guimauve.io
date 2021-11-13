@@ -60,11 +60,11 @@ pub struct NewChapterForm<'a> {
 impl Chapter {
     fn into_representation(self, connection: &PgConnection) -> ChapterRepresentation {
         ChapterRepresentation {
+            contents: Content::belonging_to_chapter(&self, connection).unwrap_or_default(),
             id: self.id,
             article_id: self.article_id,
             index: self.index,
-            title: self.title.clone(),
-            contents: Content::belonging_to_chapter(&self, connection).unwrap_or_default(),
+            title: self.title,
         }
     }
 
