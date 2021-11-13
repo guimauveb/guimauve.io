@@ -10,7 +10,7 @@ use {
         types::project_category::ProjectCategory,
         API_URL,
     },
-    serde_derive::{Deserialize, Serialize},
+    serde::{Deserialize, Serialize},
     std::collections::HashMap,
 };
 

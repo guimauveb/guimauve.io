@@ -7,7 +7,7 @@ use {
         diesel::{BelongingToDsl, PgConnection, QueryDsl, RunQueryDsl},
         schema::chapters,
     },
-    serde_derive::{Deserialize, Serialize},
+    serde::{Deserialize, Serialize},
 };
 
 #[cfg(feature = "editable")]

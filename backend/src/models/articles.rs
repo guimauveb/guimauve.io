@@ -21,7 +21,7 @@ use {
         schema::{article_tags, articles, tags},
         API_URL, INCLUDE_UNPUBLISHED_ARTICLES,
     },
-    serde_derive::{Deserialize, Serialize},
+    serde::{Deserialize, Serialize},
     std::collections::HashMap,
 };
 

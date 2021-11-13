@@ -6,7 +6,7 @@ use {
         types::{content_type::ContentType, language::Language},
         API_URL,
     },
-    serde_derive::{Deserialize, Serialize},
+    serde::{Deserialize, Serialize},
 };
 
 #[cfg(feature = "editable")]
@@ -71,11 +71,11 @@ impl Content {
             article_id: self.article_id,
             chapter_id: self.chapter_id,
             index: self.index,
-            content_type: self.content_type.clone(),
             content: match self.content_type {
                 ContentType::Image => API_URL.to_owned() + &self.content,
                 _ => self.content,
             },
+            content_type: self.content_type,
             language: self.language,
             highlighted_code: self.highlighted_code,
             url: self.url,

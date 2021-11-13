@@ -2,7 +2,7 @@ use {
     super::{articles::Article, projects::Project},
     crate::{interfaces::TagResults, schema::tags},
     diesel::{PgConnection, RunQueryDsl},
-    serde_derive::{Deserialize, Serialize},
+    serde::{Deserialize, Serialize},
 };
 
 #[derive(Identifiable, Debug, Serialize, Deserialize, Queryable, Clone, AsChangeset)]

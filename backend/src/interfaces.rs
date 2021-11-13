@@ -4,7 +4,7 @@ use {
         models::{articles::ArticleRepresentation, projects::ProjectRepresentation},
         types::{content_type::ContentType, language::Language},
     },
-    serde_derive::{Deserialize, Serialize},
+    serde::{Deserialize, Serialize},
     std::{collections::HashMap, fmt::Debug},
 };
 
@@ -56,7 +56,7 @@ pub struct InputTag {
     pub id: i32,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct InputContent {
     pub chapter_id: i32,
     pub article_id: i32,
@@ -68,7 +68,7 @@ pub struct InputContent {
     pub url: Option<String>,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct InputChapter {
     pub article_id: i32,
     pub index: i32,

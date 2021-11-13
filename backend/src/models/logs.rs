@@ -1,6 +1,6 @@
 use {
     crate::schema::logs,
-    serde_derive::{Deserialize, Serialize},
+    serde::{Deserialize, Serialize},
 };
 
 #[derive(Identifiable, Debug, Serialize, Deserialize, Queryable, Clone)]
