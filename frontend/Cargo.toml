@@ -1,3 +1,5 @@
+cargo-features = ["strip"]
+
 [package]
 name = "guimauve-io-frontend"
 version = "0.0.1"
@@ -47,3 +49,4 @@ codegen-units = 1
 opt-level = 'z'
 # Link time optimization using using whole-program analysis
 lto = true
+strip = true # Automatically strip symbols from the binary
