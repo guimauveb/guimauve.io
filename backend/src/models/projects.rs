@@ -134,8 +134,8 @@ impl Project {
     }
 
     pub fn find(
-        connection: &PgConnection,
         id: &i32,
+        connection: &PgConnection,
     ) -> Result<ProjectRepresentation, diesel::result::Error> {
         let project = projects::table
             .select(PROJECT_COLUMNS)
@@ -162,8 +162,8 @@ impl Project {
     }
 
     pub fn search(
-        connection: &PgConnection,
         query: &str,
+        connection: &PgConnection,
     ) -> Result<HashMap<i32, ProjectRepresentation>, diesel::result::Error> {
         let projects = projects::table
             .select(PROJECT_COLUMNS)
@@ -180,8 +180,8 @@ impl Project {
     }
 
     pub fn tagged(
-        connection: &PgConnection,
         label: &str,
+        connection: &PgConnection,
     ) -> Result<HashMap<i32, ProjectRepresentation>, diesel::result::Error> {
         let tag = tags::table
             .filter(tags::label.eq(label))

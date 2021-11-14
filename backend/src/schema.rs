@@ -16,6 +16,7 @@ table! {
         image -> Text,
         image_credits -> Nullable<Text>,
         text_searchable_article -> crate::diesel_full_text_search::TsVector,
+        updated -> Nullable<Timestamp>,
     }
 
 }

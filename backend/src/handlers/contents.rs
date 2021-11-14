@@ -17,7 +17,7 @@ use {
 #[cfg(feature = "editable")]
 pub async fn delete(pool: web::Data<Pool>, id: web::Path<i32>) -> Result<HttpResponse, Error> {
     let connection = pool.get().unwrap();
-    Ok(web::block(move || Content::delete(&connection, &id))
+    Ok(web::block(move || Content::delete(&id, &connection))
         .await
         .map(|response| HttpResponse::Ok().json(response))
         .map_err(DatabaseError)?)
@@ -31,7 +31,7 @@ pub async fn update(
 ) -> Result<HttpResponse, Error> {
     let connection = pool.get().unwrap();
     Ok(
-        web::block(move || Content::update(&connection, &id, body.into_inner()))
+        web::block(move || Content::update(&id, body.into_inner(), &connection))
             .await
             .map(|article| HttpResponse::Ok().json(article))
             .map_err(DatabaseError)?,
@@ -48,7 +48,6 @@ pub async fn add(
         let article_id = json_content.article_id;
         // TODO - InputContent.into_inner(NewContent)?
         Content::add(
-            &connection,
             NewContent {
                 article_id,
                 chapter_id: json_content.chapter_id,
@@ -69,8 +68,9 @@ pub async fn add(
                 url: Some(json_content.url.as_deref().unwrap_or("")),
                 index: json_content.index,
             },
+            &connection,
         )?;
-        Article::find(&connection, &article_id)
+        Article::find(&article_id, &connection)
     })
     .await
     .map(|article| HttpResponse::Ok().json(article))

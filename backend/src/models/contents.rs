@@ -84,9 +84,9 @@ impl Content {
 
     #[cfg(feature = "editable")]
     pub fn update(
-        connection: &PgConnection,
         id: &i32,
         updated_content: Content,
+        connection: &PgConnection,
     ) -> Result<ArticleRepresentation, diesel::result::Error> {
         let article_id = updated_content.article_id;
         let mut content = updated_content;
@@ -98,17 +98,18 @@ impl Content {
                 .to_string();
             content.highlighted_code = Some(highlight_code(&content.content, &language));
         }
+        // TODO - Check if we can retrn Article
         diesel::update(contents::table.find(id))
             .set(content)
             .execute(connection)?;
 
-        Article::find(connection, &article_id)
+        Article::find(&article_id, connection)
     }
 
     #[cfg(feature = "editable")]
     pub fn add(
-        connection: &PgConnection,
         new_content: NewContent,
+        connection: &PgConnection,
     ) -> Result<i32, diesel::result::Error> {
         let new_content_id = connection.transaction::<i32, diesel::result::Error, _>(|| {
             let chapter = chapters::table
@@ -141,8 +142,8 @@ impl Content {
 
     #[cfg(feature = "editable")]
     pub fn delete(
-        connection: &PgConnection,
         id: &i32,
+        connection: &PgConnection,
     ) -> Result<TAPIResponse<()>, diesel::result::Error> {
         connection.transaction::<(), diesel::result::Error, _>(|| {
             let content = contents::table

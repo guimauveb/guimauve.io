@@ -5,7 +5,7 @@ pub fn format_date(date_string: &str) -> Result<String, chrono::ParseError> {
     Ok(datetime.format("%B %d, %Y").to_string())
 }
 
-pub fn get_current_readable_date() -> Result<String, chrono::ParseError> {
+pub fn get_current_date() -> Result<String, chrono::ParseError> {
     let datetime = Local::now();
     Ok(datetime.format("%B %d, %Y").to_string())
 }

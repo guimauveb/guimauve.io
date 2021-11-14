@@ -64,7 +64,7 @@ pub async fn add_article(payload: &IArticle) -> Result<IArticle, Status> {
 
 #[cfg(feature = "editable")]
 pub async fn update_article_header(payload: &IArticleHeader) -> Result<IArticle, Status> {
-    let article_id_str = &payload.article_id.to_string();
+    let article_id_str = &payload.id.to_string();
     // API_URL.len() + "/articles/".len() + article_id_str.len()
     let mut url = String::with_capacity(API_URL.len() + 10 + article_id_str.len());
     url.push_str(API_URL);

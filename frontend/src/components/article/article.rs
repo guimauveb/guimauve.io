@@ -51,7 +51,7 @@ pub fn article(ArticleProps { article, .. }: &ArticleProps) -> Html {
                         article_header={
                             Rc::new( // TODO - Use IArticleHeader inside IArticle
                                 IArticleHeader {
-                                    article_id: article.id,
+                                    id: article.id,
                                     title: article.title.clone(),
                                     pub_date: article.pub_date.clone(),
                                     published: article.published,
@@ -59,6 +59,7 @@ pub fn article(ArticleProps { article, .. }: &ArticleProps) -> Html {
                                     image: article.image.clone(),
                                     image_credits: article.image_credits.clone(),
                                     tags: article.tags.clone(),
+                                    updated: article.updated.clone(),
                                 }
                             )
                         }
@@ -231,7 +232,7 @@ pub fn article(
                         article_header={
                             Rc::new(
                                 IArticleHeader {
-                                    article_id: article.id,
+                                    id: article.id,
                                     title: article.title.clone(),
                                     pub_date: article.pub_date.clone(),
                                     published: article.published,
@@ -239,6 +240,7 @@ pub fn article(
                                     image: article.image.clone(),
                                     image_credits: article.image_credits.clone(),
                                     tags: article.tags.clone(),
+                                    updated: article.updated.clone(),
                                 }
                             )
                         }

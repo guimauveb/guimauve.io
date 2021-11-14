@@ -19,7 +19,7 @@ pub async fn update(
     body: web::Json<Chapter>,
 ) -> Result<HttpResponse, Error> {
     let connection = pool.get().unwrap();
-    Ok(web::block(move || Chapter::update(&connection, &id, &body))
+    Ok(web::block(move || Chapter::update(&id, &body, &connection))
         .await
         .map(|article| HttpResponse::Ok().json(article))
         .map_err(DatabaseError)?)
@@ -34,14 +34,14 @@ pub async fn add(
     let article_id = json_chapter.article_id;
     Ok(web::block(move || {
         Chapter::add(
-            &connection,
             NewChapter {
                 article_id,
                 index: json_chapter.index,
                 title: &json_chapter.title,
             },
+            &connection,
         )?;
-        Article::find(&connection, &article_id)
+        Article::find(&article_id, &connection)
     })
     .await
     .map(|article| HttpResponse::Ok().json(article))
@@ -51,7 +51,7 @@ pub async fn add(
 #[cfg(feature = "editable")]
 pub async fn delete(pool: web::Data<Pool>, id: web::Path<i32>) -> Result<HttpResponse, Error> {
     let connection = pool.get().unwrap();
-    Ok(web::block(move || Chapter::delete(&connection, &id))
+    Ok(web::block(move || Chapter::delete(&id, &connection))
         .await
         .map(|response| HttpResponse::Ok().json(response))
         .map_err(DatabaseError)?)

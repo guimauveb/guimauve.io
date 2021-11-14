@@ -1,6 +1,6 @@
 use {
     super::{content_type::ContentType, language::Language, project_category::ProjectCategory},
-    crate::{utils::date::get_current_readable_date, API_URL},
+    crate::{utils::date::get_current_date, API_URL},
     serde::{Deserialize, Serialize},
     std::collections::HashMap,
 };
@@ -71,7 +71,7 @@ pub struct IChapter {
 // TODO - Use it in IArticle (or not)
 #[derive(Serialize, Deserialize, Default, Clone, PartialEq, Eq)]
 pub struct IArticleHeader {
-    pub article_id: i32,
+    pub id: i32,
     pub title: String,
     pub pub_date: String,
     pub published: bool,
@@ -79,6 +79,7 @@ pub struct IArticleHeader {
     pub image: String,
     pub image_credits: Option<String>,
     pub tags: Vec<ITag>,
+    pub updated: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, PartialEq, Eq)]
@@ -90,6 +91,7 @@ pub struct IArticle {
     pub headline: String,
     pub image: String,
     pub image_credits: Option<String>,
+    pub updated: Option<String>,
     pub tags: Vec<ITag>,
     pub chapters: Vec<IChapter>,
 }
@@ -102,8 +104,9 @@ impl Default for IArticle {
             image: API_URL.to_owned() + "/media/images/articles/ferris.webp",
             image_credits: None,
             headline: "Preview...".to_owned(),
-            pub_date: get_current_readable_date().expect("Could not get current readable date."),
+            pub_date: get_current_date().expect("Could not get current readable date."),
             published: false,
+            updated: None,
             chapters: vec![],
             tags: vec![],
         }

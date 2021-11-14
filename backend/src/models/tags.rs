@@ -21,8 +21,8 @@ impl Tag {
         connection: &PgConnection,
         label: &str,
     ) -> Result<TagResults, diesel::result::Error> {
-        let articles = Article::tagged(connection, label)?;
-        let projects = Project::tagged(connection, label)?;
+        let articles = Article::tagged(label, connection)?;
+        let projects = Project::tagged(label, connection)?;
 
         Ok(TagResults { articles, projects })
     }

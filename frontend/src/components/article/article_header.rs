@@ -19,7 +19,7 @@ use {
         entities::interfaces::Status,
         service::{articles::update_article_header, future::handle_future},
         store::store::BlogStore,
-        utils::date::get_current_readable_date,
+        utils::date::get_current_date,
         API_URL,
     },
     yew::{ChangeData, MouseEvent},
@@ -48,12 +48,22 @@ pub fn article_header(ArticleHeaderProps { article_header, .. }: &ArticleHeaderP
                     <h2 class="heading">{&article_header.title}</h2>
             </div>
             <div style="margin-top: 8px; margin-bottom: 8px;">
-                {for article_header.tags.iter().map(move |tag| html! { <TagLabel tag={&tag.label} /> })}
+                {for article_header.tags.iter().map(|tag| html! { <TagLabel tag={&tag.label} /> })}
             </div>
-            <div style="margin-top: 12px; margin-bottom: 12px;">
-                {match format_date(&article_header.pub_date) {
-                    Ok(date) => html! {<p>{&date}</p>},
-                    Err(_) => html! {<p>{"An error occured!"}</p>}
+            <div style="display: flex; margin-top: 12px; margin-bottom: 8px;">
+                <p>{format_date(&article_header.pub_date).unwrap_or_else(|_|"An error occured.".to_string())}</p>
+                {match &article_header.updated {
+                    Some(update_date) => {
+                        html! {
+                            <div style="display: flex; margin-left: 16px; font-style: italic;">
+                                <p>{"Updated:"}</p>
+                                <p style="margin-left: 8px;">
+                                    {format_date(update_date).unwrap_or_else(|_|"An error occured.".to_string())}
+                                </p>
+                            </div>
+                        }
+                    },
+                    _ => html! {}
                 }}
             </div>
             <div style="margin-top: 8px; margin-bottom: 12px;">
@@ -219,13 +229,12 @@ pub fn article_header(
             Action::Add => context.new_article.clone(),
             Action::Edit => context
                 .articles
-                .get(&article_header.article_id)
+                .get(&article_header.id)
                 .expect("Could not find article!")
                 .clone(),
         };
         Callback::from(move |_| {
             set_loading(true);
-
             let (form, article, set_loading, dispatch_article, dispatch_error, set_edited) = (
                 form.clone(),
                 article.clone(),
@@ -237,9 +246,9 @@ pub fn article_header(
 
             match article_action {
                 Action::Add => {
+                    // TODO - dispatch_article_header
                     dispatch_article.emit(IArticle {
-                        // TODO - dispatch_article_header
-                        id: form.article_id,
+                        id: form.id,
                         title: form.title.clone(),
                         pub_date: form.pub_date.clone(),
                         published: form.published,
@@ -254,7 +263,7 @@ pub fn article_header(
                 Action::Edit => {
                     let future = async move {
                         update_article_header(&IArticleHeader {
-                            image: (&form.image[API_URL.len()..]).to_owned(),
+                            image: (&form.image[API_URL.len()..]).to_string(),
                             ..(*form).clone()
                         })
                         .await
@@ -272,14 +281,14 @@ pub fn article_header(
         })
     };
 
-    let readable_date = match article_action {
+    let date = match article_action {
         Action::Edit => match format_date(&article_header.pub_date) {
             Ok(date) => date,
-            Err(_) => "An error has occured.".to_owned(),
+            Err(_) => "An error has occured.".to_string(),
         },
-        Action::Add => match get_current_readable_date() {
+        Action::Add => match get_current_date() {
             Ok(current_date) => current_date,
-            Err(_) => "An errror has occured.".to_owned(),
+            Err(_) => "An errror has occured.".to_string(),
         },
     };
 
@@ -315,7 +324,21 @@ pub fn article_header(
                 })}
             </div>
             <div style="display: flex; margin-top: 8px; margin-bottom: 12px;">
-                <p>{readable_date}</p>
+                <p>{date}</p>
+                {match article_action {
+                    Action::Edit => match &article_header.updated {
+                        Some(date) => html! {
+                            <div style="display: flex; margin-left: 16px; font-style: italic;">
+                                <p>{"Updated:"}</p>
+                                <p style="margin-left: 8px;">
+                                    {format_date(&date).unwrap_or_else(|_|"An error occured.".to_string())}
+                                </p>
+                            </div>
+                        },
+                        _ => html! {},
+                    },
+                    Action::Add => html! {},
+                }}
             </div>
             <div>
                 {match *is_image_edited {

@@ -1,4 +1,3 @@
-// TODO - Might not be needed
 use {
     crate::{
         models::{articles::ArticleRepresentation, projects::ProjectRepresentation},
@@ -37,18 +36,6 @@ pub type TagResults = SearchResults;
 pub struct ResultsIds {
     articles: Vec<i32>,
     projects: Vec<i32>,
-}
-
-// TODO - Remove
-#[derive(Debug, Serialize, Deserialize)]
-pub struct IArticleHeader {
-    pub article_id: i32,
-    pub title: String,
-    pub pub_date: chrono::NaiveDateTime,
-    pub published: bool,
-    pub headline: String,
-    pub image: String,
-    pub image_credits: Option<String>,
 }
 
 #[derive(Debug, Deserialize)]

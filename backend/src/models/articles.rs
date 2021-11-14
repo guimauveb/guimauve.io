@@ -4,7 +4,8 @@ use {
         chapters::NewChapter,
         contents::{Content, NewContent},
     },
-    crate::interfaces::{IArticleHeader, Status, TAPIResponse},
+    crate::interfaces::{Status, TAPIResponse},
+    diesel::connection::Connection,
 };
 
 use {
@@ -14,8 +15,8 @@ use {
     },
     crate::{
         diesel::{
-            connection::Connection, pg::expression::dsl::any, BelongingToDsl, ExpressionMethods,
-            PgConnection, QueryDsl, RunQueryDsl,
+            pg::expression::dsl::any, BelongingToDsl, ExpressionMethods, PgConnection, QueryDsl,
+            RunQueryDsl,
         },
         diesel_full_text_search::{plainto_tsquery, TsVectorExtensions},
         schema::{article_tags, articles, tags},
@@ -46,6 +47,7 @@ pub struct Article {
     pub headline: String,
     pub image: String,
     pub image_credits: Option<String>,
+    pub updated: Option<chrono::NaiveDateTime>,
 }
 
 type ArticleColumns = (
@@ -56,6 +58,7 @@ type ArticleColumns = (
     articles::headline,
     articles::image,
     articles::image_credits,
+    articles::updated,
 );
 
 pub const ARTICLE_COLUMNS: ArticleColumns = (
@@ -66,6 +69,7 @@ pub const ARTICLE_COLUMNS: ArticleColumns = (
     articles::headline,
     articles::image,
     articles::image_credits,
+    articles::updated,
 );
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -77,6 +81,7 @@ pub struct ArticleRepresentation {
     pub headline: String,
     pub image: String,
     pub image_credits: Option<String>,
+    pub updated: Option<chrono::NaiveDateTime>,
     pub tags: Vec<Tag>,
     pub chapters: Vec<ChapterRepresentation>,
 }
@@ -136,12 +141,13 @@ impl Article {
             headline: self.headline,
             image: API_URL.to_owned() + &self.image,
             image_credits: self.image_credits,
+            updated: self.updated,
         }
     }
 
     pub fn find(
-        connection: &PgConnection,
         id: &i32,
+        connection: &PgConnection,
     ) -> Result<ArticleRepresentation, diesel::result::Error> {
         let article = articles::table
             .select(ARTICLE_COLUMNS)
@@ -153,8 +159,8 @@ impl Article {
 
     #[cfg(feature = "editable")]
     pub fn add(
-        connection: &PgConnection,
         new_article: NewArticle,
+        connection: &PgConnection,
     ) -> Result<ArticleRepresentation, diesel::result::Error> {
         let inserted_article =
             connection.transaction::<Article, diesel::result::Error, _>(|| {
@@ -165,21 +171,21 @@ impl Article {
 
                 for new_chapter in new_article.chapters {
                     let inserted_chapter_id = Chapter::add(
-                        connection,
                         NewChapter {
                             article_id: inserted_article.id,
                             ..new_chapter.chapter
                         },
+                        connection,
                     )?;
 
                     for new_content in new_chapter.contents {
                         Content::add(
-                            connection,
                             NewContent {
                                 article_id: inserted_article.id,
                                 chapter_id: inserted_chapter_id,
                                 ..new_content
                             },
+                            connection,
                         )?;
                     }
                 }
@@ -192,8 +198,8 @@ impl Article {
 
     #[cfg(feature = "editable")]
     pub fn delete(
-        connection: &PgConnection,
         id: &i32,
+        connection: &PgConnection,
     ) -> Result<TAPIResponse<()>, diesel::result::Error> {
         diesel::delete(articles::table.filter(articles::id.eq(id))).execute(connection)?;
 
@@ -205,20 +211,12 @@ impl Article {
 
     #[cfg(feature = "editable")]
     pub fn update(
-        connection: &PgConnection,
         id: &i32,
-        updated_header: IArticleHeader, // TODO - Check type
+        updated_article: &Article,
+        connection: &PgConnection,
     ) -> Result<ArticleRepresentation, diesel::result::Error> {
         let article = diesel::update(articles::table.find(id))
-            .set(&Article {
-                id: updated_header.article_id,
-                title: updated_header.title,
-                pub_date: updated_header.pub_date,
-                published: updated_header.published,
-                headline: updated_header.headline,
-                image: updated_header.image,
-                image_credits: updated_header.image_credits,
-            })
+            .set(updated_article)
             .returning(ARTICLE_COLUMNS)
             .get_result::<Article>(connection)?;
 
@@ -227,9 +225,9 @@ impl Article {
 
     #[cfg(feature = "editable")]
     pub fn publish(
-        connection: &PgConnection,
         id: &i32,
         published: &bool,
+        connection: &PgConnection,
     ) -> Result<ArticleRepresentation, diesel::result::Error> {
         let article = diesel::update(articles::table.filter(articles::id.eq(id)))
             .set(articles::published.eq(published))
@@ -256,8 +254,8 @@ impl Article {
     }
 
     pub fn search(
-        connection: &PgConnection,
         query: &str,
+        connection: &PgConnection,
     ) -> Result<HashMap<i32, ArticleRepresentation>, diesel::result::Error> {
         let articles = match INCLUDE_UNPUBLISHED_ARTICLES {
             "true" => articles::table
@@ -282,8 +280,8 @@ impl Article {
     }
 
     pub fn tagged(
-        connection: &PgConnection,
         tag: &str, // TODO - Tag
+        connection: &PgConnection,
     ) -> Result<HashMap<i32, ArticleRepresentation>, diesel::result::Error> {
         let tag = tags::table
             .filter(tags::label.eq(tag))

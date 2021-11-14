@@ -62,7 +62,7 @@ impl Chapter {
         &self,
         connection: &PgConnection,
     ) -> Result<Vec<ContentRepresentation>, diesel::result::Error> {
-        Content::belonging_to_chapter(&self, connection)
+        Content::belonging_to_chapter(self, connection)
     }
 
     fn into_representation(self, connection: &PgConnection) -> ChapterRepresentation {
@@ -77,8 +77,8 @@ impl Chapter {
 
     #[cfg(feature = "editable")]
     pub fn delete(
-        connection: &PgConnection,
         chapter_id: &i32,
+        connection: &PgConnection,
     ) -> Result<TAPIResponse<()>, diesel::result::Error> {
         connection.transaction::<(), diesel::result::Error, _>(|| {
             let chapter = chapters::table
@@ -117,8 +117,8 @@ impl Chapter {
 
     #[cfg(feature = "editable")]
     pub fn add(
-        connection: &PgConnection,
         new_chapter: NewChapter,
+        connection: &PgConnection,
     ) -> Result<i32, diesel::result::Error> {
         let new_chapter_id = connection.transaction::<i32, diesel::result::Error, _>(|| {
             let article = articles::table
@@ -152,16 +152,16 @@ impl Chapter {
 
     #[cfg(feature = "editable")]
     pub fn update(
-        connection: &PgConnection,
         id: &i32,
         updated_chapter: &Chapter,
+        connection: &PgConnection,
     ) -> Result<ArticleRepresentation, diesel::result::Error> {
         let article_id = &updated_chapter.article_id;
         diesel::update(chapters::table.find(id))
             .set(updated_chapter)
             .execute(connection)?;
 
-        Article::find(connection, article_id)
+        Article::find(article_id, connection)
     }
 
     pub fn belonging_to_article(
