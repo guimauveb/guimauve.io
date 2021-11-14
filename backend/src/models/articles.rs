@@ -145,7 +145,7 @@ impl Article {
         }
     }
 
-    pub fn find(
+    pub fn get(
         id: &i32,
         connection: &PgConnection,
     ) -> Result<ArticleRepresentation, diesel::result::Error> {

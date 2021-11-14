@@ -161,7 +161,7 @@ impl Chapter {
             .set(updated_chapter)
             .execute(connection)?;
 
-        Article::find(article_id, connection)
+        Article::get(article_id, connection)
     }
 
     pub fn belonging_to_article(

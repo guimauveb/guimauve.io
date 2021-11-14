@@ -64,7 +64,7 @@ pub fn content(ContentProps { content, .. }: &ContentProps) -> Html {
                     <p style="white-space: break-spaces;">{&content.content}</p>
                 },
                 ContentType::Comment => html! {
-                    <p class="comment">{&content.content}</p>
+                    <p style="white-space: break-spaces; font-style: italic">{&content.content}</p>
                 },
                 ContentType::Link => html! {
                     <a target="_blank" href={match &content.url {
@@ -399,7 +399,7 @@ pub fn content(
                                     <i class="fa fa-edit"/>
                                 </div>
                             </div>
-                            <p>{&content.content}</p>
+                            <p style="white-space: break-spaces;">{&content.content}</p>
                         </div>
                         },
                 },
@@ -426,7 +426,7 @@ pub fn content(
                                         <i class="fa fa-edit"/>
                                     </div>
                                 </div>
-                                <p class="comment">{&content.content}</p>
+                                <p style="white-space: break-spaces; font-style: italic;">{&content.content}</p>
                             </div>
                     },
                 },
@@ -462,7 +462,7 @@ pub fn content(
                                 Some(url) => url,
                                 None => ""
                             }}>
-                                <p>{&content.content}</p>
+                            <p style="white-space: break-spaces;">{&content.content}</p>
                             </a>
                         </div>
                     },

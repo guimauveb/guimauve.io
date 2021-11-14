@@ -103,7 +103,7 @@ impl Content {
             .set(content)
             .execute(connection)?;
 
-        Article::find(&article_id, connection)
+        Article::get(&article_id, connection)
     }
 
     #[cfg(feature = "editable")]

@@ -70,7 +70,7 @@ pub async fn add(
             },
             &connection,
         )?;
-        Article::find(&article_id, &connection)
+        Article::get(&article_id, &connection)
     })
     .await
     .map(|article| HttpResponse::Ok().json(article))
