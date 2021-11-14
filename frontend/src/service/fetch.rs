@@ -45,7 +45,6 @@ pub async fn fetch(
     assert!(resp_value.is_instance_of::<Response>());
     let resp: Response = resp_value.dyn_into().unwrap();
 
-    // Convert JS Promise into a Rust Future
     let json = JsFuture::from(resp.json()?).await?;
 
     Ok(json)

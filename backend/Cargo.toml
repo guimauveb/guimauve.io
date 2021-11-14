@@ -19,7 +19,10 @@ diesel_full_text_search = "1.0.1"
 r2d2 = "0.8.8"
 serde = { version = "1.0", features = ["derive"] }
 dotenv_codegen = "0.15.0"
-syntect = { version = "4.5.0" }
+syntect = { version = "4.5.0", optional = true }
+
+[features]
+editable = ["syntect"]
 
 [profile.release]
 opt-level = 3
@@ -29,6 +32,3 @@ panic = 'abort'
 codegen-units = 1
 # Link time optimization using using whole-program analysis
 lto = true
-
-[features]
-editable = []
