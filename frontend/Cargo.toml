@@ -15,6 +15,8 @@ wasm-bindgen-futures = "0.4.20"
 serde = { version = "1.0.80", features = ["derive"] }
 serde_json = "1.0.59"
 dotenv_codegen = "0.15.0"
+log = { version = "0.4.5", features = ["std"] }
+wasm-logger = "0.2.0"
 
 [dependencies.web-sys]
 version = "0.3.4"
@@ -32,8 +34,6 @@ features = [
 
 [dev-dependencies]
 wasm-bindgen-test = "0.3.14"
-log = { version = "0.4.5", features = ["std"] }
-wasm-logger = "0.2.0"
 
 [features]
 editable = []
