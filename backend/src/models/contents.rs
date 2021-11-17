@@ -51,7 +51,7 @@ pub struct ContentRepresentation {
     pub url: Option<String>,
 }
 
-#[derive(Insertable, Debug, Serialize, Deserialize)]
+#[derive(Insertable, Debug, Serialize, Deserialize, Clone)]
 #[table_name = "contents"]
 pub struct NewContent<'a> {
     pub article_id: i32,
@@ -84,7 +84,7 @@ impl Content {
 
     #[cfg(feature = "editable")]
     pub fn update(
-        id: &i32,
+        id: i32,
         updated_content: Content,
         connection: &PgConnection,
     ) -> Result<ArticleRepresentation, diesel::result::Error> {
@@ -103,36 +103,32 @@ impl Content {
             .set(content)
             .execute(connection)?;
 
-        Article::get(&article_id, connection)
+        Article::get(article_id, connection)
     }
 
     #[cfg(feature = "editable")]
     pub fn add(
-        new_content: NewContent,
+        new_content: &NewContent,
         connection: &PgConnection,
     ) -> Result<i32, diesel::result::Error> {
         let new_content_id = connection.transaction::<i32, diesel::result::Error, _>(|| {
             let chapter = chapters::table
                 .find(new_content.chapter_id)
-                .first::<Chapter>(connection)
-                .expect("Error loading chapter.");
+                .first::<Chapter>(connection)?;
 
             let contents_ids = Content::belonging_to(&chapter)
                 .select(contents::id)
-                .load::<i32>(connection)
-                .expect("Error loading contents.");
+                .load::<i32>(connection)?;
 
             diesel::update(contents::table.filter(contents::id.eq(any(contents_ids))))
                 .filter(contents::index.ge(&new_content.index))
                 .set(contents::index.eq(contents::index + 1))
-                .execute(connection)
-                .expect("An error occured while incrementing contents ids.");
+                .execute(connection)?;
 
             let new_content_id = diesel::insert_into(contents::table)
-                .values(&new_content)
+                .values(new_content)
                 .returning(contents::id)
-                .get_result(connection)
-                .expect("Could not insert content.");
+                .get_result(connection)?;
 
             Ok(new_content_id)
         })?;
@@ -142,34 +138,26 @@ impl Content {
 
     #[cfg(feature = "editable")]
     pub fn delete(
-        id: &i32,
+        id: i32,
         connection: &PgConnection,
     ) -> Result<TAPIResponse<()>, diesel::result::Error> {
         connection.transaction::<(), diesel::result::Error, _>(|| {
-            let content = contents::table
-                .find(id)
-                .first::<Content>(connection)
-                .expect("Error loading chapter.");
+            let content = contents::table.find(id).first::<Content>(connection)?;
 
             let chapter = chapters::table
                 .find(content.chapter_id)
-                .load::<Chapter>(connection)
-                .expect("Error loading chapter.");
+                .load::<Chapter>(connection)?;
 
             let contents_ids: Vec<i32> = Content::belonging_to(&chapter)
                 .select(contents::id)
-                .load::<i32>(connection)
-                .expect("Error loading contents ids.");
+                .load::<i32>(connection)?;
 
             diesel::update(contents::table.filter(contents::id.eq(any(contents_ids))))
                 .filter(contents::index.gt(content.index))
                 .set(contents::index.eq(contents::index - 1))
-                .execute(connection)
-                .expect("An error occured while decrementing contents ids.");
+                .execute(connection)?;
 
-            diesel::delete(contents::table.filter(contents::id.eq(id)))
-                .execute(connection)
-                .expect("Could not delete content.");
+            diesel::delete(contents::table.filter(contents::id.eq(id))).execute(connection)?;
 
             Ok(())
         })?;
@@ -186,12 +174,11 @@ impl Content {
     ) -> Result<Vec<ContentRepresentation>, diesel::result::Error> {
         let contents = Content::belonging_to(chapter)
             .order_by(contents::index)
-            .load::<Content>(connection)
-            .expect("Error loading contents.");
+            .load::<Content>(connection)?;
 
         Ok(contents
             .into_iter()
-            .map(|content| content.into_representation())
+            .map(Content::into_representation)
             .collect())
     }
 }

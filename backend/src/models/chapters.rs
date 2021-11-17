@@ -77,31 +77,27 @@ impl Chapter {
 
     #[cfg(feature = "editable")]
     pub fn delete(
-        chapter_id: &i32,
+        chapter_id: i32,
         connection: &PgConnection,
     ) -> Result<TAPIResponse<()>, diesel::result::Error> {
         connection.transaction::<(), diesel::result::Error, _>(|| {
             let chapter = chapters::table
                 .find(chapter_id)
-                .first::<Chapter>(connection)
-                .expect("Error loading chapter.");
+                .first::<Chapter>(connection)?;
 
             let article = articles::table
                 .find(chapter.article_id)
                 .select(ARTICLE_COLUMNS)
-                .load::<Article>(connection)
-                .expect("Error loading article.");
+                .load::<Article>(connection)?;
 
             let chapters_ids: Vec<i32> = Chapter::belonging_to(&article)
                 .select(chapters::id)
-                .load::<i32>(connection)
-                .expect("An error occured while decrementing chapters ids.");
+                .load::<i32>(connection)?;
 
             diesel::update(chapters::table.filter(chapters::id.eq(any(chapters_ids))))
                 .filter(chapters::index.gt(chapter.index))
                 .set(chapters::index.eq(chapters::index - 1))
-                .execute(connection)
-                .expect("Could not update chapter.");
+                .execute(connection)?;
 
             diesel::delete(chapters::table.filter(chapters::id.eq(chapter_id)))
                 .execute(connection)?;
@@ -117,32 +113,28 @@ impl Chapter {
 
     #[cfg(feature = "editable")]
     pub fn add(
-        new_chapter: NewChapter,
+        new_chapter: &NewChapter,
         connection: &PgConnection,
     ) -> Result<i32, diesel::result::Error> {
         let new_chapter_id = connection.transaction::<i32, diesel::result::Error, _>(|| {
             let article = articles::table
                 .find(&new_chapter.article_id)
                 .select(ARTICLE_COLUMNS)
-                .first::<Article>(connection)
-                .expect("Error loading article.");
+                .first::<Article>(connection)?;
 
             let chapters_ids = Chapter::belonging_to(&article)
                 .select(chapters::id)
-                .load::<i32>(connection)
-                .expect("Error loading chapters.");
+                .load::<i32>(connection)?;
 
             diesel::update(chapters::table.filter(chapters::id.eq(any(chapters_ids))))
                 .filter(chapters::index.ge(&new_chapter.index))
                 .set(chapters::index.eq(chapters::index + 1))
-                .execute(connection)
-                .expect("An error occured while incrementing chapters ids.");
+                .execute(connection)?;
 
             let new_chapter_id = diesel::insert_into(chapters::table)
-                .values(&new_chapter)
+                .values(new_chapter)
                 .returning(chapters::id)
-                .get_result(connection)
-                .expect("Could not insert chapter.");
+                .get_result(connection)?;
 
             Ok(new_chapter_id)
         })?;
@@ -152,11 +144,11 @@ impl Chapter {
 
     #[cfg(feature = "editable")]
     pub fn update(
-        id: &i32,
+        id: i32,
         updated_chapter: &Chapter,
         connection: &PgConnection,
     ) -> Result<ArticleRepresentation, diesel::result::Error> {
-        let article_id = &updated_chapter.article_id;
+        let article_id = updated_chapter.article_id;
         diesel::update(chapters::table.find(id))
             .set(updated_chapter)
             .execute(connection)?;
@@ -170,8 +162,7 @@ impl Chapter {
     ) -> Result<Vec<ChapterRepresentation>, diesel::result::Error> {
         let chapters = Chapter::belonging_to(article)
             .order_by(chapters::index)
-            .load::<Chapter>(connection)
-            .expect("Error loading chapters.");
+            .load::<Chapter>(connection)?;
 
         Ok(chapters
             .into_iter()

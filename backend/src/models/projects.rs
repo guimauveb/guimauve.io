@@ -98,17 +98,14 @@ impl Project {
         let tags_ids = ProjectTag::belonging_to(self).select(project_tags::tag_id);
         let tags = tags::table
             .filter(tags::id.eq(any(tags_ids)))
-            .load::<Tag>(connection)
-            .expect("Error loading tags.");
-
+            .load::<Tag>(connection)?;
         Ok(tags)
     }
 
     fn gallery(&self, connection: &PgConnection) -> Result<Vec<String>, diesel::result::Error> {
         let images = ProjectImage::belonging_to(self)
             .select(project_images::image)
-            .load::<String>(connection)
-            .expect("Error loading project gallery.");
+            .load::<String>(connection)?;
 
         Ok(images
             .iter()
@@ -134,7 +131,7 @@ impl Project {
     }
 
     pub fn find(
-        id: &i32,
+        id: i32,
         connection: &PgConnection,
     ) -> Result<ProjectRepresentation, diesel::result::Error> {
         let project = projects::table
@@ -148,10 +145,7 @@ impl Project {
     pub fn list(
         connection: &PgConnection,
     ) -> Result<HashMap<i32, ProjectRepresentation>, diesel::result::Error> {
-        let projects = projects::table
-            .select(PROJECT_COLUMNS)
-            .load(connection)
-            .expect("Could not load projects.");
+        let projects = projects::table.select(PROJECT_COLUMNS).load(connection)?;
 
         let results: HashMap<i32, ProjectRepresentation> = projects
             .into_iter()
@@ -169,8 +163,7 @@ impl Project {
             .select(PROJECT_COLUMNS)
             .filter(projects::text_searchable_project.matches(plainto_tsquery(query)))
             // .limit(10)
-            .load::<Project>(connection)
-            .expect("Error loading projects.");
+            .load::<Project>(connection)?;
         let results: HashMap<i32, ProjectRepresentation> = projects
             .into_iter()
             .map(|project: Project| (project.id, project.into_representation(connection)))
@@ -189,13 +182,11 @@ impl Project {
 
         let project_ids = ProjectTag::belonging_to(&tag)
             .select(project_tags::project_id)
-            .load::<i32>(connection)
-            .expect("Error loading project tags.");
+            .load::<i32>(connection)?;
         let projects = projects::table
             .select(PROJECT_COLUMNS)
             .filter(projects::id.eq(any(project_ids)))
-            .load::<Project>(connection)
-            .expect("Error loading resume projects.");
+            .load::<Project>(connection)?;
 
         let results: HashMap<i32, ProjectRepresentation> = projects
             .into_iter()
@@ -214,8 +205,7 @@ impl Project {
         let resume_projects = projects::table
             .select(PROJECT_COLUMNS)
             .filter(projects::id.eq(any(resume_project_ids)))
-            .load::<Project>(connection)
-            .expect("Error loading resume projects.");
+            .load::<Project>(connection)?;
 
         let resume_projects_results: HashMap<i32, ProjectRepresentation> = resume_projects
             .into_iter()

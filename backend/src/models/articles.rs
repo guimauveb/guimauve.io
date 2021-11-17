@@ -117,8 +117,7 @@ impl Article {
         let tags_ids = ArticleTag::belonging_to(self).select(article_tags::tag_id);
         let tags = tags::table
             .filter(tags::id.eq(any(tags_ids)))
-            .load::<Tag>(connection)
-            .expect("Error loading tags.");
+            .load::<Tag>(connection)?;
 
         Ok(tags)
     }
@@ -146,7 +145,7 @@ impl Article {
     }
 
     pub fn get(
-        id: &i32,
+        id: i32,
         connection: &PgConnection,
     ) -> Result<ArticleRepresentation, diesel::result::Error> {
         let article = articles::table
@@ -159,7 +158,7 @@ impl Article {
 
     #[cfg(feature = "editable")]
     pub fn add(
-        new_article: NewArticle,
+        new_article: &NewArticle,
         connection: &PgConnection,
     ) -> Result<ArticleRepresentation, diesel::result::Error> {
         let inserted_article =
@@ -169,21 +168,23 @@ impl Article {
                     .returning(ARTICLE_COLUMNS)
                     .get_result::<Article>(connection)?;
 
-                for new_chapter in new_article.chapters {
+                for new_chapter in &new_article.chapters {
                     let inserted_chapter_id = Chapter::add(
-                        NewChapter {
+                        &NewChapter {
                             article_id: inserted_article.id,
                             ..new_chapter.chapter
                         },
                         connection,
                     )?;
 
-                    for new_content in new_chapter.contents {
+                    // TODO - Pass highlighted_code/content_type/language by ref
+                    for new_content in &new_chapter.contents {
                         Content::add(
-                            NewContent {
+                            &NewContent {
                                 article_id: inserted_article.id,
                                 chapter_id: inserted_chapter_id,
-                                ..new_content
+                                //..*new_content
+                                ..(*new_content).clone()
                             },
                             connection,
                         )?;
@@ -198,7 +199,7 @@ impl Article {
 
     #[cfg(feature = "editable")]
     pub fn delete(
-        id: &i32,
+        id: i32,
         connection: &PgConnection,
     ) -> Result<TAPIResponse<()>, diesel::result::Error> {
         diesel::delete(articles::table.filter(articles::id.eq(id))).execute(connection)?;
@@ -211,7 +212,7 @@ impl Article {
 
     #[cfg(feature = "editable")]
     pub fn update(
-        id: &i32,
+        id: i32,
         updated_article: &Article,
         connection: &PgConnection,
     ) -> Result<ArticleRepresentation, diesel::result::Error> {
@@ -225,8 +226,8 @@ impl Article {
 
     #[cfg(feature = "editable")]
     pub fn publish(
-        id: &i32,
-        published: &bool,
+        id: i32,
+        published: bool,
         connection: &PgConnection,
     ) -> Result<ArticleRepresentation, diesel::result::Error> {
         let article = diesel::update(articles::table.filter(articles::id.eq(id)))
@@ -240,10 +241,7 @@ impl Article {
     pub fn list(
         connection: &PgConnection,
     ) -> Result<HashMap<i32, ArticleRepresentation>, diesel::result::Error> {
-        let articles = articles::table
-            .select(ARTICLE_COLUMNS)
-            .load(connection)
-            .expect("Could not load articles.");
+        let articles = articles::table.select(ARTICLE_COLUMNS).load(connection)?;
 
         let results: HashMap<i32, ArticleRepresentation> = articles
             .into_iter()
@@ -261,14 +259,13 @@ impl Article {
             "true" => articles::table
                 .select(ARTICLE_COLUMNS)
                 .filter(articles::text_searchable_article.matches(plainto_tsquery(&query)))
-                .load::<Article>(connection)
-                .expect("Error loading articles."),
+                .load::<Article>(connection)?,
+
             _ => articles::table
                 .select(ARTICLE_COLUMNS)
                 .filter(articles::published.eq(true))
                 .filter(articles::text_searchable_article.matches(plainto_tsquery(&query)))
-                .load::<Article>(connection)
-                .expect("Error loading articles."),
+                .load::<Article>(connection)?,
         };
 
         let results: HashMap<i32, ArticleRepresentation> = articles
@@ -289,13 +286,11 @@ impl Article {
 
         let article_ids = ArticleTag::belonging_to(&tag)
             .select(article_tags::article_id)
-            .load::<i32>(connection)
-            .expect("Error loading article tags.");
+            .load::<i32>(connection)?;
         let articles = articles::table
             .select(ARTICLE_COLUMNS)
             .filter(articles::id.eq(any(article_ids)))
-            .load::<Article>(connection)
-            .expect("Error loading articles.");
+            .load::<Article>(connection)?;
 
         // TODO - Use a vec
         let results: HashMap<i32, ArticleRepresentation> = articles

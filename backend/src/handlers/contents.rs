@@ -17,7 +17,7 @@ use {
 #[cfg(feature = "editable")]
 pub async fn delete(pool: web::Data<Pool>, id: web::Path<i32>) -> Result<HttpResponse, Error> {
     let connection = pool.get().unwrap();
-    Ok(web::block(move || Content::delete(&id, &connection))
+    Ok(web::block(move || Content::delete(*id, &connection))
         .await
         .map(|response| HttpResponse::Ok().json(response))
         .map_err(DatabaseError)?)
@@ -31,7 +31,7 @@ pub async fn update(
 ) -> Result<HttpResponse, Error> {
     let connection = pool.get().unwrap();
     Ok(
-        web::block(move || Content::update(&id, body.into_inner(), &connection))
+        web::block(move || Content::update(*id, body.into_inner(), &connection))
             .await
             .map(|article| HttpResponse::Ok().json(article))
             .map_err(DatabaseError)?,
@@ -48,7 +48,7 @@ pub async fn add(
         let article_id = json_content.article_id;
         // TODO - InputContent.into_inner(NewContent)?
         Content::add(
-            NewContent {
+            &NewContent {
                 article_id,
                 chapter_id: json_content.chapter_id,
                 content_type: json_content.content_type.clone(),
@@ -70,7 +70,7 @@ pub async fn add(
             },
             &connection,
         )?;
-        Article::get(&article_id, &connection)
+        Article::get(article_id, &connection)
     })
     .await
     .map(|article| HttpResponse::Ok().json(article))

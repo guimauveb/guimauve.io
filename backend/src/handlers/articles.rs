@@ -24,7 +24,7 @@ pub async fn add(
     Ok(web::block(move || {
         // TODO - InputArticle.
         Article::add(
-            NewArticle {
+            &NewArticle {
                 article_header: NewArticleHeader {
                     title: &json_article.title,
                     headline: &json_article.headline,
@@ -91,7 +91,7 @@ pub async fn update(
 ) -> Result<HttpResponse, Error> {
     let connection = pool.get().unwrap();
     Ok(
-        web::block(move || Article::update(&id, &article, &connection))
+        web::block(move || Article::update(*id, &article, &connection))
             .await
             .map(|article| HttpResponse::Ok().json(article))
             .map_err(DatabaseError)?,
@@ -107,7 +107,7 @@ pub async fn publish(
     let connection = pool.get().unwrap();
     let published = payload.published;
     Ok(
-        web::block(move || Article::publish(&id, &published, &connection))
+        web::block(move || Article::publish(*id, published, &connection))
             .await
             .map(|article| HttpResponse::Ok().json(article))
             .map_err(DatabaseError)?,
@@ -117,7 +117,7 @@ pub async fn publish(
 #[cfg(feature = "editable")]
 pub async fn delete(pool: web::Data<Pool>, id: web::Path<i32>) -> Result<HttpResponse, Error> {
     let connection = pool.get().unwrap();
-    Ok(web::block(move || Article::delete(&id, &connection))
+    Ok(web::block(move || Article::delete(*id, &connection))
         .await
         .map(|response| HttpResponse::Ok().json(response))
         .map_err(DatabaseError)?)
@@ -133,7 +133,7 @@ pub async fn list(pool: web::Data<Pool>) -> Result<HttpResponse, Error> {
 
 pub async fn get(pool: web::Data<Pool>, id: web::Path<i32>) -> Result<HttpResponse, Error> {
     let connection = pool.get().unwrap();
-    Ok(web::block(move || Article::get(&id, &connection))
+    Ok(web::block(move || Article::get(*id, &connection))
         .await
         .map(|article| HttpResponse::Ok().json(article))
         .map_err(DatabaseError)?)
