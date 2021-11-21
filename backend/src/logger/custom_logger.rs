@@ -13,8 +13,8 @@ pub struct Logger {
 }
 
 impl Logger {
-    pub fn new(pool: Pool) -> Logger {
-        Logger {
+    pub fn new(pool: Pool) -> Self {
+        Self {
             inner: Builder::from_env(FILTER_ENV).build(),
             pool,
         }

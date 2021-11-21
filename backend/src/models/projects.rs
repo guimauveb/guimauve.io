@@ -137,7 +137,7 @@ impl Project {
         let project = projects::table
             .select(PROJECT_COLUMNS)
             .find(id)
-            .first::<Project>(connection)?;
+            .first::<Self>(connection)?;
 
         Ok(project.into_representation(connection))
     }
@@ -149,7 +149,7 @@ impl Project {
 
         let results: HashMap<i32, ProjectRepresentation> = projects
             .into_iter()
-            .map(|project: Project| (project.id, project.into_representation(connection)))
+            .map(|project: Self| (project.id, project.into_representation(connection)))
             .collect();
 
         Ok(results)
@@ -163,10 +163,10 @@ impl Project {
             .select(PROJECT_COLUMNS)
             .filter(projects::text_searchable_project.matches(plainto_tsquery(query)))
             // .limit(10)
-            .load::<Project>(connection)?;
+            .load::<Self>(connection)?;
         let results: HashMap<i32, ProjectRepresentation> = projects
             .into_iter()
-            .map(|project: Project| (project.id, project.into_representation(connection)))
+            .map(|project: Self| (project.id, project.into_representation(connection)))
             .collect();
 
         Ok(results)
@@ -186,11 +186,11 @@ impl Project {
         let projects = projects::table
             .select(PROJECT_COLUMNS)
             .filter(projects::id.eq(any(project_ids)))
-            .load::<Project>(connection)?;
+            .load::<Self>(connection)?;
 
         let results: HashMap<i32, ProjectRepresentation> = projects
             .into_iter()
-            .map(|project: Project| (project.id, project.into_representation(connection)))
+            .map(|project: Self| (project.id, project.into_representation(connection)))
             .collect();
 
         Ok(results)
@@ -205,11 +205,11 @@ impl Project {
         let resume_projects = projects::table
             .select(PROJECT_COLUMNS)
             .filter(projects::id.eq(any(resume_project_ids)))
-            .load::<Project>(connection)?;
+            .load::<Self>(connection)?;
 
         let resume_projects_results: HashMap<i32, ProjectRepresentation> = resume_projects
             .into_iter()
-            .map(|project: Project| (project.id, project.into_representation(connection)))
+            .map(|project: Self| (project.id, project.into_representation(connection)))
             .collect();
 
         Ok(resume_projects_results)

@@ -160,9 +160,9 @@ impl Chapter {
         article: &Article,
         connection: &PgConnection,
     ) -> Result<Vec<ChapterRepresentation>, diesel::result::Error> {
-        let chapters = Chapter::belonging_to(article)
+        let chapters = Self::belonging_to(article)
             .order_by(chapters::index)
-            .load::<Chapter>(connection)?;
+            .load::<Self>(connection)?;
 
         Ok(chapters
             .into_iter()

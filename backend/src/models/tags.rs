@@ -12,8 +12,8 @@ pub struct Tag {
 }
 
 impl Tag {
-    pub fn list(connection: &PgConnection) -> Result<Vec<Tag>, diesel::result::Error> {
-        let results = tags::table.load::<Tag>(connection)?;
+    pub fn list(connection: &PgConnection) -> Result<Vec<Self>, diesel::result::Error> {
+        let results = tags::table.load::<Self>(connection)?;
         Ok(results)
     }
 

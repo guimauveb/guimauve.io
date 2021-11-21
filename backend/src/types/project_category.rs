@@ -12,15 +12,15 @@ pub enum ProjectCategory {
 
 impl Default for ProjectCategory {
     fn default() -> Self {
-        ProjectCategory::WebApplication
+        Self::WebApplication
     }
 }
 
 impl Display for ProjectCategory {
     fn fmt(&self, f: &mut Formatter<'_>) -> Result {
         match self {
-            ProjectCategory::WebApplication => write!(f, "Web applications"),
-            ProjectCategory::DesktopApplication => write!(f, "Desktop applications"),
+            Self::WebApplication => write!(f, "Web applications"),
+            Self::DesktopApplication => write!(f, "Desktop applications"),
         }
     }
 }

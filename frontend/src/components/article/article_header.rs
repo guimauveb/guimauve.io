@@ -53,26 +53,23 @@ pub fn article_header(ArticleHeaderProps { article_header, .. }: &ArticleHeaderP
             <div style="display: flex; margin-top: 12px; margin-bottom: 8px;">
                 <p>{format_date(&article_header.pub_date).unwrap_or_else(|_|"An error occured.".to_string())}</p>
                 {article_header.updated.as_ref().map_or_else(|| html! {}, |date| html! {
-                        <div style="display: flex; margin-left: 16px; font-style: italic;">
-                            <p>{"Updated:"}</p>
-                            <p style="margin-left: 8px;">
-                                {format_date(date).unwrap_or_else(|_|"An error occured.".to_string())}
-                            </p>
-                        </div>
+                    <div style="display: flex; margin-left: 16px; font-style: italic;">
+                        <p>{"Updated:"}</p>
+                        <p style="margin-left: 8px;">
+                            {format_date(date).unwrap_or_else(|_|"An error occured.".to_string())}
+                        </p>
+                    </div>
                     }
                 )}
             </div>
             <div style="margin-top: 8px; margin-bottom: 12px;">
                 <div style="display: flex; flex: 1; flex-direction: column;">
                     <img src={&article_header.image} style="width: 100%; object-fit: contain;"/>
-                    {match &article_header.image_credits {
-                        Some(credits) => html! {
-                            <p style="font-style: italic; font-size: .8rem; margin-top: 4px;">
-                                {credits}
-                            </p>
-                        },
-                        None => html! {}
-                    }}
+                    {article_header.image_credits.as_ref().map_or_else(|| html! {}, |credits| html! {
+                        <p style="transform: rotate(180deg); writing-mode: tb-rl; font-style: italic; font-size: .8rem; margin-left: 4px;">
+                            {credits}
+                        </p>
+                    })}
                 </div>
             </div>
             <div style="margin-top: 8px; margin-bottom: 8px;">
@@ -351,14 +348,11 @@ pub fn article_header(
                             </div>
                             <div style="display: flex; flex: 1;">
                                 <img src={&article_header.image} style="width: 100%;" />
-                                {match &article_header.image_credits {
-                                    Some(credits) => html! {
-                                        <p style="transform: rotate(180deg); writing-mode: tb-rl; font-style: italic; font-size: .8rem; margin-left: 4px;">
-                                            {credits}
-                                        </p>
-                                    },
-                                    None => html! {}
-                                }}
+                                {article_header.image_credits.as_ref().map_or_else(|| html! {}, |credits| html! {
+                                    <p style="transform: rotate(180deg); writing-mode: tb-rl; font-style: italic; font-size: .8rem; margin-left: 4px;">
+                                        {credits}
+                                    </p>
+                                })}
                             </div>
                         </div>
                     }

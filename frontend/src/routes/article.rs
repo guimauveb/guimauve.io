@@ -57,17 +57,14 @@ pub fn article(
 
     html! {
         <div style="display: flex; flex: 1; flex-direction: column;">
-            {match article_result {
-                    Some(article) => html! {
-                        <ArticleComponent
-                            article={article}
-                            dispatch_article={dispatch_article}
-                            dispatch_error={dispatch_error}
-                        />
-                    },
-                    None => html! {}
+            {article_result.as_ref().map_or_else(|| html! {}, |&article| html! {
+                <ArticleComponent
+                    article={article}
+                    dispatch_article={dispatch_article}
+                    dispatch_error={dispatch_error}
+                />
                 }
-            }
+            )}
             {if *is_loading {
                 html! {
                         <div style="align-items: center; justify-content: center; display: flex; margin-top: 24px; margin-bottom: 24px;">

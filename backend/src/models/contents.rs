@@ -172,13 +172,13 @@ impl Content {
         chapter: &Chapter,
         connection: &PgConnection,
     ) -> Result<Vec<ContentRepresentation>, diesel::result::Error> {
-        let contents = Content::belonging_to(chapter)
+        let contents = Self::belonging_to(chapter)
             .order_by(contents::index)
-            .load::<Content>(connection)?;
+            .load::<Self>(connection)?;
 
         Ok(contents
             .into_iter()
-            .map(Content::into_representation)
+            .map(Self::into_representation)
             .collect())
     }
 }

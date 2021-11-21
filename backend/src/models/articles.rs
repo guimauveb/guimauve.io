@@ -151,7 +151,7 @@ impl Article {
         let article = articles::table
             .select(ARTICLE_COLUMNS)
             .find(id)
-            .first::<Article>(connection)?;
+            .first::<Self>(connection)?;
 
         Ok(article.into_representation(connection))
     }
@@ -161,38 +161,37 @@ impl Article {
         new_article: &NewArticle,
         connection: &PgConnection,
     ) -> Result<ArticleRepresentation, diesel::result::Error> {
-        let inserted_article =
-            connection.transaction::<Article, diesel::result::Error, _>(|| {
-                let inserted_article = diesel::insert_into(articles::table)
-                    .values(&new_article.article_header)
-                    .returning(ARTICLE_COLUMNS)
-                    .get_result::<Article>(connection)?;
+        let inserted_article = connection.transaction::<Self, diesel::result::Error, _>(|| {
+            let inserted_article = diesel::insert_into(articles::table)
+                .values(&new_article.article_header)
+                .returning(ARTICLE_COLUMNS)
+                .get_result::<Self>(connection)?;
 
-                for new_chapter in &new_article.chapters {
-                    let inserted_chapter_id = Chapter::add(
-                        &NewChapter {
+            for new_chapter in &new_article.chapters {
+                let inserted_chapter_id = Chapter::add(
+                    &NewChapter {
+                        article_id: inserted_article.id,
+                        ..new_chapter.chapter
+                    },
+                    connection,
+                )?;
+
+                // TODO - Pass highlighted_code/content_type/language by ref
+                for new_content in &new_chapter.contents {
+                    Content::add(
+                        &NewContent {
                             article_id: inserted_article.id,
-                            ..new_chapter.chapter
+                            chapter_id: inserted_chapter_id,
+                            //..*new_content
+                            ..(*new_content).clone()
                         },
                         connection,
                     )?;
-
-                    // TODO - Pass highlighted_code/content_type/language by ref
-                    for new_content in &new_chapter.contents {
-                        Content::add(
-                            &NewContent {
-                                article_id: inserted_article.id,
-                                chapter_id: inserted_chapter_id,
-                                //..*new_content
-                                ..(*new_content).clone()
-                            },
-                            connection,
-                        )?;
-                    }
                 }
+            }
 
-                Ok(inserted_article)
-            })?;
+            Ok(inserted_article)
+        })?;
 
         Ok(inserted_article.into_representation(connection))
     }
@@ -213,13 +212,13 @@ impl Article {
     #[cfg(feature = "editable")]
     pub fn update(
         id: i32,
-        updated_article: &Article,
+        updated_article: &Self,
         connection: &PgConnection,
     ) -> Result<ArticleRepresentation, diesel::result::Error> {
         let article = diesel::update(articles::table.find(id))
             .set(updated_article)
             .returning(ARTICLE_COLUMNS)
-            .get_result::<Article>(connection)?;
+            .get_result::<Self>(connection)?;
 
         Ok(article.into_representation(connection))
     }
@@ -233,7 +232,7 @@ impl Article {
         let article = diesel::update(articles::table.filter(articles::id.eq(id)))
             .set(articles::published.eq(published))
             .returning(ARTICLE_COLUMNS)
-            .get_result::<Article>(connection)?;
+            .get_result::<Self>(connection)?;
 
         Ok(article.into_representation(connection))
     }
@@ -245,7 +244,7 @@ impl Article {
 
         let results: HashMap<i32, ArticleRepresentation> = articles
             .into_iter()
-            .map(|article: Article| (article.id, article.into_representation(connection)))
+            .map(|article: Self| (article.id, article.into_representation(connection)))
             .collect();
 
         Ok(results)
@@ -259,18 +258,18 @@ impl Article {
             "true" => articles::table
                 .select(ARTICLE_COLUMNS)
                 .filter(articles::text_searchable_article.matches(plainto_tsquery(&query)))
-                .load::<Article>(connection)?,
+                .load::<Self>(connection)?,
 
             _ => articles::table
                 .select(ARTICLE_COLUMNS)
                 .filter(articles::published.eq(true))
                 .filter(articles::text_searchable_article.matches(plainto_tsquery(&query)))
-                .load::<Article>(connection)?,
+                .load::<Self>(connection)?,
         };
 
         let results: HashMap<i32, ArticleRepresentation> = articles
             .into_iter()
-            .map(|article: Article| (article.id, article.into_representation(connection)))
+            .map(|article: Self| (article.id, article.into_representation(connection)))
             .collect();
 
         Ok(results)
@@ -290,12 +289,12 @@ impl Article {
         let articles = articles::table
             .select(ARTICLE_COLUMNS)
             .filter(articles::id.eq(any(article_ids)))
-            .load::<Article>(connection)?;
+            .load::<Self>(connection)?;
 
         // TODO - Use a vec
         let results: HashMap<i32, ArticleRepresentation> = articles
             .into_iter()
-            .map(|article: Article| (article.id, article.into_representation(connection)))
+            .map(|article: Self| (article.id, article.into_representation(connection)))
             .collect();
 
         Ok(results)
