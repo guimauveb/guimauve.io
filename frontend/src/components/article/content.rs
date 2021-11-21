@@ -133,12 +133,13 @@ pub fn content(
     //Content
     let on_change_content_content: Callback<ChangeData> = {
         let (form, update_form) = (form.clone(), update_form.clone());
-        Callback::from(move |event: ChangeData| match event {
-            ChangeData::Value(content) => update_form(IContent {
-                content,
-                ..(*form).clone()
-            }),
-            _ => (),
+        Callback::from(move |event: ChangeData| {
+            if let ChangeData::Value(content) = event {
+                update_form(IContent {
+                    content,
+                    ..(*form).clone()
+                });
+            }
         })
     };
     // Language
@@ -154,18 +155,17 @@ pub fn content(
     // URL
     let on_change_content_url: Callback<ChangeData> = {
         let (form, update_form) = (form.clone(), update_form.clone());
-        Callback::from(move |event: ChangeData| match event {
-            ChangeData::Value(url) => update_form(IContent {
-                url: Some(url),
-                ..(*form).clone()
-            }),
-            _ => (),
+        Callback::from(move |event: ChangeData| {
+            if let ChangeData::Value(url) = event {
+                update_form(IContent {
+                    url: Some(url),
+                    ..(*form).clone()
+                });
+            }
         })
     };
 
-    // Update form on content update.
     {
-        let update_form = update_form.clone();
         use_effect_with_deps(
             move |content| {
                 update_form(<IContent>::clone(content));
@@ -229,7 +229,7 @@ pub fn content(
                                     Err(_) => dispatch_error.emit(true),
                                 };
                                 set_loading(false);
-                            })
+                            });
                         }
                         Err(_) => dispatch_error.emit(true),
                     },
@@ -246,7 +246,7 @@ pub fn content(
 
                 for cont in &mut chapter.contents {
                     if cont.index > content_index {
-                        cont.index = cont.index - 1;
+                        cont.index -= 1;
                     }
                 }
                 let content_index = chapter
@@ -261,19 +261,10 @@ pub fn content(
     };
 
     let on_save_content: Callback<MouseEvent> = {
-        let (
-            content_action,
-            form,
-            article_action,
-            set_loading,
-            dispatch_article,
-            dispatch_error,
-            on_edit,
-        ) = (
+        let (content_action, form, article_action, dispatch_article, dispatch_error, on_edit) = (
             action.clone(),
             form.clone(),
             article_action.clone(),
-            set_loading.clone(),
             dispatch_article.clone(),
             dispatch_error.clone(),
             on_edit.clone(),
@@ -306,12 +297,7 @@ pub fn content(
                 // Existing article
                 Action::Edit => {
                     set_loading(true);
-                    let (content_index, set_loading, dispatch_article, dispatch_error) = (
-                        form.index,
-                        set_loading.clone(),
-                        dispatch_article.clone(),
-                        dispatch_error.clone(),
-                    );
+                    let content_index = form.index;
                     match content_action {
                         Action::Add => {
                             let future = async move { add_content(&IContent { ..form }).await };
@@ -350,7 +336,7 @@ pub fn content(
                         Action::Add => {
                             for cont in &mut chapter.contents {
                                 if cont.index >= form.index {
-                                    cont.index = cont.index + 1;
+                                    cont.index += 1;
                                 }
                             }
                             chapter.contents.insert(form.index as usize, form);
@@ -377,49 +363,54 @@ pub fn content(
     html! {
         <>
             {match form.content_type {
-                ContentType::Text => match *edited {
-                    true => html! {
-                        <div>
-                            <Select<ContentType> selected={&form.content_type} options={&CONTENT_TYPES} onchange={on_change_content_type} />
-                            <TextArea rows={8} value={&form.content} onchange={on_change_content_content} />
-                            <div style="display: flex; margin-top: 4px; margin-bottom: 4px; justify-content: flex-end; font-size:.8em;">
-                                {match action {
-                                    Action::Edit => html! {<Button variant={ButtonVariant::Danger} onclick={&on_delete_content} label="Delete"/>},
-                                    _ => html! {}
-                                }}
-                                <Button onclick={on_cancel_edit} label="Cancel" />
-                                <Button onclick={on_save_content} label="Save" />
-                            </div>
-                        </div>
-                    },
-                    false => html! {
-                        <div style="align-items:center; position: relative; display: flex; margin-top: 8px; margin-bottom: 8px;">
-                            <div style="display: flex; justify-content: center; align-items: center;">
-                                <div onclick={on_edit_content} style="position: absolute; right: -64px; cursor: pointer;">
-                                    <i class="fa fa-edit"/>
+                ContentType::Text => {
+                    if *edited {
+                        html! {
+                            <div>
+                                <Select<ContentType> selected={&form.content_type} options={&CONTENT_TYPES} onchange={on_change_content_type} />
+                                <TextArea rows={8} value={&form.content} onchange={on_change_content_content} />
+                                <div style="display: flex; margin-top: 4px; margin-bottom: 4px; justify-content: flex-end; font-size:.8em;">
+                                    {match action {
+                                        Action::Edit => html! {<Button variant={ButtonVariant::Danger} onclick={&on_delete_content} label="Delete"/>},
+                                        Action::Add => html! {}
+                                    }}
+                                    <Button onclick={on_cancel_edit} label="Cancel" />
+                                    <Button onclick={on_save_content} label="Save" />
                                 </div>
                             </div>
-                            <p style="white-space: break-spaces;">{&content.content}</p>
-                        </div>
-                        },
-                },
-                ContentType::Comment => match *edited {
-                    true => html! {
-                        <div>
-                            <Select<ContentType> selected={&form.content_type} options={&CONTENT_TYPES} onchange={on_change_content_type} />
-                            <TextArea rows={8} value={&form.content} onchange={on_change_content_content} />
-                            <div style="display: flex; margin-top: 4px; margin-bottom: 4px; justify-content: flex-end; font-size:.8em;">
-                                {match action {
-                                    Action::Edit => html! {<Button variant={ButtonVariant::Danger} onclick={&on_delete_content} label="Delete"/>},
-                                    _ => html! {}
-                                    }
-                                }
-                                <Button onclick={on_cancel_edit} label="Cancel" />
-                                <Button onclick={on_save_content} label="Save" />
+                        }
+                    } else {
+                        html! {
+                            <div style="align-items:center; position: relative; display: flex; margin-top: 8px; margin-bottom: 8px;">
+                                <div style="display: flex; justify-content: center; align-items: center;">
+                                    <div onclick={on_edit_content} style="position: absolute; right: -64px; cursor: pointer;">
+                                        <i class="fa fa-edit"/>
+                                    </div>
+                                </div>
+                                <p style="white-space: break-spaces;">{&content.content}</p>
                             </div>
-                        </div>
-                    },
-                    false => html! {
+                        }
+                    }
+                },
+                ContentType::Comment => {
+                    if *edited {
+                        html! {
+                            <div>
+                                <Select<ContentType> selected={&form.content_type} options={&CONTENT_TYPES} onchange={on_change_content_type} />
+                                <TextArea rows={8} value={&form.content} onchange={on_change_content_content} />
+                                <div style="display: flex; margin-top: 4px; margin-bottom: 4px; justify-content: flex-end; font-size:.8em;">
+                                    {match action {
+                                        Action::Edit => html! {<Button variant={ButtonVariant::Danger} onclick={&on_delete_content} label="Delete"/>},
+                                        Action::Add => html! {}
+                                        }
+                                    }
+                                    <Button onclick={on_cancel_edit} label="Cancel" />
+                                    <Button onclick={on_save_content} label="Save" />
+                                </div>
+                            </div>
+                        }
+                    } else {
+                        html! {
                            <div style="align-items: center; position: relative; display: flex; margin-top: 8px; margin-bottom: 8px;">
                                 <div style="display: flex; justify-content: center; align-items: center;">
                                    <div onclick={on_edit_content} style="position: absolute; right: -64px; cursor: pointer;">
@@ -428,104 +419,112 @@ pub fn content(
                                 </div>
                                 <p style="white-space: break-spaces; font-style: italic;">{&content.content}</p>
                             </div>
-                    },
+                        }
+                    }
                 },
-                ContentType::Link => match *edited {
-                    true => html! {
-                        <div>
-                            <Select<ContentType> selected={&form.content_type} options={&CONTENT_TYPES} onchange={on_change_content_type} />
-                            <TextArea rows={8} value={&form.content} onchange={on_change_content_content} />
-                            <TextArea rows={1} value={match &form.url {
-                                    Some(url) => url,
-                                    None => "URL...",
-                                }}
-                                onchange={on_change_content_url}
-                            />
-                            <div style="display: flex; margin-top: 4px; margin-bottom: 4px; justify-content: flex-end; font-size:.8em;">
-                               {match action {
-                                    Action::Edit => html! {<Button variant={ButtonVariant::Danger} onclick={&on_delete_content} label="Delete"/>},
-                                    _ => html! {}
-                                }}
-                                <Button onclick={on_cancel_edit} label="Cancel" />
-                                <Button onclick={on_save_content} label="Save" />
-                            </div>
-                        </div>
-                    },
-                    false => html! {
-                        <div style="align-items: center; position: relative; display: flex; margin-top: 8px; margin-bottom: 8px;">
-                            <div style="display: flex; justify-content: center; align-items: center;">
-                                <div onclick={on_edit_content} style="position: absolute; right: -64px; cursor: pointer;">
-                                    <i class="fa fa-edit"/>
-                                </div>
-                            </div>
-                            <a target="_blank" href={match &form.url {
-                                Some(url) => url,
-                                None => ""
-                            }}>
-                            <p style="white-space: break-spaces;">{&content.content}</p>
-                            </a>
-                        </div>
-                    },
-                },
-                ContentType::Code => match *edited {
-                    true => html! {
-                        <div>
-                            <div style="display: flex;">
+                ContentType::Link => {
+                    if *edited {
+                        html! {
+                            <div>
                                 <Select<ContentType> selected={&form.content_type} options={&CONTENT_TYPES} onchange={on_change_content_type} />
-                                <div style="margin-left: 8px;">
-                                    <Select<Language>
-                                        selected={match &form.language {
-                                            Some(language) => language,
-                                            None => &Language::Bash,
-                                        }}
-                                        options={LANGUAGES}
-                                        onchange={on_change_content_language}
-                                    />
+                                <TextArea rows={8} value={&form.content} onchange={on_change_content_content} />
+                                <TextArea rows={1} value={match &form.url {
+                                        Some(url) => url,
+                                        None => "URL...",
+                                    }}
+                                    onchange={on_change_content_url}
+                                />
+                                <div style="display: flex; margin-top: 4px; margin-bottom: 4px; justify-content: flex-end; font-size:.8em;">
+                                   {match action {
+                                        Action::Edit => html! {<Button variant={ButtonVariant::Danger} onclick={&on_delete_content} label="Delete"/>},
+                                        Action::Add => html! {}
+                                    }}
+                                    <Button onclick={on_cancel_edit} label="Cancel" />
+                                    <Button onclick={on_save_content} label="Save" />
                                 </div>
                             </div>
-                            <TextArea rows={8} value={&form.content} onchange={on_change_content_content} />
-                            <div style="display: flex; margin-top: 4px; margin-bottom: 4px; justify-content: flex-end; font-size:.8em;">
-                               {match action {
-                                    Action::Edit => html! {<Button variant={ButtonVariant::Danger} onclick={&on_delete_content} label="Delete"/>},
-                                    _ => html! {}
-                                }}
-                                <Button onclick={on_cancel_edit} label="Cancel" />
-                                <Button onclick={on_save_content} label="Save" />
-                            </div>
-                        </div>
-                    },
-                    false => html! {
-                        <div style="align-items: center; position: relative; display: flex; margin-top: 8px; margin-bottom: 8px;">
-                           <div style="display: flex; justify-content: center; align-items: center;">
-                                <div onclick={on_edit_content} style="position: absolute; right: -64px; cursor: pointer;">
-                                    <i class="fa fa-edit"/>
+                        }
+                    } else {
+                        html! {
+                            <div style="align-items: center; position: relative; display: flex; margin-top: 8px; margin-bottom: 8px;">
+                                <div style="display: flex; justify-content: center; align-items: center;">
+                                    <div onclick={on_edit_content} style="position: absolute; right: -64px; cursor: pointer;">
+                                        <i class="fa fa-edit"/>
+                                    </div>
                                 </div>
+                                <a target="_blank" href={match &form.url {
+                                    Some(url) => url,
+                                    None => ""
+                                }}>
+                                <p style="white-space: break-spaces;">{&content.content}</p>
+                                </a>
                             </div>
-                            <Code
-                                highlighted_code={match &content.highlighted_code.clone() {
-                                    Some(code) => code,
-                                    None => &content.content,
-                                }}
-                            />
-                        </div>
-                    },
+                        }
+                    }
                 },
-                ContentType::Image => match *edited {
-                    true => html! {
-                        <div>
-                            <Select<ContentType> selected={&form.content_type} options={&CONTENT_TYPES} onchange={on_change_content_type} />
-                            <TextArea rows={1} value={&form.content} onchange={on_change_content_content} />
-                            <div style="display: flex; margin-top: 4px; margin-bottom: 4px; justify-content: flex-end; font-size:.8em;">
-                                {match action {
-                                    Action::Edit => html! {<Button variant={ButtonVariant::Danger} onclick={&on_delete_content} label="Delete"/>},
-                                    _ => html! {}
-                                }}
-                                <Button onclick={on_cancel_edit} label="Cancel" />
-                                <Button onclick={on_save_content} label="Save" />
+                ContentType::Code => {
+                    if *edited {
+                        html! {
+                            <div>
+                                <div style="display: flex;">
+                                    <Select<ContentType> selected={&form.content_type} options={&CONTENT_TYPES} onchange={on_change_content_type} />
+                                    <div style="margin-left: 8px;">
+                                        <Select<Language>
+                                            selected={match &form.language {
+                                                Some(language) => language,
+                                                None => &Language::Bash,
+                                            }}
+                                            options={LANGUAGES}
+                                            onchange={on_change_content_language}
+                                        />
+                                    </div>
+                                </div>
+                                <TextArea rows={8} value={&form.content} onchange={on_change_content_content} />
+                                <div style="display: flex; margin-top: 4px; margin-bottom: 4px; justify-content: flex-end; font-size:.8em;">
+                                   {match action {
+                                        Action::Edit => html! {<Button variant={ButtonVariant::Danger} onclick={&on_delete_content} label="Delete"/>},
+                                        Action::Add => html! {}
+                                    }}
+                                    <Button onclick={on_cancel_edit} label="Cancel" />
+                                    <Button onclick={on_save_content} label="Save" />
+                                </div>
                             </div>
-                        </div>
-                    },
-                    false => {
+                        }
+                    } else {
+                        html! {
+                            <div style="align-items: center; position: relative; display: flex; margin-top: 8px; margin-bottom: 8px;">
+                               <div style="display: flex; justify-content: center; align-items: center;">
+                                    <div onclick={on_edit_content} style="position: absolute; right: -64px; cursor: pointer;">
+                                        <i class="fa fa-edit"/>
+                                    </div>
+                                </div>
+                                <Code
+                                    highlighted_code={match &content.highlighted_code.clone() {
+                                        Some(code) => code,
+                                        None => &content.content,
+                                    }}
+                                />
+                            </div>
+                        }
+                    }
+                },
+                ContentType::Image => {
+                    if *edited {
+                        html! {
+                            <div>
+                                <Select<ContentType> selected={&form.content_type} options={&CONTENT_TYPES} onchange={on_change_content_type} />
+                                <TextArea rows={1} value={&form.content} onchange={on_change_content_content} />
+                                <div style="display: flex; margin-top: 4px; margin-bottom: 4px; justify-content: flex-end; font-size:.8em;">
+                                    {match action {
+                                        Action::Edit => html! {<Button variant={ButtonVariant::Danger} onclick={&on_delete_content} label="Delete"/>},
+                                        Action::Add => html! {}
+                                    }}
+                                    <Button onclick={on_cancel_edit} label="Cancel" />
+                                    <Button onclick={on_save_content} label="Save" />
+                                </div>
+                            </div>
+                        }
+                    } else {
                         html! {
                             <div style="align-items: center; position: relative; display: flex; margin-top: 8px; margin-bottom: 8px;">
                                 <div style="display: flex; justify-content: center; align-items: center;">

@@ -30,6 +30,6 @@ pub fn run_app() -> Result<(), JsValue> {
 
 fn main() {
     if let Err(err) = run_app() {
-        println!("{:#?}", err)
+        println!("{:#?}", err);
     };
 }

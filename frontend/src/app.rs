@@ -19,8 +19,9 @@ use crate::{components::live_resume::LiveResume, routes::new_article::NewArticle
 
 #[function_component(App)]
 pub fn app() -> Html {
-    let initial_state = BlogStore::default();
+    type BlogStoreContextProvider = ContextProvider<Rc<BlogStore>>;
 
+    let initial_state = BlogStore::default();
     let (store, dispatch) =
         use_reducer_with_init(reducer, initial_state, |initial_state: BlogStore| {
             initial_state
@@ -75,8 +76,6 @@ pub fn app() -> Html {
             dispatch(Action::SetError(value));
         })
     };
-
-    type BlogStoreContextProvider = ContextProvider<Rc<BlogStore>>;
 
     html! {
         <BlogStoreContextProvider context=store>

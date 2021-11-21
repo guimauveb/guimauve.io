@@ -98,7 +98,7 @@ pub struct IArticle {
 
 impl Default for IArticle {
     fn default() -> Self {
-        IArticle {
+        Self {
             id: 0,
             title: "New article...".to_owned(),
             image: API_URL.to_owned() + "/media/images/articles/ferris.webp",

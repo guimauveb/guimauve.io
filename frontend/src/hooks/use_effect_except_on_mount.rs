@@ -9,10 +9,10 @@ where
 
     use_effect_with_deps(
         move |deps| {
-            if !*is_mounted.borrow() {
-                *is_mounted.borrow_mut() = true;
-            } else {
+            if *is_mounted.borrow() {
                 callback(deps);
+            } else {
+                *is_mounted.borrow_mut() = true;
             }
             || {}
         },

@@ -13,7 +13,7 @@ use {
 #[cfg(feature = "editable")]
 #[function_component(LiveResume)]
 pub fn resume() -> Html {
-    let (resume_projects, set_resume_projects) = use_state(move || HashMap::default());
+    let (resume_projects, set_resume_projects) = use_state(HashMap::default);
 
     use_effect_with_deps(
         move |_| {
@@ -21,10 +21,9 @@ pub fn resume() -> Html {
             handle_future(
                 future,
                 move |data: Result<HashMap<i32, IProject>, Status>| {
-                    match data {
-                        Ok(projects) => set_resume_projects(projects),
-                        Err(_) => (),
-                    };
+                    if let Ok(projects) = data {
+                        set_resume_projects(projects);
+                    }
                 },
             );
             || {}

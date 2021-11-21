@@ -48,14 +48,14 @@ pub fn button(
     html! {
         <button style={variant} onclick=onclick class="button" disabled=*disabled>
             <div style="display: flex; flex: 1; justify-content: center; align-items: center;">
-                {if !icon_name.is_empty() {
+                {if icon_name.is_empty() {
+                    html! {}
+                } else {
                     html! {
                         <div style="margin-right: 4px;">
                             <i class={icon_name} aria-hidden="true"></i>
                         </div>
                     }
-                } else {
-                    html! {}
                 }}
                 {label}
             </div>

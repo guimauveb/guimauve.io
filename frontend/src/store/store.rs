@@ -29,15 +29,6 @@ pub enum Action {
     SetError(bool),
 }
 
-#[derive(Clone)]
-pub struct StoreDispatch(pub std::rc::Rc<dyn std::ops::Fn(Action) -> ()>);
-
-impl StoreDispatch {
-    pub fn emit(&self, action: Action) {
-        (self.0)(action);
-    }
-}
-
 fn update_results(
     search_query: &str,
     results: &SearchResults,
@@ -46,10 +37,10 @@ fn update_results(
     search_state: &mut HashMap<String, ResultsIds>,
 ) {
     // Update the entities states
-    for (id, article) in results.articles.iter() {
+    for (id, article) in &results.articles {
         articles_state.insert(*id, article.clone());
     }
-    for (id, project) in results.projects.iter() {
+    for (id, project) in &results.projects {
         projects_state.insert(*id, project.clone());
     }
 

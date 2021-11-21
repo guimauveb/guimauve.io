@@ -66,7 +66,7 @@ where
                match event {
                    ChangeData::Select(elem) => {
                        let index = elem.selected_index() as usize;
-                       set_selected_index(Some(index))
+                       set_selected_index(Some(index));
                    }
                    _ => {
                        unreachable!();

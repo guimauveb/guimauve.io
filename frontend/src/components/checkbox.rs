@@ -15,7 +15,7 @@ pub fn checkbox(CheckBoxProps { checked, onchange }: &CheckBoxProps) -> Html {
     let on_checkbox_state_change: Callback<ChangeData> =
         Callback::from(move |event: ChangeData| {
             if let ChangeData::Value(_) = event {
-                onchange.emit(!checked)
+                onchange.emit(!checked);
             }
         });
 

@@ -18,7 +18,7 @@ pub enum Language {
 
 impl Default for Language {
     fn default() -> Self {
-        Language::Bash
+        Self::Bash
     }
 }
 

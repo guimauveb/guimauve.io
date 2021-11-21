@@ -86,7 +86,7 @@ pub fn tag(
             move |tag| {
                 window()
                     .unwrap()
-                    .scroll_to_with_scroll_to_options(ScrollToOptions::new().top(0 as f64));
+                    .scroll_to_with_scroll_to_options(ScrollToOptions::new().top(f64::from(0)));
                 set_loading(true);
                 let (tag, tag_arg) = (tag.clone(), tag.clone());
                 let future = async move { get_results_for_tag(&tag_arg).await };

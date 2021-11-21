@@ -11,7 +11,7 @@ pub enum ProjectCategory {
 
 impl Default for ProjectCategory {
     fn default() -> Self {
-        ProjectCategory::WebApplication
+        Self::WebApplication
     }
 }
 

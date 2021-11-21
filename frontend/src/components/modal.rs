@@ -39,7 +39,7 @@ pub fn modal(
                 let js_value = target.as_ref() as &JsValue;
                 let element = js_value.clone().dyn_into::<HtmlElement>().unwrap().id();
                 if element == id {
-                    onclose.emit(())
+                    onclose.emit(());
                 }
             }
         })

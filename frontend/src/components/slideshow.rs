@@ -27,9 +27,9 @@ pub fn slideshow(
         let select_image = select_image.clone();
         Callback::from(move |_| {
             if selected_image_index == 0 {
-                select_image.emit(slideshow_length - 1)
+                select_image.emit(slideshow_length - 1);
             } else {
-                select_image.emit(selected_image_index - 1)
+                select_image.emit(selected_image_index - 1);
             }
         })
     };
@@ -37,9 +37,9 @@ pub fn slideshow(
         let select_image = select_image.clone();
         Callback::from(move |_| {
             if selected_image_index == slideshow_length - 1 {
-                select_image.emit(0)
+                select_image.emit(0);
             } else {
-                select_image.emit(selected_image_index + 1)
+                select_image.emit(selected_image_index + 1);
             }
         })
     };

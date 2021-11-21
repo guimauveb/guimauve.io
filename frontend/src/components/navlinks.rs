@@ -63,7 +63,7 @@ pub fn navlinks() -> Html {
         Callback::from(move |(updated_label, is_hovered): (&str, bool)| {
             // Could be improved using `use_previous` like hook
             let mut updated_hovered_nav_links = (*hovered_nav_links).clone();
-            for (label, hovered) in updated_hovered_nav_links.iter_mut() {
+            for (label, hovered) in &mut updated_hovered_nav_links {
                 if *label == updated_label {
                     *hovered = is_hovered;
                 } else {

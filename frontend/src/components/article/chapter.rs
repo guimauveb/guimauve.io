@@ -91,10 +91,10 @@ pub fn chapter(
         );
     };
     let on_change_chapter_title: Callback<ChangeData> = {
-        let set_chapter_title = set_chapter_title.clone();
-        Callback::from(move |event: ChangeData| match event {
-            ChangeData::Value(updated_chapter_title) => set_chapter_title(updated_chapter_title),
-            _ => (),
+        Callback::from(move |event: ChangeData| {
+            if let ChangeData::Value(updated_chapter_title) = event {
+                set_chapter_title(updated_chapter_title);
+            };
         })
     };
 
@@ -151,7 +151,7 @@ pub fn chapter(
                                     Err(_) => dispatch_error.emit(true),
                                 };
                                 set_loading(false);
-                            })
+                            });
                         }
                         Err(_) => dispatch_error.emit(true),
                     },
@@ -161,7 +161,7 @@ pub fn chapter(
                 let mut article = context.new_article.clone();
                 for chap in &mut article.chapters {
                     if chap.index > chapter_index {
-                        chap.index = chap.index - 1;
+                        chap.index -= 1;
                     }
                 }
                 let index = article
@@ -181,7 +181,6 @@ pub fn chapter(
             chapter_index,
             chapter,
             chapter_action,
-            set_loading,
             dispatch_article,
             dispatch_error,
             on_edit,
@@ -196,7 +195,6 @@ pub fn chapter(
                 contents: vec![],
             }),
             action.clone(),
-            set_loading.clone(),
             dispatch_article.clone(),
             dispatch_error.clone(),
             on_edit.clone(),
@@ -248,7 +246,7 @@ pub fn chapter(
                         Action::Add => {
                             for chap in &mut article.chapters {
                                 if chap.index >= chapter.index {
-                                    chap.index = chap.index + 1;
+                                    chap.index += 1;
                                 }
                             }
                             article
@@ -276,8 +274,8 @@ pub fn chapter(
 
     html! {
         <div>
-            {match *edited {
-                true => html! {
+            {if *edited {
+                html! {
                     <div>
                         <TextArea rows={2} value={&*chapter_title} onchange={on_change_chapter_title} />
                         <div style="display: flex; margin-top: 4px; margin-bottom: 4px; justify-content: flex-end; font-size: .8em;">
@@ -285,14 +283,15 @@ pub fn chapter(
                             Action::Edit => html! {
                                 <Button variant={ButtonVariant::Danger} onclick={&on_delete_chapter} label="Delete"/>
                             },
-                            _ => html! {}
+                            Action::Add => html! {}
                         }}
                             <Button onclick={on_cancel_edit} label="Cancel"/>
                             <Button onclick={on_save_chapter} label="Save"/>
                         </div>
                     </div>
-                },
-                false => html! {
+                }
+            } else {
+                html! {
                     <div style="align-items: center; position: relative; display: flex; margin-top: 8px; margin-bottom: 8px;">
                         <div
                             onclick={on_edit_chapter}
@@ -301,7 +300,7 @@ pub fn chapter(
                         </div>
                         <h2 class="article-chapter">{&chapter.title}</h2>
                     </div>
-                    }
+                }
             }}
             {if *is_loading {
                 html! {

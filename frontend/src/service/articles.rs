@@ -69,7 +69,7 @@ pub async fn update_article_header(payload: &IArticleHeader) -> Result<IArticle,
     let mut url = String::with_capacity(API_URL.len() + 10 + article_id_str.len());
     url.push_str(API_URL);
     url.push_str("/articles/");
-    url.push_str(&article_id_str);
+    url.push_str(article_id_str);
 
     let json = Fetch::patch(url, Some(json!(&payload).to_string())).await;
     match json {
@@ -131,7 +131,7 @@ pub async fn update_content(payload: &IContent) -> Result<IArticle, Status> {
     let mut url = String::with_capacity(API_URL.len() + 10 + content_id_str.len());
     url.push_str(API_URL);
     url.push_str("/contents/");
-    url.push_str(&content_id_str);
+    url.push_str(content_id_str);
 
     let json = Fetch::patch(url, Some(json!(&payload).to_string())).await;
     match json {

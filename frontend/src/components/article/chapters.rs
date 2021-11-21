@@ -51,7 +51,6 @@ pub fn chapters(
     /* Existing chapters */
     let (edited_chapters, set_edited_chapters) = {
         let chapters = chapters
-            .clone()
             .iter()
             .map(|chapter: &IChapter| (chapter.index, false))
             .collect::<HashMap<i32, bool>>();
@@ -78,7 +77,6 @@ pub fn chapters(
     };
     // Update edited chapters hashmaps when chapters are updated. TODO - Keep previous states
     {
-        let set_edited_chapters = set_edited_chapters.clone();
         use_effect_with_deps(
             move |chapters| {
                 set_edited_chapters(
@@ -112,12 +110,11 @@ pub fn chapters(
         Callback::from(move |(chapter_index, displayed)| {
             let mut new_chapters_displayed = (*new_chapters_displayed).clone();
             *new_chapters_displayed.get_mut(&chapter_index).unwrap() = displayed;
-            set_new_chapters_displayed(new_chapters_displayed)
+            set_new_chapters_displayed(new_chapters_displayed);
         })
     };
     // Update new chapters hashmaps when chapters are updated. TODO - Keep previous edit states
     {
-        let set_new_chapters_displayed = set_new_chapters_displayed.clone();
         use_effect_with_deps(
             move |chapters| {
                 let mut new_chapters = chapters
@@ -138,7 +135,7 @@ pub fn chapters(
             {for chapters.iter().map(|chapter| {
                 html! {
                     <>
-                        {match *&new_chapters_displayed.get(&chapter.index) {
+                        {match new_chapters_displayed.get(&chapter.index) {
                             Some(true) => {
                                 html! {
                                     <Chapter
@@ -146,7 +143,7 @@ pub fn chapters(
                                         article_action={article_action}
                                         chapter={
                                             Rc::new(IChapter {
-                                                id: chapters_length + 1 as i32,
+                                                id: chapters_length + 1_i32,
                                                 article_id: *article_id,
                                                 index: chapter.index,
                                                 title: "New chapter...".to_owned(),
@@ -185,12 +182,7 @@ pub fn chapters(
                         <Chapter
                             chapter={Rc::new(chapter.clone())}
                             article_action={article_action}
-                            edited={
-                                match *&edited_chapters.get(&chapter.index) {
-                                    Some(true) => true,
-                                    _ => false,
-                                }
-                            }
+                            edited={matches!(edited_chapters.get(&chapter.index), Some(true))}
                             on_edit={&on_edit_existing_chapter}
                             dispatch_article={dispatch_article.clone()}
                             dispatch_error={dispatch_error.clone()}
@@ -198,7 +190,7 @@ pub fn chapters(
                     </>
                 }
             })}
-            {match *&new_chapters_displayed.get(&chapters_length) {
+            {match new_chapters_displayed.get(&chapters_length) {
                 Some(true) => {
                     html! {
                         <Chapter
@@ -206,7 +198,7 @@ pub fn chapters(
                             action={Action::Add}
                             chapter={
                                 Rc::new(IChapter {
-                                    id: chapters_length + 1 as i32,
+                                    id: chapters_length + 1_i32,
                                     article_id: *article_id,
                                     index: chapters_length,
                                     title: "New chapter...".to_owned(),

@@ -1,6 +1,11 @@
 use {
     crate::{
-        components::{button::*, modal::Modal, slideshow::Slideshow, tag_label::TagLabel},
+        components::{
+            button::{Button, ButtonVariant},
+            modal::Modal,
+            slideshow::Slideshow,
+            tag_label::TagLabel,
+        },
         entities::interfaces::IProject,
     },
     yew::{html, Callback, MouseEvent, Properties},
@@ -83,7 +88,7 @@ pub fn project(
                                                                             );
                                                                            Callback::from(move |_| {
                                                                                set_selected_image(index);
-                                                                               open_gallery_modal()
+                                                                               open_gallery_modal();
                                                                            })
                                                                        }
                                                                     >

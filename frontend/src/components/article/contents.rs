@@ -59,7 +59,6 @@ pub fn contents(
     /* Existing contents */
     let (edited_contents, set_edited_contents) = {
         let contents = contents
-            .clone()
             .iter()
             .map(|content: &IContent| (content.index, false))
             .collect::<HashMap<i32, bool>>();
@@ -73,11 +72,10 @@ pub fn contents(
             let mut edited_contents = (*edited_contents).clone();
             let set_edited_contents = set_edited_contents.clone();
             *edited_contents.get_mut(&content_index).unwrap() = edited;
-            set_edited_contents(edited_contents)
+            set_edited_contents(edited_contents);
         })
     };
     {
-        let set_edited_contents = set_edited_contents.clone();
         use_effect_with_deps(
             move |contents| {
                 set_edited_contents(
@@ -113,14 +111,13 @@ pub fn contents(
         Callback::from(move |(content_index, displayed)| {
             let mut new_contents_displayed = (*new_contents_displayed).clone();
             *new_contents_displayed.get_mut(&content_index).unwrap() = displayed;
-            set_new_contents_displayed(new_contents_displayed)
+            set_new_contents_displayed(new_contents_displayed);
         })
     };
 
     // Update contents and new contents hashmaps when contents are updated.
     // TODO - Keep previous states
     {
-        let set_new_contents_displayed = set_new_contents_displayed.clone();
         use_effect_with_deps(
             move |contents| {
                 // TODO - Check if it is possible to map and insert without making it mutable.
@@ -142,7 +139,7 @@ pub fn contents(
             {for contents.iter().map(|content| {
                 html! {
                     <>
-                        {match *&new_contents_displayed.get(&content.index) {
+                        {match new_contents_displayed.get(&content.index) {
                             Some(true) => {
                                 html! {
                                    <Content
@@ -150,7 +147,7 @@ pub fn contents(
                                         article_action={article_action}
                                         content={
                                             Rc::new(IContent {
-                                                id: contents_length + 1 as i32,
+                                                id: contents_length + 1_i32,
                                                 article_id: *article_id,
                                                 chapter_id: *chapter_id,
                                                 index: content.index,
@@ -187,12 +184,7 @@ pub fn contents(
                         <Content
                             content={Rc::new(content.clone())}
                             article_action={article_action}
-                            edited={
-                                match *&edited_contents.get(&content.index) {
-                                    Some(true) => true,
-                                    _ => false,
-                                }
-                            }
+                            edited={matches!(edited_contents.get(&content.index), Some(true))}
                             on_edit={&on_edit_existing_content}
                             dispatch_article={dispatch_article}
                             dispatch_error={dispatch_error}
@@ -200,8 +192,10 @@ pub fn contents(
                     </>
                 }
             })}
-            {if *chapter_action != Action::Add {
-                match *&new_contents_displayed.get(&(contents_length)) {
+            {if *chapter_action == Action::Add {
+                html! {}
+            } else {
+                match new_contents_displayed.get(&(contents_length)) {
                     Some(true) => {
                         html! {
                             <Content
@@ -209,7 +203,7 @@ pub fn contents(
                                 article_action={article_action}
                                 content={
                                     Rc::new(IContent {
-                                        id: contents_length + 1 as i32,
+                                        id: contents_length + 1_i32,
                                         article_id: *article_id,
                                         chapter_id: *chapter_id,
                                         index: contents_length,
@@ -243,8 +237,6 @@ pub fn contents(
                     },
                     None => html! {}
                 }
-            } else {
-                html! {}
             }}
         </>
     }

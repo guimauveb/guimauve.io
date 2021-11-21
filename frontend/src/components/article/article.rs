@@ -121,23 +121,20 @@ pub fn article(
                 dispatch_article.clone(),
                 dispatch_error.clone(),
             );
-            match article_action {
-                Action::Add => {
-                    let future = async move { add_article(&article).await };
-                    handle_future(future, move |response: Result<IArticle, Status>| {
-                        match response {
-                            Ok(article) => {
-                                dispatch_article.emit(IArticle::default());
-                                RouteAgentDispatcher::<()>::new().send(RouteRequest::ChangeRoute(
-                                    (AppRoute::Article { id: article.id }).into(),
-                                ));
-                            }
-                            Err(_) => dispatch_error.emit(true),
-                        };
-                        set_loading(false)
-                    })
-                }
-                _ => (),
+            if article_action == Action::Add {
+                let future = async move { add_article(&article).await };
+                handle_future(future, move |response: Result<IArticle, Status>| {
+                    match response {
+                        Ok(article) => {
+                            dispatch_article.emit(IArticle::default());
+                            RouteAgentDispatcher::<()>::new().send(RouteRequest::ChangeRoute(
+                                (AppRoute::Article { id: article.id }).into(),
+                            ));
+                        }
+                        Err(_) => dispatch_error.emit(true),
+                    };
+                    set_loading(false);
+                });
             };
         })
     };
@@ -148,20 +145,15 @@ pub fn article(
             set_loading(true);
             let (set_loading, dispatch_error) = (set_loading.clone(), dispatch_error.clone());
             let future = async move { delete_article(&article_id).await };
-            handle_future(
-                future,
-                move |response: Result<Status, Status>| match response {
-                    Ok(_) => {
-                        set_loading(false);
-                        RouteAgentDispatcher::<()>::new()
-                            .send(RouteRequest::ChangeRoute(AppRoute::Articles.into()));
-                    }
-                    Err(_) => {
-                        set_loading(false);
-                        dispatch_error.emit(true);
-                    }
-                },
-            )
+            handle_future(future, move |response: Result<Status, Status>| {
+                set_loading(false);
+                if response.is_ok() {
+                    RouteAgentDispatcher::<()>::new()
+                        .send(RouteRequest::ChangeRoute(AppRoute::Articles.into()));
+                } else {
+                    dispatch_error.emit(true);
+                }
+            });
         })
     };
 

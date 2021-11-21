@@ -39,7 +39,7 @@ pub fn article(
             move |_| {
                 window()
                     .unwrap()
-                    .scroll_to_with_scroll_to_options(ScrollToOptions::new().top(0 as f64));
+                    .scroll_to_with_scroll_to_options(ScrollToOptions::new().top(f64::from(0)));
                 set_loading(true);
                 let future = async move { get_article(&id).await };
                 handle_future(future, move |data: Result<IArticle, Status>| {

@@ -14,7 +14,7 @@ pub enum ContentType {
 
 impl Default for ContentType {
     fn default() -> Self {
-        ContentType::Text
+        Self::Text
     }
 }
 
