@@ -98,7 +98,6 @@ impl Content {
                 .to_string();
             content.highlighted_code = Some(highlight_code(&content.content, &language));
         }
-        // TODO - Check if we can retrn Article
         diesel::update(contents::table.find(id))
             .set(content)
             .execute(connection)?;
