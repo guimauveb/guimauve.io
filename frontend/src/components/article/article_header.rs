@@ -66,7 +66,7 @@ pub fn article_header(ArticleHeaderProps { article_header, .. }: &ArticleHeaderP
                 <div style="display: flex; flex: 1; flex-direction: column;">
                     <img src={&article_header.image} style="width: 100%; object-fit: contain;"/>
                     {article_header.image_credits.as_ref().map_or_else(|| html! {}, |credits| html! {
-                        <p style="transform: rotate(180deg); writing-mode: tb-rl; font-style: italic; font-size: .8rem; margin-left: 4px;">
+                        <p style="font-style: italic; font-size: .8rem; margin-top: 4px;">
                             {credits}
                         </p>
                     })}
@@ -349,7 +349,7 @@ pub fn article_header(
                             <div style="display: flex; flex: 1;">
                                 <img src={&article_header.image} style="width: 100%;" />
                                 {article_header.image_credits.as_ref().map_or_else(|| html! {}, |credits| html! {
-                                    <p style="transform: rotate(180deg); writing-mode: tb-rl; font-style: italic; font-size: .8rem; margin-left: 4px;">
+                                    <p style="font-style: italic; font-size: .8rem; margin-top: 4px;">
                                         {credits}
                                     </p>
                                 })}

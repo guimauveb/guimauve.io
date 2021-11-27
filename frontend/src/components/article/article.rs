@@ -1,5 +1,5 @@
 use {
-    super::{article_header::ArticleHeader, chapters::Chapters},
+    super::{article_header::ArticleHeader, chapter_list::ChapterList, chapters::Chapters},
     crate::entities::{
         action::Action,
         interfaces::{IArticle, IArticleHeader},
@@ -65,6 +65,7 @@ pub fn article(ArticleProps { article, .. }: &ArticleProps) -> Html {
                         }
                     />
                     <div>
+                        <ChapterList chapters={&article.chapters} />
                         <Chapters
                             chapters={Rc::new(article.chapters.clone())}
                             article_id={article.id} />
@@ -240,6 +241,9 @@ pub fn article(
                         dispatch_error={dispatch_error}
                     />
                     <div>
+                        <div style="margin-bottom: 16px;">
+                            <ChapterList chapters={&article.chapters} />
+                        </div>
                         <Chapters
                             chapters={Rc::new(article.chapters.clone())}
                             article_action={article_action}
