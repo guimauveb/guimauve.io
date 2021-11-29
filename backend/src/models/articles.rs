@@ -176,13 +176,14 @@ impl Article {
                     connection,
                 )?;
 
-                // TODO - Pass highlighted_code/content_type/language by ref
                 for new_content in &new_chapter.contents {
                     Content::add(
                         &NewContent {
                             article_id: inserted_article.id,
                             chapter_id: inserted_chapter_id,
-                            //..*new_content
+                            content: &new_content.content,
+                            index: new_content.index,
+                            url: new_content.url,
                             ..(*new_content).clone()
                         },
                         connection,

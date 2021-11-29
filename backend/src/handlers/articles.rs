@@ -61,10 +61,10 @@ pub async fn add(
                                 highlighted_code: match &cont.content_type {
                                     ContentType::Code => {
                                         let language = match &cont.language {
-                                            Some(language) => &*language,
+                                            Some(language) => language,
                                             None => &Language::Bash,
                                         };
-                                        Some(highlight_code(&cont.content, &*language.to_string()))
+                                        Some(highlight_code(&cont.content, &language.to_string()))
                                     }
                                     _ => None,
                                 },

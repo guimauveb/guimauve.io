@@ -15,12 +15,12 @@ pub fn chapter_list(ChapterListProps { chapters }: &ChapterListProps) -> Html {
         <div style="margin-bottom: 12px;">
             <h2 class="article-chapter" style="margin-bottom: 12px !important;">{"Chapters"}</h2>
             {for chapters.iter().enumerate().map(|(index, chapter)| {
-                    html! {
-                        <div>
-                            <a href="#".to_string() + &chapter.id.to_string()>{(index + 1).to_string() + " - " + &chapter.title}</a>
-                        </div>
-                    }
-                })
+                html! {
+                    <div>
+                        <a href="#".to_string() + &chapter.id.to_string()>{(index + 1).to_string() + " - " + &chapter.title}</a>
+                    </div>
+                }
+            })
             }
         </div>
     }
