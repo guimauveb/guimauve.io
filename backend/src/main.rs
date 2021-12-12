@@ -63,7 +63,6 @@ async fn main() -> std::io::Result<()> {
                     .max_age(3600),
             )
             .service(fs::Files::new("/media", "./media").show_files_listing())
-            .service(fs::Files::new("/images", "./images").show_files_listing())
             .data(pool.clone())
             .route("/articles/{id}", web::get().to(handlers::articles::get))
             .route("/articles", web::get().to(handlers::articles::list))
@@ -91,7 +90,6 @@ async fn main() -> std::io::Result<()> {
                     .max_age(3600),
             )
             .service(fs::Files::new("/media", "./media").show_files_listing())
-            .service(fs::Files::new("/images", "./images").show_files_listing())
             .data(pool.clone())
             .service(
                 web::resource("/articles")
