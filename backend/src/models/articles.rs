@@ -277,7 +277,7 @@ impl Article {
     }
 
     pub fn tagged(
-        tag: &str, // TODO - Tag
+        tag: &str,
         connection: &PgConnection,
     ) -> Result<HashMap<i32, ArticleRepresentation>, diesel::result::Error> {
         let tag = tags::table
