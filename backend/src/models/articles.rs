@@ -167,6 +167,7 @@ impl Article {
                 .returning(ARTICLE_COLUMNS)
                 .get_result::<Self>(connection)?;
 
+            // TODO - "Bulk insert"
             for new_chapter in &new_article.chapters {
                 let inserted_chapter_id = Chapter::add(
                     &NewChapter {
@@ -176,6 +177,7 @@ impl Article {
                     connection,
                 )?;
 
+                // TODO - "Bulk insert"
                 for new_content in &new_chapter.contents {
                     Content::add(
                         &NewContent {

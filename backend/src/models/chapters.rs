@@ -142,6 +142,8 @@ impl Chapter {
         Ok(new_chapter_id)
     }
 
+    // TODO - Bulk insert
+
     #[cfg(feature = "editable")]
     pub fn update(
         id: i32,

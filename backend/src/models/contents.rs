@@ -135,6 +135,8 @@ impl Content {
         Ok(new_content_id)
     }
 
+    // TODO - Bulk insert
+
     #[cfg(feature = "editable")]
     pub fn delete(
         id: i32,
