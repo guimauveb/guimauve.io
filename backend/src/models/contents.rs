@@ -1,5 +1,5 @@
 use {
-    super::{articles::Article, chapters::Chapter},
+    super::{articles::Article, chapters::Chapter, from_model::FromModel},
     crate::{
         diesel::{BelongingToDsl, PgConnection, QueryDsl, RunQueryDsl},
         schema::contents,
@@ -64,32 +64,33 @@ pub struct NewContent<'a> {
     pub url: Option<&'a str>,
 }
 
-impl Content {
-    fn into_representation(self) -> ContentRepresentation {
-        ContentRepresentation {
-            id: self.id,
-            article_id: self.article_id,
-            chapter_id: self.chapter_id,
-            index: self.index,
-            content: match self.content_type {
-                ContentType::Image => API_URL.to_owned() + &self.content,
-                _ => self.content,
+impl FromModel<Content> for ContentRepresentation {
+    fn from_model(content: Content, _: Option<&PgConnection>) -> Self {
+        Self {
+            id: content.id,
+            article_id: content.article_id,
+            chapter_id: content.chapter_id,
+            index: content.index,
+            content: match content.content_type {
+                ContentType::Image => API_URL.to_owned() + &content.content,
+                _ => content.content,
             },
-            content_type: self.content_type,
-            language: self.language,
-            highlighted_code: self.highlighted_code,
-            url: self.url,
+            content_type: content.content_type,
+            language: content.language,
+            highlighted_code: content.highlighted_code,
+            url: content.url,
         }
     }
+}
 
+impl Content {
     #[cfg(feature = "editable")]
     pub fn update(
         id: i32,
-        updated_content: Content,
+        mut content: Content,
         connection: &PgConnection,
     ) -> Result<ArticleRepresentation, diesel::result::Error> {
-        let article_id = updated_content.article_id;
-        let mut content = updated_content;
+        let article_id = content.article_id;
         if content.content_type == ContentType::Code {
             let language = content
                 .language
@@ -179,7 +180,7 @@ impl Content {
 
         Ok(contents
             .into_iter()
-            .map(Self::into_representation)
+            .map(|c| ContentRepresentation::from_model(c, None))
             .collect())
     }
 }

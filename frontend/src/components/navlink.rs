@@ -1,4 +1,5 @@
 use {
+    std::*,
     yew::{html, Callback, Properties},
     yew_functional::function_component,
 };

@@ -2,6 +2,7 @@ use {
     super::{
         articles::Article,
         contents::{Content, ContentRepresentation, NewContent},
+        from_model::FromModel,
     },
     crate::{
         diesel::{BelongingToDsl, PgConnection, QueryDsl, RunQueryDsl},
@@ -57,22 +58,24 @@ pub struct NewChapterForm<'a> {
     pub contents: Vec<NewContent<'a>>,
 }
 
+impl FromModel<Chapter> for ChapterRepresentation {
+    fn from_model(chapter: Chapter, connection: Option<&PgConnection>) -> Self {
+        Self {
+            contents: chapter.contents(connection.unwrap()).unwrap_or_default(),
+            id: chapter.id,
+            article_id: chapter.article_id,
+            index: chapter.index,
+            title: chapter.title,
+        }
+    }
+}
+
 impl Chapter {
     fn contents(
         &self,
         connection: &PgConnection,
     ) -> Result<Vec<ContentRepresentation>, diesel::result::Error> {
         Content::belonging_to_chapter(self, connection)
-    }
-
-    fn into_representation(self, connection: &PgConnection) -> ChapterRepresentation {
-        ChapterRepresentation {
-            contents: self.contents(connection).unwrap_or_default(),
-            id: self.id,
-            article_id: self.article_id,
-            index: self.index,
-            title: self.title,
-        }
     }
 
     #[cfg(feature = "editable")]
@@ -168,7 +171,7 @@ impl Chapter {
 
         Ok(chapters
             .into_iter()
-            .map(|chapter| chapter.into_representation(connection))
+            .map(|chapter| ChapterRepresentation::from_model(chapter, Some(connection)))
             .collect())
     }
 }

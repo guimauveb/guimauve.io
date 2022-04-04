@@ -1,5 +1,5 @@
 use {
-    super::tags::Tag,
+    super::{from_model::FromModel, tags::Tag},
     crate::{
         diesel::{
             pg::expression::dsl::any, BelongingToDsl, ExpressionMethods, PgConnection, QueryDsl,
@@ -93,6 +93,29 @@ pub struct ProjectTag {
     pub tag_id: i32,
 }
 
+impl FromModel<Project> for ProjectRepresentation {
+    fn from_model(project: Project, connection: Option<&PgConnection>) -> Self {
+        Self {
+            tags: project
+                .tags(connection.unwrap())
+                .expect("Error loading tags."),
+            gallery: project
+                .gallery(connection.unwrap())
+                .expect("Error loading gallery."),
+            id: project.id,
+            category: project.category,
+            title: project.title,
+            image: API_URL.to_owned() + &project.image,
+            description: project.description,
+            features: project.features,
+            visit_link: project.visit_link,
+            live_link: project.live_link,
+            download_link: project.download_link,
+            git: project.git,
+        }
+    }
+}
+
 impl Project {
     fn tags(&self, connection: &PgConnection) -> Result<Vec<Tag>, diesel::result::Error> {
         let tags_ids = ProjectTag::belonging_to(self).select(project_tags::tag_id);
@@ -113,23 +136,6 @@ impl Project {
             .collect())
     }
 
-    fn into_representation(self, connection: &PgConnection) -> ProjectRepresentation {
-        ProjectRepresentation {
-            tags: self.tags(connection).expect("Error loading tags."),
-            gallery: self.gallery(connection).expect("Error loading gallery."),
-            id: self.id,
-            category: self.category,
-            title: self.title,
-            image: API_URL.to_owned() + &self.image,
-            description: self.description,
-            features: self.features,
-            visit_link: self.visit_link,
-            live_link: self.live_link,
-            download_link: self.download_link,
-            git: self.git,
-        }
-    }
-
     pub fn find(
         id: i32,
         connection: &PgConnection,
@@ -139,7 +145,7 @@ impl Project {
             .find(id)
             .first::<Self>(connection)?;
 
-        Ok(project.into_representation(connection))
+        Ok(ProjectRepresentation::from_model(project, Some(connection)))
     }
 
     pub fn list(
@@ -149,7 +155,12 @@ impl Project {
 
         let results: HashMap<i32, ProjectRepresentation> = projects
             .into_iter()
-            .map(|project: Self| (project.id, project.into_representation(connection)))
+            .map(|project: Self| {
+                (
+                    project.id,
+                    ProjectRepresentation::from_model(project, Some(connection)),
+                )
+            })
             .collect();
 
         Ok(results)
@@ -166,7 +177,12 @@ impl Project {
             .load::<Self>(connection)?;
         let results: HashMap<i32, ProjectRepresentation> = projects
             .into_iter()
-            .map(|project: Self| (project.id, project.into_representation(connection)))
+            .map(|project: Self| {
+                (
+                    project.id,
+                    ProjectRepresentation::from_model(project, Some(connection)),
+                )
+            })
             .collect();
 
         Ok(results)
@@ -190,7 +206,12 @@ impl Project {
 
         let results: HashMap<i32, ProjectRepresentation> = projects
             .into_iter()
-            .map(|project: Self| (project.id, project.into_representation(connection)))
+            .map(|project: Self| {
+                (
+                    project.id,
+                    ProjectRepresentation::from_model(project, Some(connection)),
+                )
+            })
             .collect();
 
         Ok(results)
@@ -209,7 +230,12 @@ impl Project {
 
         let resume_projects_results: HashMap<i32, ProjectRepresentation> = resume_projects
             .into_iter()
-            .map(|project: Self| (project.id, project.into_representation(connection)))
+            .map(|project: Self| {
+                (
+                    project.id,
+                    ProjectRepresentation::from_model(project, Some(connection)),
+                )
+            })
             .collect();
 
         Ok(resume_projects_results)

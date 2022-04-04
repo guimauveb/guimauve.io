@@ -11,6 +11,7 @@ use {
 use {
     super::{
         chapters::{Chapter, ChapterRepresentation, NewChapterForm},
+        from_model::FromModel,
         tags::Tag,
     },
     crate::{
@@ -112,6 +113,27 @@ pub struct NewArticle<'a> {
     pub chapters: Vec<NewChapterForm<'a>>,
 }
 
+impl FromModel<Article> for ArticleRepresentation {
+    fn from_model(article: Article, connection: Option<&PgConnection>) -> Self {
+        Self {
+            tags: article
+                .tags(connection.unwrap())
+                .expect("Error loading article tags."),
+            chapters: article
+                .chapters(connection.unwrap())
+                .expect("Error loading chapters."),
+            id: article.id,
+            title: article.title,
+            pub_date: article.pub_date,
+            published: article.published,
+            headline: article.headline,
+            image: API_URL.to_owned() + &article.image,
+            image_credits: article.image_credits,
+            updated: article.updated,
+        }
+    }
+}
+
 impl Article {
     fn tags(&self, connection: &PgConnection) -> Result<Vec<Tag>, diesel::result::Error> {
         let tags_ids = ArticleTag::belonging_to(self).select(article_tags::tag_id);
@@ -129,21 +151,6 @@ impl Article {
         Chapter::belonging_to_article(self, connection)
     }
 
-    fn into_representation(self, connection: &PgConnection) -> ArticleRepresentation {
-        ArticleRepresentation {
-            tags: self.tags(connection).expect("Error loading article tags."),
-            chapters: self.chapters(connection).expect("Error loading chapters."),
-            id: self.id,
-            title: self.title,
-            pub_date: self.pub_date,
-            published: self.published,
-            headline: self.headline,
-            image: API_URL.to_owned() + &self.image,
-            image_credits: self.image_credits,
-            updated: self.updated,
-        }
-    }
-
     pub fn get(
         id: i32,
         connection: &PgConnection,
@@ -153,7 +160,7 @@ impl Article {
             .find(id)
             .first::<Self>(connection)?;
 
-        Ok(article.into_representation(connection))
+        Ok(ArticleRepresentation::from_model(article, Some(connection)))
     }
 
     #[cfg(feature = "editable")]
@@ -196,7 +203,10 @@ impl Article {
             Ok(inserted_article)
         })?;
 
-        Ok(inserted_article.into_representation(connection))
+        Ok(ArticleRepresentation::from_model(
+            inserted_article,
+            Some(connection),
+        ))
     }
 
     #[cfg(feature = "editable")]
@@ -223,7 +233,7 @@ impl Article {
             .returning(ARTICLE_COLUMNS)
             .get_result::<Self>(connection)?;
 
-        Ok(article.into_representation(connection))
+        Ok(ArticleRepresentation::from_model(article, Some(connection)))
     }
 
     #[cfg(feature = "editable")]
@@ -237,7 +247,7 @@ impl Article {
             .returning(ARTICLE_COLUMNS)
             .get_result::<Self>(connection)?;
 
-        Ok(article.into_representation(connection))
+        Ok(ArticleRepresentation::from_model(article, Some(connection)))
     }
 
     pub fn list(
@@ -247,7 +257,12 @@ impl Article {
 
         let results: HashMap<i32, ArticleRepresentation> = articles
             .into_iter()
-            .map(|article: Self| (article.id, article.into_representation(connection)))
+            .map(|article: Self| {
+                (
+                    article.id,
+                    ArticleRepresentation::from_model(article, Some(connection)),
+                )
+            })
             .collect();
 
         Ok(results)
@@ -272,7 +287,12 @@ impl Article {
 
         let results: HashMap<i32, ArticleRepresentation> = articles
             .into_iter()
-            .map(|article: Self| (article.id, article.into_representation(connection)))
+            .map(|article: Self| {
+                (
+                    article.id,
+                    ArticleRepresentation::from_model(article, Some(connection)),
+                )
+            })
             .collect();
 
         Ok(results)
@@ -297,7 +317,12 @@ impl Article {
         // TODO - Use a vec
         let results: HashMap<i32, ArticleRepresentation> = articles
             .into_iter()
-            .map(|article: Self| (article.id, article.into_representation(connection)))
+            .map(|article: Self| {
+                (
+                    article.id,
+                    ArticleRepresentation::from_model(article, Some(connection)),
+                )
+            })
             .collect();
 
         Ok(results)

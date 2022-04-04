@@ -15,6 +15,9 @@ use {
     logger::custom_logger::Logger,
 };
 
+#[cfg(debug_assertions)]
+use log::info;
+
 mod code;
 mod errors;
 mod handlers;
@@ -43,6 +46,12 @@ async fn main() -> std::io::Result<()> {
         .expect("Failed to create pool.");
 
     Logger::init(pool.clone()).unwrap();
+
+    #[cfg(debug_assertions)]
+    {
+        info!("API URL: {}", API_URL);
+        info!("Database URL: {}", DATABASE_URL);
+    }
 
     HttpServer::new(move || {
         #[cfg(not(feature = "editable"))]

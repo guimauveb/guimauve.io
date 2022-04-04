@@ -3,7 +3,7 @@
 #[macro_use]
 extern crate dotenv_codegen;
 
-use wasm_bindgen::prelude::*;
+use {log::error, wasm_bindgen::prelude::*};
 
 pub mod app;
 pub mod components;
@@ -30,6 +30,6 @@ pub fn run_app() -> Result<(), JsValue> {
 
 fn main() {
     if let Err(err) = run_app() {
-        println!("{:#?}", err);
+        error!("{:#?}", err);
     };
 }
