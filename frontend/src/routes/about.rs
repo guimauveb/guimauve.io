@@ -33,7 +33,7 @@ pub fn about() -> Html {
                         <a href="https://stackoverflow.com/users/11676080/guimauve?tab=profile" target="_blank">
                             <img style="width: 4em;" src={stackoverflow_profile}/>
                         </a>
-                        <a href="https://www.linkedin.com/in/guillaume-b-4a167b19b/" target="_blank">
+                        <a href="https://www.linkedin.com/in/guillaume-bournel-4a167b19b/" target="_blank">
                             <img style="width: 4em;" src={linkedin_profile}/>
                         </a>
                     </div>
