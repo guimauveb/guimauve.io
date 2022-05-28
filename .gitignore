@@ -9,6 +9,4 @@ bin/
 wasm-pack.log
 deploy.sh
 .git-credentials
-frontend/index.html
-frontend/Trunk.toml
 TODO.md

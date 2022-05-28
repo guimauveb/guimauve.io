@@ -46,4 +46,4 @@ codegen-units = 1
 # Optimization for size ( most aggressive )
 opt-level = 'z'
 # Link time optimization using using whole-program analysis
-lto = true
+# lto = true
