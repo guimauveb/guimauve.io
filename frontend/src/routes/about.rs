@@ -2,15 +2,12 @@ use {crate::API_URL, yew::html, yew_functional::function_component};
 
 #[function_component(About)]
 pub fn about() -> Html {
-    let stackoverflow_icon = "/media/images/about/c815fb0a-4f58-4420-b0ba-8612199449c8.webp";
-    let mut stackoverflow_profile = String::with_capacity(API_URL.len() + stackoverflow_icon.len());
-    stackoverflow_profile.push_str(API_URL);
-    stackoverflow_profile.push_str(stackoverflow_icon);
+    const STACKOVERFLOW_ICON: &str =
+        "/media/images/about/c815fb0a-4f58-4420-b0ba-8612199449c8.webp";
+    let stackoverflow_profile = [API_URL, stackoverflow_icon].concat();
 
-    let linkedin_icon = "/media/images/about/84adeaba-827f-4854-aa03-f4429d8ebfeb.webp";
-    let mut linkedin_profile = String::with_capacity(API_URL.len() + linkedin_icon.len());
-    linkedin_profile.push_str(API_URL);
-    linkedin_profile.push_str(linkedin_icon);
+    const LINKEDIN_ICON: &str = "/media/images/about/84adeaba-827f-4854-aa03-f4429d8ebfeb.webp";
+    let linkedin_profile = [API_URL, linkedin_icon].concat();
 
     html! {
         <div style="display: flex; justify-content: center; flex: 1;">
