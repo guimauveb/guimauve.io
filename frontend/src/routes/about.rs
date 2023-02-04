@@ -4,10 +4,10 @@ use {crate::API_URL, yew::html, yew_functional::function_component};
 pub fn about() -> Html {
     const STACKOVERFLOW_ICON: &str =
         "/media/images/about/c815fb0a-4f58-4420-b0ba-8612199449c8.webp";
-    let stackoverflow_profile = [API_URL, stackoverflow_icon].concat();
+    let stackoverflow_profile = [API_URL, STACKOVERFLOW_ICON].concat();
 
     const LINKEDIN_ICON: &str = "/media/images/about/84adeaba-827f-4854-aa03-f4429d8ebfeb.webp";
-    let linkedin_profile = [API_URL, linkedin_icon].concat();
+    let linkedin_profile = [API_URL, LINKEDIN_ICON].concat();
 
     html! {
         <div style="display: flex; justify-content: center; flex: 1;">
