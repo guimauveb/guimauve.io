@@ -21,7 +21,7 @@ use {
         },
         diesel_full_text_search::{plainto_tsquery, TsVectorExtensions},
         schema::{article_tags, articles, tags},
-        API_URL, INCLUDE_UNPUBLISHED_ARTICLES,
+        API_URL, DISPLAY_UNPUBLISHED_ARTICLES,
     },
     serde::{Deserialize, Serialize},
     std::collections::HashMap,
@@ -272,17 +272,17 @@ impl Article {
         query: &str,
         connection: &PgConnection,
     ) -> Result<HashMap<i32, ArticleRepresentation>, diesel::result::Error> {
-        let articles = match INCLUDE_UNPUBLISHED_ARTICLES {
-            "true" => articles::table
-                .select(ARTICLE_COLUMNS)
-                .filter(articles::text_searchable_article.matches(plainto_tsquery(&query)))
-                .load::<Self>(connection)?,
-
-            _ => articles::table
+        let articles = if DISPLAY_UNPUBLISHED_ARTICLES == "false" {
+            articles::table
                 .select(ARTICLE_COLUMNS)
                 .filter(articles::published.eq(true))
                 .filter(articles::text_searchable_article.matches(plainto_tsquery(&query)))
-                .load::<Self>(connection)?,
+                .load::<Self>(connection)?
+        } else {
+            articles::table
+                .select(ARTICLE_COLUMNS)
+                .filter(articles::text_searchable_article.matches(plainto_tsquery(&query)))
+                .load::<Self>(connection)?
         };
 
         let results: HashMap<i32, ArticleRepresentation> = articles

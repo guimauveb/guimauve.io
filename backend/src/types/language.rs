@@ -25,6 +25,6 @@ impl Default for Language {
 
 impl Display for Language {
     fn fmt(&self, f: &mut Formatter<'_>) -> Result {
-        write!(f, "{:?}", self)
+        write!(f, "{self:?}")
     }
 }

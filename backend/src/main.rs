@@ -31,7 +31,7 @@ mod types;
 // Constants
 const API_URL: &str = dotenv!("API_URL");
 const DATABASE_URL: &str = dotenv!("DATABASE_URL");
-const INCLUDE_UNPUBLISHED_ARTICLES: &str = dotenv!("INCLUDE_UNPUBLISHED_ARTICLES");
+const DISPLAY_UNPUBLISHED_ARTICLES: &str = dotenv!("DISPLAY_UNPUBLISHED_ARTICLES");
 
 pub type Pool = r2d2::Pool<ConnectionManager<PgConnection>>;
 
