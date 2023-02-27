@@ -195,6 +195,18 @@
     color: rgba(39, 47, 61, 1) !important;
   }
 
+  .arch {
+    background-color: rgba(23, 147, 209, 1) !important;
+    color: rgba(51, 51, 51, 1) !important;
+  }
+
+  .systemd {
+    background-color: rgba(221, 221, 221, 1) !important;
+    color: rgba(9, 55, 84, 1) !important;
+    border-color: rgba(9, 55, 84, 1) !important;
+    border: .3px solid;
+  }
+
   .mysql {
     background-color: rgba(38, 95, 138, 1) !important;
     color: rgba(219, 145, 51, 1) !important;
