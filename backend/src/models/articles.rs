@@ -253,7 +253,16 @@ impl Article {
     pub fn list(
         connection: &PgConnection,
     ) -> Result<HashMap<i32, ArticleRepresentation>, diesel::result::Error> {
-        let articles = articles::table.select(ARTICLE_COLUMNS).load(connection)?;
+        let articles = if DISPLAY_UNPUBLISHED_ARTICLES == "false" {
+            articles::table
+                .select(ARTICLE_COLUMNS)
+                .filter(articles::published.eq(true))
+                .load::<Self>(connection)?
+        } else {
+            articles::table
+                .select(ARTICLE_COLUMNS)
+                .load::<Self>(connection)?
+        };
 
         let results: HashMap<i32, ArticleRepresentation> = articles
             .into_iter()
