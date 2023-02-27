@@ -73,6 +73,12 @@
     <priority>1</priority>
   </url>
   <url>
+    <loc>https://guimauve.io/articles/63</loc>
+    <lastmod>2023-02-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>1</priority>
+  </url>
+  <url>
     <loc>https://guimauve.io/tags</loc>
     <lastmod>2021-11-08</lastmod>
     <changefreq>monthly</changefreq>
@@ -261,6 +267,18 @@
   <url>
     <loc>https://guimauve.io/tags/postgresql</loc>
     <lastmod>2021-10-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>1</priority>
+  </url>
+  <url>
+    <loc>https://guimauve.io/tags/arch</loc>
+    <lastmod>2023-02-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>1</priority>
+  </url>
+  <url>
+    <loc>https://guimauve.io/tags/systemd</loc>
+    <lastmod>2023-02-27</lastmod>
     <changefreq>monthly</changefreq>
     <priority>1</priority>
   </url>
