@@ -27,9 +27,6 @@ editable = ["syntect"]
 
 [profile.release]
 opt-level = 3
-# Less code to include into binary
 panic = 'abort'
-# Optimization over all codebase ( better optimization, slower build )
 codegen-units = 1
-# Link time optimization using using whole-program analysis
 lto = true
