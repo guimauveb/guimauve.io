@@ -41,7 +41,7 @@ const NAV_LINKS: &[TNavLink] = &[
     },
 ];
 
-const RESUME_SLUG: &str = "/media/resume/resume_Guillaume_Bournel_2023.pdf";
+const RESUME_SLUG: &str = "/media/resume/resume_Guillaume_Bournel_2024.pdf";
 
 #[function_component(NavLinks)]
 pub fn navlinks() -> Html {
