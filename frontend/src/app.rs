@@ -15,7 +15,7 @@ use {
 };
 
 #[cfg(feature = "editable")]
-use crate::{components::live_resume::LiveResume, routes::new_article::NewArticle};
+use crate::routes::new_article::NewArticle;
 
 #[function_component(App)]
 pub fn app() -> Html {
@@ -131,8 +131,6 @@ pub fn app() -> Html {
                                     />
                                 },
                                 AppRoute::About => html! {<About />},
-                                #[cfg(feature = "editable")]
-                                AppRoute::LiveResume => html! {<LiveResume />},
                                 AppRoute::PageNotFound(Permissive(None)) => html! {<PageNotFound />},
                                 AppRoute::PageNotFound(Permissive(Some(missed_route))) => {
                                     html! {

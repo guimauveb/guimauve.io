@@ -25,9 +25,6 @@ pub enum AppRoute {
     Projects,
     #[to = "/about!"]
     About,
-    #[cfg(feature = "editable")]
-    #[to = "/live-resume"]
-    LiveResume,
     #[to = "/!"]
     Home,
     #[to = "/404"]

@@ -4,7 +4,6 @@ pub mod checkbox;
 pub mod code;
 pub mod footer;
 pub mod header;
-pub mod live_resume;
 pub mod loader;
 pub mod modal;
 pub mod navbar;
